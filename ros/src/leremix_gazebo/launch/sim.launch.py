@@ -42,7 +42,6 @@ def generate_launch_description():
             ])
         ),
         launch_arguments={
-            "world": world,
             "pause": pause,
             "verbose": "true"
         }.items(),
@@ -75,17 +74,22 @@ def generate_launch_description():
     )
 
     arm_controller = Node(
-        package="controller_manager", executable="spawner", name="spawner_base_controller",
+        package="controller_manager", executable="spawner", name="spawner_arm_controller",
         arguments=["arm_controller", "--controller-manager", "/controller_manager",
                    "--controller-manager-timeout", cm_timeout],
         output="screen",
     )
 
-
+    head_controller = Node(
+        package="controller_manager", executable="spawner", name="spawner_head_controller",
+        arguments=["head_controller", "--controller-manager", "/controller_manager",
+                   "--controller-manager-timeout", cm_timeout],
+        output="screen",
+    ) 
 
     # Chain: spawn entity → JS broadcaster → base & arm
     after_spawn = RegisterEventHandler(OnProcessExit(target_action=spawn, on_exit=[jsb]))
-    after_js    = RegisterEventHandler(OnProcessExit(target_action=jsb,   on_exit=[omni_controller, arm_controller]))
+    after_js    = RegisterEventHandler(OnProcessExit(target_action=jsb,   on_exit=[omni_controller, arm_controller, head_controller]))
 
     return LaunchDescription([
         declare_gui, declare_pause, declare_spawn_z, declare_cm_timeout,

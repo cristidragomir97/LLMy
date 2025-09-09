@@ -7,7 +7,7 @@
         </hardware>
 
 
-        <joint name="back_motor_rotation">
+        <joint name="wheel1_rotation">
             <command_interface name="velocity">
                 <param name="min">-10</param>
                 <param name="max">10</param>
@@ -16,7 +16,7 @@
             <state_interface name="velocity"/>
         </joint>
 
-        <joint name="left_motor_rotation">
+        <joint name="wheel2_rotation">
             <command_interface name="velocity">
                 <param name="min">-10</param>
                 <param name="max">10</param>
@@ -26,7 +26,7 @@
         </joint>
 
 
-        <joint name="right_motor_rotation">
+        <joint name="wheel3_rotation">
             <command_interface name="velocity">
                 <param name="min">-10</param>
                 <param name="max">10</param>
@@ -36,6 +36,13 @@
         </joint>
 
         <joint name="camera_tilt">
+          <command_interface name="position">
+            </command_interface>
+            <state_interface name="position" />
+        </joint>
+
+        
+        <joint name="camera_pan">
           <command_interface name="position">
             </command_interface>
             <state_interface name="position" />

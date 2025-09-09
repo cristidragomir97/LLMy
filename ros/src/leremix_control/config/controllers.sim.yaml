@@ -12,9 +12,12 @@ controller_manager:
     arm_controller:
       type: position_controllers/JointGroupPositionController
 
+    head_controller:
+      type: position_controllers/JointGroupPositionController
+
 arm_controller:
   ros__parameters:
-    joints: ["1","2","3","4","5","6","camera_tilt"]
+    joints: ["1","2","3","4","5","6"]
 
     command_interfaces:
       - position
@@ -24,13 +27,24 @@ arm_controller:
 
     open_loop_control: true
 
+head_controller:
+  ros__parameters:
+    joints: ["camera_pan", "camera_tilt"]
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+
+    open_loop_control: true
 
 omnidirectional_controller:
   ros__parameters:
     wheel_names: 
-     - back_motor_rotation
-     - left_motor_rotation
-     - right_motor_rotation
+     - wheel1_rotation
+     - wheel2_rotation
+     - wheel3_rotation
 
 
 
