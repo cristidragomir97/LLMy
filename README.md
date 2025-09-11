@@ -1,13 +1,43 @@
 
-# LeRemix 
-![](https://i.ibb.co/5JQqhN0/front.png)
+# 🤖 LeRemix 
 
-This project is a fully 3D-printed mobile manipulator designed to be affordable, easy to build, flexible and ready for simulation.
-Building on top of open-source projects like LeKiwi and LeRobot, it focuses on ROS support and extensibility, making it a solid foundation for AI/VLM experimentation, research, prototyping, and education.
+<div align="center">
+  <img src="https://i.ibb.co/ZpK0BzSG/leremix.png" alt="leremix" width="800"/>
+</div>
 
-# Getting Started
+<div align="center">
 
-## Simulation
+**🚀 Affordable Mobile Manipulator - Bringing Robotics to Everyone! 🎯**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![ROS2 Humble](https://img.shields.io/badge/ROS2-Humble-blue.svg)](https://docs.ros.org/en/humble/)
+[![Gazebo](https://img.shields.io/badge/Gazebo-Classic-orange.svg)](http://gazebosim.org/)
+[![Built with ❤️](https://img.shields.io/badge/Built%20with-❤️-red.svg)](https://github.com/cristidragomir97/leremix)
+
+</div>
+
+---
+
+**LeRemix** is a fully 3D-printed mobile manipulator designed to be **affordable**, **easy to build**, and **simulation-ready**. Built on the shoulders of giants like [LeRobot](https://github.com/huggingface/lerobot) and [LeKiwi](https://github.com/SIGRobotics-UIUC), it delivers professional-grade ROS2 integration and extensibility - making it the perfect foundation for **AI/VLM experimentation**, **research**, **prototyping**, and **education**.
+
+> 💡 **Why LeRemix?** Get a complete mobile manipulation platform for the price of a smartphone, with full simulation support and real hardware integration!
+
+## 📊 Total Cost
+
+| Configuration | Cost (US) | Cost (EU) | 
+|:---|---:|---:|
+| **Base Robot** | **$279.70** | **€306.60** |
+| + **Orbbec Gemini 2** | **$513.70** | **€536.60** |
+| + **RealSense D435** | **$593.70** | **€624.20** |
+| + **ZED 2i Camera** | **$778.70** | **€755.60** |
+
+*Complete mobile manipulation platform for less than a premium smartphone!* 📱
+
+---
+
+## 🚀 Quick Start
+
+### 🎮 Simulation (Fastest Way to Try LeRemix!)
 
 Get the robot running in Gazebo simulation in just a few commands:
 
@@ -27,9 +57,9 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
 
 The robot will spawn in Gazebo with all controllers active. Use an Xbox controller to drive the base (face buttons) and control the arm (analog sticks + triggers).
 
-## Real Hardware
+### 🔧 Real Hardware Setup
 
-### Prerequisites
+#### Prerequisites
 
 
    ```bash
@@ -44,7 +74,7 @@ The robot will spawn in Gazebo with all controllers active. Use an Xbox controll
                     ros-humble-micro-ros-agent
    ```
 
-### Firmware Setup
+#### ⚡ Firmware Setup
 
 1. **Flash ESP32 Firmware**
    ```bash
@@ -62,7 +92,7 @@ The robot will spawn in Gazebo with all controllers active. Use an Xbox controll
    ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0 -b 115200
    ```
 
-### Launch Robot System
+#### 🚀 Launch Robot System
 
 ```bash
 # Build workspace
@@ -81,7 +111,7 @@ ros2 topic list
 ros2 control list_controllers
 ```
 
-### Verification
+#### ✅ Verification
 
 Check that all systems are running:
 ```bash
@@ -100,9 +130,11 @@ ros2 topic echo /esp32/joint_states --once
 
 The robot should now respond to Xbox controller inputs with real hardware!
 
-# ROS
+---
 
-## Packages
+## 🏗️ Architecture
+
+### 📦 ROS2 Packages
 
 | Package | Description |
 |---------|-------------|
@@ -114,26 +146,30 @@ The robot should now respond to Xbox controller inputs with real hardware!
 | [**leremix_camera**](ros/src/leremix_camera/README.md) | RealSense camera node with compressed transport and depth-to-laser conversion | 
 | [**leremix_imu**](ros/src/leremix_imu/README.md) | ICM sensor integration with Madgwick filtering for orientation estimation |
 
-# Firmware
-![](https://www.waveshare.com/media/catalog/product/cache/1/image/800x800/9df78eab33525d08d6e5fb8d27136e95/s/e/servo-driver-with-esp32-1.jpg)
-ESP32 microcontroller running micro-ROS firmware to bridge ROS2 commands to servo hardware at 200Hz. Features safety watchdog, emergency braking, and dual servo protocol support (SMS_STS + SCSCL).
+### ⚡ Firmware
 
-**Key Features:**
-- 200Hz real-time control loop
-- Safety watchdog with 500ms timeout
-- Automatic emergency braking/torque disable
-- micro-ROS integration via serial/WiFi
-- PlatformIO development environment
+<div align="center">
+  <img src="https://www.waveshare.com/media/catalog/product/cache/1/image/800x800/9df78eab33525d08d6e5fb8d27136e95/s/e/servo-driver-with-esp32-1.jpg" width="400"/>
+</div>
+
+**ESP32 microcontroller** running micro-ROS firmware to bridge ROS2 commands to servo hardware at **200Hz**. Features safety watchdog, emergency braking, and dual servo protocol support (SMS_STS + SCSCL).
+
+#### 🎯 Key Features:
+- ⚡ **200Hz real-time control loop**
+- 🛡️ **Safety watchdog with 500ms timeout**
+- 🚨 **Automatic emergency braking/torque disable**
+- 🔗 **micro-ROS integration via serial/WiFi**
+- 🛠️ **PlatformIO development environment**
 
 📖 [**Read the complete firmware documentation →**](firmware/README.md)
 
-# Hardware
+---
 
-## Parts
+## 🛠️ Hardware
 
-## BOM
+### 🧱 Bill of Materials (BOM)
 
-### Main Platform
+#### 🤖 Main Platform
 | Part | Amount | Unit Cost (US) | Buy (US) | Unit Cost (EU) | Buy (EU) | Total(US) | Total(EU) |
 |:---|:---:|:---:|:---|:---:|---:|:-:|-|
 | 12v ST3215 Feetech Servo | 10| $13.89 | [Alibaba](https://www.alibaba.com/product-detail/Feetech-STS3215-SO-ARM100-Servo-12V_1601292634404.html?spm=a2700.details.you_may_like.3.5ab1478e45kY42) | €13.38 | [Alibaba](https://www.alibaba.com/product-detail/Feetech-STS3215-SO-ARM100-Servo-12V_1601292634404.html?spm=a2700.details.you_may_like.3.5ab1478e45kY42)  | 138.9$  | €133.8 | 
@@ -144,12 +180,13 @@ ESP32 microcontroller running micro-ROS firmware to bridge ROS2 commands to serv
 | Baseus GP12 Battery Pack | 1 | $59.99 | [Amazon](https://www.amazon.com/Baseus-20800mAh-Portable-Charger-Charging/dp/B0DQTYLGYK?th) | €48.99 | [Baseus EU](https://eu.baseus.com/products/energeek-gp12-power-bank-145w-20800mah?srsltid=AfmBOorIXbW42jd_DKrEXTmsDzPih-Fyf3ZeOLM2nc7CQ4IjJVjFf2mJ) | $59.99 | €48.99
 | **Total** |  | |  |  |  | $279.70 | €306.60
 
-### RGBD Cameras
-The core of this robot’s perception system is an RGB-D camera due to it's flexibility. Unlike a standard RGB camera, it delivers both color and depth, making it a versatile tool for AI inference, manipulation and navigation. 
+#### 📷 RGBD Cameras
 
-This means the robot can identify objects while also estimating their distance and size, providing richer scene understanding from a single sensor. At the same time, the depth stream enables multiple SLAM approaches—RGB-SLAM, RGB-D SLAM, or even 2D SLAM via depthimage_to_laserscan.
+**The core of this robot's perception system** is an RGB-D camera due to its incredible flexibility. Unlike a standard RGB camera, it delivers both **color and depth**, making it a versatile tool for **AI inference**, **manipulation** and **navigation**.
 
-All the software in this repo is built on top of the Intel RealSense SDK and ROS driver, but other depth cameras can serve as near drop-in replacements depending on needs.
+> 🎯 **Why RGB-D?** The robot can identify objects while estimating their distance and size, providing richer scene understanding from a single sensor. The depth stream enables multiple SLAM approaches—RGB-SLAM, RGB-D SLAM, or even 2D SLAM via `depthimage_to_laserscan`.
+
+All software is built on the **Intel RealSense SDK** and ROS driver, but other depth cameras serve as near drop-in replacements.
 
 
 | Part                | Unit Cost (US) | Buy (US) | Unit Cost (EU) | Buy (EU) | Robot + Camera (US) | Robot + Camera (EU) |
@@ -161,12 +198,35 @@ All the software in this repo is built on top of the Intel RealSense SDK and ROS
 | **Stereolabs ZED 2i** |  $499.00        | [Stereolabs Store](https://store.stereolabs.com/products/zed-2i) | **€449.00** | [Stereolabs EU](https://store.stereolabs.com/products/zed-2i) | **$778.70** | **€755.60** |
 
 
-### SBCs, Computers
-My version of the robot is powered by an Nvidia Orin Nano Super, but the battery pack allows up to 65W per power lane and up to 20V, so you could use whatever you want, a Raspberry Pi 5, Nvidia Orin, even a NUC or other Mini-PCs. 
+#### 💻 Single Board Computers & Mini-PCs
+
+**My setup:** Powered by an **Nvidia Orin Nano Super**, but the battery pack delivers up to **65W per power lane** and **20V**, so you can use:
+
+- 🥧 **Raspberry Pi 5**
+- 🚀 **Nvidia Orin Series**  
+- 💪 **Intel NUC or other Mini-PCs**
+- 🔧 **Any compatible SBC with proper power requirements**
 
 
-## Credits
-* The [Lerobot Team](https://github.com/huggingface/lerobot) 
-* The [SIGRobotics-UIUC](https://github.com/SIGRobotics-UIUC) for their work on LeKiwi
-* [Pavan Vishwanath](https://github.com/Pavankv92) for his work on the [ROS2 package](https://github.com/Pavankv92/lerobot_ws) for the [LeRobot SO-ARM101](https://github.com/huggingface/lerobot)
-* [Mateus Menezes](https://github.com/mateusmenezes95) for his work on the [omnidirectional_controllers](https://github.com/mateusmenezes95/omnidirectional_controllers) ROS control package and [axebot](https://github.com/mateusmenezes95/axebot) which helped me a lot with setting up the simulation for omnidirectional driving
+---
+
+## 🙏 Credits & Acknowledgments
+
+This project stands on the shoulders of incredible open-source work:
+
+- 🤖 **[LeRobot Team](https://github.com/huggingface/lerobot)** - For pioneering accessible robotics and AI integration
+- 🥝 **[SIGRobotics-UIUC](https://github.com/SIGRobotics-UIUC)** - For their foundational work on LeKiwi
+- 📦 **[Pavan Vishwanath](https://github.com/Pavankv92)** - ROS2 package development for [LeRobot SO-ARM101](https://github.com/Pavankv92/lerobot_ws)
+- 🎯 **[Mateus Menezes](https://github.com/mateusmenezes95)** - [Omnidirectional controllers](https://github.com/mateusmenezes95/omnidirectional_controllers) and [AxeBot](https://github.com/mateusmenezes95/axebot) simulation expertise
+
+> 💖 **Open Source Spirit:** LeRemix is built with love for the robotics community. Standing together, we make advanced robotics accessible to everyone!
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if LeRemix helped you build something awesome! ⭐**
+
+*Built with ❤️ for the robotics community*
+
+</div>
