@@ -56,34 +56,34 @@
   </actuator>
 </transmission>
 
-<transmission name="right_motor_rotation_tran">
+<transmission name="wheel3_rotation_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="right_motor_rotation">
+  <joint name="wheel3_rotation">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="right_motor_rotation_actr">
+  <actuator name="wheel3_rotation_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="back_motor_rotation_tran">
+<transmission name="wheel1_rotation_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="back_motor_rotation">
+  <joint name="wheel1_rotation">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="back_motor_rotation_actr">
+  <actuator name="wheel1_rotation_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="left_motor_rotation_tran">
+<transmission name="wheel2_rotation_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="left_motor_rotation">
+  <joint name="wheel2_rotation">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="left_motor_rotation_actr">
+  <actuator name="wheel2_rotation_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
@@ -106,6 +106,17 @@
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
   <actuator name="camera_tilt_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="camera_pan_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="camera_pan">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="camera_pan_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
