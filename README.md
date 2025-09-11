@@ -148,10 +148,6 @@ The robot should now respond to Xbox controller inputs with real hardware!
 
 ### ⚡ Firmware
 
-<div align="center">
-  <img src="https://www.waveshare.com/media/catalog/product/cache/1/image/800x800/9df78eab33525d08d6e5fb8d27136e95/s/e/servo-driver-with-esp32-1.jpg" width="400"/>
-</div>
-
 **ESP32 microcontroller** running micro-ROS firmware to bridge ROS2 commands to servo hardware at **200Hz**. Features safety watchdog, emergency braking, and dual servo protocol support (SMS_STS + SCSCL).
 
 #### 🎯 Key Features:
