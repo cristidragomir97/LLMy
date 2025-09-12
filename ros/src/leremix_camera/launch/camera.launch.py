@@ -12,6 +12,8 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     # Launch arguments
     camera_name = LaunchConfiguration('camera_name')
+    wrist_camera_device = LaunchConfiguration('wrist_camera_device')
+    enable_wrist_camera = LaunchConfiguration('enable_wrist_camera')
     device_type = LaunchConfiguration('device_type')
     enable_compressed = LaunchConfiguration('enable_compressed')
     enable_laser_scan = LaunchConfiguration('enable_laser_scan')
@@ -27,8 +29,20 @@ def generate_launch_description():
     # Declare launch arguments
     declare_camera_name = DeclareLaunchArgument(
         'camera_name',
-        default_value='front_camera',
+        default_value='head_camera',
         description='RealSense camera name'
+    )
+    
+    declare_wrist_camera_device = DeclareLaunchArgument(
+        'wrist_camera_device',
+        default_value='/dev/video2',
+        description='Wrist camera device path'
+    )
+    
+    declare_enable_wrist_camera = DeclareLaunchArgument(
+        'enable_wrist_camera',
+        default_value='true',
+        description='Enable wrist camera'
     )
     
     declare_device_type = DeclareLaunchArgument(
@@ -101,7 +115,7 @@ def generate_launch_description():
             ])
         ),
         launch_arguments={
-            'camera_namespace': '', 
+            'camera_namespace': 'head_camera', 
             'camera_name': camera_name,
             'device_type': device_type,
             'enable_depth': 'true',
@@ -125,8 +139,8 @@ def generate_launch_description():
         arguments=[
             'raw', 'compressed',
             '--ros-args',
-            '--remap', 'in:=front_camera/color/image_raw',
-            '--remap', 'out:=front_camera/color/image_compressed',
+            '--remap', 'in:=head_camera/head_camera/color/image_raw',
+            '--remap', 'out:=head_camera/head_camera/color/image_compressed',
         ],
         condition=IfCondition(enable_compressed)
     )
@@ -145,17 +159,51 @@ def generate_launch_description():
             'output_frame_id': 'lidar',
         }],
         remappings=[
-            ('depth', 'front_camera/depth/image_rect_raw'),
-            ('depth_camera_info', 'front_camera/depth/camera_info'),
+            ('depth', 'head_camera/head_camera/depth/image_rect_raw'),
+            ('depth_camera_info', 'head_camera/head_camera/depth/camera_info'),
             ('scan', '/scan'),
         ],
         condition=IfCondition(enable_laser_scan)
     )
 
+    # Wrist camera using usb_cam
+    wrist_camera_node = Node(
+        package='usb_cam',
+        executable='usb_cam_node_exe',
+        name='wrist_camera',
+        namespace='wrist_camera',
+        parameters=[{
+            'video_device': wrist_camera_device,
+            'camera_frame_id': 'wrist_camera_frame',
+            'image_width': 640,
+            'image_height': 480,
+            'pixel_format': 'yuyv',
+            'framerate': 30.0,
+            'camera_name': 'wrist_camera',
+            'io_method': 'mmap',
+        }],
+        condition=IfCondition(enable_wrist_camera)
+    )
+
+    # Compressed image transport for wrist camera
+    compressed_wrist_node = Node(
+        package='image_transport',
+        executable='republish',
+        name='compressed_wrist_republisher',
+        arguments=[
+            'raw', 'compressed',
+            '--ros-args',
+            '--remap', 'in:=wrist_camera/image_raw',
+            '--remap', 'out:=wrist_camera/image_compressed',
+        ],
+        condition=IfCondition(enable_wrist_camera)
+    )
 
     return LaunchDescription([
         # Launch arguments
         declare_camera_name,
+        declare_wrist_camera_device,
+        declare_enable_wrist_camera,
         declare_device_type,
         declare_enable_compressed,
         declare_enable_laser_scan,
@@ -171,4 +219,6 @@ def generate_launch_description():
         realsense_launch,
         compressed_color_node,
         depthimage_to_laserscan_node,
+        wrist_camera_node,
+        compressed_wrist_node,
     ])

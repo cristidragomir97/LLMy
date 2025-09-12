@@ -1,5 +1,5 @@
 
-# 🤖 LeRemix 
+# LeRemix 
 
 <div align="center">
   <img src="https://i.ibb.co/ZpK0BzSG/leremix.png" alt="leremix" width="800"/>
@@ -20,18 +20,12 @@
 
 **LeRemix** is a fully 3D-printed mobile manipulator designed to be **affordable**, **easy to build**, and **simulation-ready**. Built on the shoulders of giants like [LeRobot](https://github.com/huggingface/lerobot) and [LeKiwi](https://github.com/SIGRobotics-UIUC), it delivers professional-grade ROS2 integration and extensibility - making it the perfect foundation for **AI/VLM experimentation**, **research**, **prototyping**, and **education**.
 
-> 💡 **Why LeRemix?** Get a complete mobile manipulation platform for the price of a smartphone, with full simulation support and real hardware integration!
-
-## 📊 Total Cost
-
-| Configuration | Cost (US) | Cost (EU) | 
-|:---|---:|---:|
-| **Base Robot** | **$279.70** | **€306.60** |
-| + **Orbbec Gemini 2** | **$513.70** | **€536.60** |
-| + **RealSense D435** | **$593.70** | **€624.20** |
-| + **ZED 2i Camera** | **$778.70** | **€755.60** |
-
-*Complete mobile manipulation platform for less than a premium smartphone!* 📱
+> 💡 **Why LeRemix?** 
+* URDF
+* ros2_control 
+* Gazebo simulation
+* Modularity 
+* Cost - the basic components cost around 300$
 
 ---
 
@@ -221,17 +215,14 @@ All software is built on the **Intel RealSense SDK** and ROS driver, but other d
 ---
 
 ## 🙏 Credits & Acknowledgments
-
 This project stands on the shoulders of incredible open-source work:
 
-- 🤖 **[LeRobot Team](https://github.com/huggingface/lerobot)** - For pioneering accessible robotics and AI integration
-- 🥝 **[SIGRobotics-UIUC](https://github.com/SIGRobotics-UIUC)** - For their foundational work on LeKiwi
-- 📦 **[Pavan Vishwanath](https://github.com/Pavankv92)** - ROS2 package development for [LeRobot SO-ARM101](https://github.com/Pavankv92/lerobot_ws)
-- 🎯 **[Mateus Menezes](https://github.com/mateusmenezes95)** - [Omnidirectional controllers](https://github.com/mateusmenezes95/omnidirectional_controllers) and [AxeBot](https://github.com/mateusmenezes95/axebot) simulation expertise
+- **[LeRobot Team](https://github.com/huggingface/lerobot)** - For pioneering accessible robotics and AI integration
+- **[SIGRobotics-UIUC](https://github.com/SIGRobotics-UIUC)** - For their foundational work on LeKiwi
+- **[Pavan Vishwanath](https://github.com/Pavankv92)** - ROS2 package development for [LeRobot SO-ARM101](https://github.com/Pavankv92/lerobot_ws)
+- **[Mateus Menezes](https://github.com/mateusmenezes95)** - [Omnidirectional controllers](https://github.com/mateusmenezes95/omnidirectional_controllers) and [AxeBot](https://github.com/mateusmenezes95/axebot) simulation expertise
+- **[Gaotian Wang](https://github.com/Vector-Wangel/XLeRobot)** - For his amazing work on XLeRobot. Also for being kind enough to publish the STEP files for his robot upon request, files that were used to create the camera tower for LeRemix. 
 
-> 💖 **Open Source Spirit:** LeRemix is built with love for the robotics community. Standing together, we make advanced robotics accessible to everyone!
-
----
 
 <div align="center">
 
