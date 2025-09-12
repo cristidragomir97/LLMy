@@ -1447,7 +1447,7 @@
 </link>
 
 <joint name="head_camera_frame_joint" type="fixed">
-  <origin xyz="0.020 0.0 0.015" rpy="0 0 0"/>  <!-- Adjust to front center -->
+  <origin xyz="0.020 -0.022 0.0025" rpy="0 0 0"/>  <!-- Moved left 22mm, down 12.5mm -->
   <parent link="head_camera_1"/>
   <child link="head_camera_frame"/>
 </joint>
@@ -1457,7 +1457,7 @@
 </link>
 
 <joint name="wrist_camera_frame_joint" type="fixed">
-  <origin xyz="0.015 0.0 0.010" rpy="0 0 0"/>  <!-- Adjust to front center -->
+  <origin xyz="0.027 -0.012 0.010" rpy="3.14159 0 0"/>  <!-- Moved +12mm X, -12mm Y, rotated 180° around X -->
   <parent link="wrist_camera_v1_1"/>
   <child link="wrist_camera_frame"/>
 </joint>
@@ -1467,68 +1467,11 @@
 </link>
 
 <joint name="lidar_frame_joint" type="fixed">
-  <origin xyz="0.025 0.0 0.020" rpy="0 0 0"/>  <!-- Adjust to front center -->
+  <origin xyz="0.025 -0.0278 0.020" rpy="0 0 0"/>  <!-- Moved left by 27.8mm -->
   <parent link="lidar_1"/>
   <child link="lidar_frame"/>
 </joint>
 
-<!-- ros2_control hardware interface
-<ros2_control name="leremix_hardware" type="system">
-  <hardware>
-    <plugin>leremix_control_plugin/Esp32SystemTopic</plugin>
-    <param name="base_cmd_topic">/esp32/base_cmd</param>
-    <param name="arm_cmd_topic">/esp32/arm_cmd</param>
-    <param name="head_cmd_topic">/esp32/head_cmd</param>
-    <param name="state_topic">/esp32/joint_states</param>
-    <param name="publish_if_unchanged">true</param>
-  </hardware>
-  
 
-  <joint name="back_motor_rotation">
-    <command_interface name="velocity"/>
-    <state_interface name="position"/>
-    <state_interface name="velocity"/>
-  </joint>
-  <joint name="left_motor_rotation">
-    <command_interface name="velocity"/>
-    <state_interface name="position"/>
-    <state_interface name="velocity"/>
-  </joint>
-  <joint name="right_motor_rotation">
-    <command_interface name="velocity"/>
-    <state_interface name="position"/>
-    <state_interface name="velocity"/>
-  </joint>
-  
-  <joint name="1">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-  </joint>
-  <joint name="2">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-  </joint>
-  <joint name="3">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-  </joint>
-  <joint name="4">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-  </joint>
-  <joint name="5">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-  </joint>
-  <joint name="6">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-  </joint>
-  <joint name="camera_tilt">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-  </joint>
-</ros2_control>
--->
 
 </robot>

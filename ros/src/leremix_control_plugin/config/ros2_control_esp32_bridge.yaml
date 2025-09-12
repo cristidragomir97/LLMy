@@ -7,6 +7,7 @@ ros2_control:
       # Topics to use for micro-ROS bridge
       base_cmd_topic: /esp32/base_cmd
       arm_cmd_topic: /esp32/arm_cmd
+      head_cmd_topic: /esp32/head_cmd
       state_topic: /esp32/joint_states
 
       # optional
@@ -43,6 +44,11 @@ ros2_control:
       - name: "6"
         command_interfaces: [position]
         state_interfaces: [position]
+
+
       - name: camera_tilt
+        command_interfaces: [position]
+        state_interfaces: [position]
+      - name: camera_pan
         command_interfaces: [position]
         state_interfaces: [position]

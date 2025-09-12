@@ -31,9 +31,9 @@ def generate_launch_description():
 
     # Get package share directories
     controllers_cfg = PathJoinSubstitution([
-        FindPackageShare('leremix_control_plugin'),
+        FindPackageShare('leremix_control'),
         'config',
-        'controllers.yaml'
+        'controllers.hw.yaml'
     ])
     hw_cfg = PathJoinSubstitution([
         FindPackageShare('leremix_control_plugin'),
@@ -45,9 +45,9 @@ def generate_launch_description():
     robot_description_content = Command([
         'xacro ', 
         PathJoinSubstitution([
-            FindPackageShare('leremix_description'),
+            FindPackageShare('leremix_control'),
             'urdf',
-            'LeRemix.xacro'
+            'LeRemix.hardware.xacro'
         ])
     ])
 
