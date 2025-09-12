@@ -3,6 +3,7 @@ project(leremix_control)
 find_package(ament_cmake REQUIRED)
 
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY urdf DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME} OPTIONAL)
 install(PROGRAMS
   test_motion.py
