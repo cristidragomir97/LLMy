@@ -4,6 +4,7 @@
 #include "motor_controller.h"
 #include "base_subscriber.h"
 #include "arm_subscriber.h"
+#include "head_subscriber.h"
 #include "joint_publisher.h"
 
 // System state
@@ -57,6 +58,14 @@ void setup() {
   setArmDisplayPtr(nullptr);
   if (!initArmSubscriber(&node, &executor, nullptr)) {
     Serial1.println("Arm subscriber failed!");
+    while(1) delay(1000);
+  }
+
+  // Set up head subscriber  
+  setHeadServosEnabledPtr(&servos_enabled);
+  setHeadDisplayPtr(nullptr);
+  if (!initHeadSubscriber(&node, &executor, nullptr)) {
+    Serial1.println("Head subscriber failed!");
     while(1) delay(1000);
   }
 

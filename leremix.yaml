@@ -1,0 +1,37 @@
+ros_distro: humble
+ros_domain_id: 0
+registry: docker.io/dragomirxyz
+image_prefix: leremix
+
+hosts:
+  - name: orin
+    ip: odin.local
+    user: user
+    arch: arm64
+
+
+components:
+  - name: leremix_camera
+
+  - name: leremix_teleop_xbox
+
+  - name: leremix_imu
+
+  - name: leremix_control
+    folder: ros/src/leremix_control
+    runs_on: orin
+    apt_packages: []
+    repositories:
+      - url: https://github.com/mateusmenezes95/omnidirectional_controllers
+        version: humble
+        folder: omnidirectional_controllers
+      - url: https://github.com/micro-ROS/micro_ros_setup
+        version: humble
+        folder: micro_ros_agent
+    postinstall:
+      - "ros2 run micro_ros_setup create_agent_ws.sh"
+      - "ros2 run micro_ros_setup build_agent.sh"
+    entrypoint: ros2 run micro_ros_agent micro_ros_agent serial
+    launch_args: "--dev /dev/ttyUSB0 -v6"
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"

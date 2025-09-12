@@ -38,16 +38,18 @@ private:
   // Parameters
   std::string base_cmd_topic_{"/esp32/base_cmd"};
   std::string arm_cmd_topic_{"/esp32/arm_cmd"};
+  std::string head_cmd_topic_{"/esp32/head_cmd"};
   std::string state_topic_{"/esp32/joint_states"};
   bool publish_if_unchanged_{true};
 
   // Joint sets derived from interfaces:
   std::vector<std::string> base_joints_; // velocity command
   std::vector<std::string> arm_joints_;  // position command
+  std::vector<std::string> head_joints_; // position command
 
   // Buffers
   std::unordered_map<std::string, double> cmd_vel_;   // for base joints (rad/s)
-  std::unordered_map<std::string, double> cmd_pos_;   // for arm joints (rad)
+  std::unordered_map<std::string, double> cmd_pos_;   // for arm+head joints (rad)
 
   std::unordered_map<std::string, double> pos_state_; // all joints (rad)
   std::unordered_map<std::string, double> vel_state_; // base joints (rad/s), arm optional
@@ -56,6 +58,7 @@ private:
   std::shared_ptr<rclcpp::Node> node_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr base_pub_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr arm_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr head_pub_;
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr state_sub_;
   rclcpp::executors::SingleThreadedExecutor exec_;
   std::mutex state_mtx_;

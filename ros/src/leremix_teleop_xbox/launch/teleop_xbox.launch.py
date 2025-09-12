@@ -19,9 +19,9 @@ def generate_launch_description():
              parameters=[{
                  'cmd_vel_topic': '/omnidirectional_controller/cmd_vel_unstamped',
                  'arm_cmd_topic': '/arm_controller/commands',
-                 'arm_joints': ['1','2','3','4','5','6','camera_tilt'],
-                 'joint_select_buttons': [0,1,2,3,4,5,7],
-                 'arm_axis': 4,
+                 'head_cmd_topic': '/head_controller/commands',
+                 'arm_increment': 0.0175,  # 1.0 degree
+                 'arm_rate': 10.0,
              }],
              output='screen'),
     ])

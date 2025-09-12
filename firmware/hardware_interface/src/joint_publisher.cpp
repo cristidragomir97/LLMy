@@ -22,8 +22,8 @@ bool initJointPublisher(rcl_node_t* node, void* display) {
       &joint_state_msg,
       (micro_ros_utilities_memory_conf_t) {
         .max_string_capacity = 20,  // For joint names
-        .max_ros2_type_sequence_capacity = BASE_SERVO_COUNT + ARM_SERVO_COUNT,
-        .max_basic_type_sequence_capacity = BASE_SERVO_COUNT + ARM_SERVO_COUNT
+        .max_ros2_type_sequence_capacity = BASE_SERVO_COUNT + ARM_SERVO_COUNT + HEAD_SERVO_COUNT,
+        .max_basic_type_sequence_capacity = BASE_SERVO_COUNT + ARM_SERVO_COUNT + HEAD_SERVO_COUNT
       });
 
     // Initialize joint names for joint state message
@@ -36,8 +36,9 @@ bool initJointPublisher(rcl_node_t* node, void* display) {
     joint_state_msg.name.data[6] = micro_ros_string_utilities_set(joint_state_msg.name.data[6], "4");
     joint_state_msg.name.data[7] = micro_ros_string_utilities_set(joint_state_msg.name.data[7], "5");
     joint_state_msg.name.data[8] = micro_ros_string_utilities_set(joint_state_msg.name.data[8], "6");
-    joint_state_msg.name.data[9] = micro_ros_string_utilities_set(joint_state_msg.name.data[9], "camera_tilt");
-    joint_state_msg.name.size = BASE_SERVO_COUNT + ARM_SERVO_COUNT;
+    joint_state_msg.name.data[9] = micro_ros_string_utilities_set(joint_state_msg.name.data[9], "camera_pan");
+    joint_state_msg.name.data[10] = micro_ros_string_utilities_set(joint_state_msg.name.data[10], "camera_tilt");
+    joint_state_msg.name.size = BASE_SERVO_COUNT + ARM_SERVO_COUNT + HEAD_SERVO_COUNT;
 
     // Initialize Joint State Publisher with best effort QoS for ros2_control compatibility
     rcl_ret_t rc = rclc_publisher_init_best_effort(
@@ -63,8 +64,8 @@ bool shouldPublishJointStates() {
 
 void publishJointStates() {
     // Read current positions from all servos
-    joint_state_msg.position.size = BASE_SERVO_COUNT + ARM_SERVO_COUNT;
-    joint_state_msg.velocity.size = BASE_SERVO_COUNT + ARM_SERVO_COUNT;
+    joint_state_msg.position.size = BASE_SERVO_COUNT + ARM_SERVO_COUNT + HEAD_SERVO_COUNT;
+    joint_state_msg.velocity.size = BASE_SERVO_COUNT + ARM_SERVO_COUNT + HEAD_SERVO_COUNT;
     joint_state_msg.effort.size = 0;  // Not using effort feedback
     
     // Update timestamp
@@ -107,6 +108,25 @@ void publishJointStates() {
             joint_state_msg.velocity.data[BASE_SERVO_COUNT + i] = (speed * 2.0 * PI) / (4096.0 * 60.0);  // Assuming speed in RPM
         } else {
             joint_state_msg.velocity.data[BASE_SERVO_COUNT + i] = 0.0;
+        }
+    }
+    
+    // Read head servo positions (convert to radians using calibration)
+    for (int i = 0; i < HEAD_SERVO_COUNT; i++) {
+        int16_t pos = head_servos.getCurrentPosition(HEAD_SERVO_IDS[i]);
+        if (pos != -1) {
+            // Use calibrated conversion function
+            joint_state_msg.position.data[BASE_SERVO_COUNT + ARM_SERVO_COUNT + i] = servoPositionToRadians(HEAD_SERVO_IDS[i], pos);
+        } else {
+            joint_state_msg.position.data[BASE_SERVO_COUNT + ARM_SERVO_COUNT + i] = 0.0;  // Default if read fails
+        }
+        
+        int16_t speed = head_servos.getCurrentSpeed(HEAD_SERVO_IDS[i]);
+        if (speed != -1) {
+            // Convert servo speed to rad/s  
+            joint_state_msg.velocity.data[BASE_SERVO_COUNT + ARM_SERVO_COUNT + i] = (speed * 2.0 * PI) / (4096.0 * 60.0);  // Assuming speed in RPM
+        } else {
+            joint_state_msg.velocity.data[BASE_SERVO_COUNT + ARM_SERVO_COUNT + i] = 0.0;
         }
     }
     

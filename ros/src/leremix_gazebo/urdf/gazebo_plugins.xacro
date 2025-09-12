@@ -9,7 +9,7 @@
     </gazebo>
 
    
-    <gazebo reference="head_camera_1">
+    <gazebo reference="head_camera_frame">
         <sensor type="camera" name="rgb_camera">
             <update_rate>30</update_rate>
             <camera name="head_rgb">
@@ -26,36 +26,13 @@
             </camera>
 
             <plugin name="gazebo_ros_camera" filename="libgazebo_ros_camera.so">
-                <namespace>/sensors/cam</namespace>
-                <frame_name>camera_1</frame_name>
+                <namespace>head_camera/rgb</namespace>
+                <frame_name>head_camera_frame</frame_name>
             </plugin>
         </sensor>
     </gazebo>
 
-        <gazebo reference="wrist_camera_v1_1">
-        <sensor type="camera" name="rgb_camera">
-            <update_rate>30</update_rate>
-            <camera name="head_rgb">
-            <horizontal_fov>1.0472</horizontal_fov> <!-- ~60 deg -->
-            <image>
-                <width>640</width>
-                <height>480</height>
-                <format>R8G8B8</format>
-            </image>
-            <clip>
-                <near>0.05</near>
-                <far>20.0</far>
-            </clip>
-            </camera>
-
-            <plugin name="gazebo_ros_camera" filename="libgazebo_ros_camera.so">
-                <namespace>/sensors/wrist_camera</namespace>
-                <frame_name>wrist_camera</frame_name>
-            </plugin>
-        </sensor>
-    </gazebo>
-
-    <gazebo reference="head_camera_1">
+    <gazebo reference="head_camera_frame">
         <sensor type="depth" name="rgbd_camera">
             <update_rate>30</update_rate>
 
@@ -73,11 +50,36 @@
             </camera>
 
             <plugin name="gazebo_ros_depth_camera" filename="libgazebo_ros_camera.so">
-                <namespace>/sensors/rgbd</namespace>
-                <frame_name>camera_1</frame_name>
+                <namespace>/head_camera/depth</namespace>
+                <frame_name>head_camera_frame</frame_name>
             </plugin>
         </sensor>
     </gazebo>
+
+        <gazebo reference="wrist_camera_frame">
+        <sensor type="camera" name="rgb_camera">
+            <update_rate>30</update_rate>
+            <camera name="head_rgb">
+            <horizontal_fov>1.0472</horizontal_fov> <!-- ~60 deg -->
+            <image>
+                <width>640</width>
+                <height>480</height>
+                <format>R8G8B8</format>
+            </image>
+            <clip>
+                <near>0.05</near>
+                <far>20.0</far>
+            </clip>
+            </camera>
+
+            <plugin name="gazebo_ros_camera" filename="libgazebo_ros_camera.so">
+                <namespace>/wrist_camera_frame/rgb</namespace>
+                <frame_name>wrist_camera_frame</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+
 
     <gazebo reference="imu_1">
         <sensor type="imu" name="imu">
@@ -110,7 +112,7 @@
         </sensor>
     </gazebo>
 
-    <gazebo reference="lidar_1">
+    <gazebo reference="lidar_frame">
         <sensor name="lidar" type="ray">
             <always_on>true</always_on>
             <visualize>true</visualize>
@@ -118,10 +120,8 @@
             <ray>
             <scan>
                 <horizontal>
-                <samples>640</samples>
+                <samples>128</samples>
                 <resolution>1.000000</resolution>
-                <min_angle>-0.7955</min_angle>   <!-- -91.2/2 degrees -->
-                <max_angle>0.7955</max_angle>    <!-- +91.2/2 degrees -->
                 </horizontal>
             </scan>
             <range>
@@ -140,7 +140,7 @@
                 <remapping>~/out:=scan</remapping>
             </ros>
             <output_type>sensor_msgs/LaserScan</output_type>
-            <frame_name>lidar_link</frame_name>
+            <frame_name>lidar_frame</frame_name>
             </plugin>
         </sensor>
     </gazebo>

@@ -42,9 +42,9 @@ head_controller:
 omnidirectional_controller:
   ros__parameters:
     wheel_names: 
+     - wheel3_rotation
      - wheel1_rotation
      - wheel2_rotation
-     - wheel3_rotation
 
 
 

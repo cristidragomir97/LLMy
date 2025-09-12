@@ -12,6 +12,7 @@
 // Topic names matching leremix_control_plugin
 #define BASE_CMD_TOPIC   "/esp32/base_cmd"
 #define ARM_CMD_TOPIC    "/esp32/arm_cmd"
+#define HEAD_CMD_TOPIC   "/esp32/head_cmd"
 #define JOINT_STATE_TOPIC "/esp32/joint_states"
 
 // Global micro-ROS objects

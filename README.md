@@ -43,19 +43,33 @@ Get the robot running in Gazebo simulation in just a few commands:
 
 ```bash
 # Clone and build the workspace
-git clone <repository-url> leremix_ws
+git clone github.com/cristidragomir97/leremix leremix_ws
 cd leremix_ws/ros
 colcon build
 source install/setup.bash
 
 # Launch Gazebo simulation with controllers
 ros2 launch leremix_gazebo sim.launch.py
-
-# In a new terminal - start Xbox controller teleoperation
-ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
 ```
 
-The robot will spawn in Gazebo with all controllers active. Use an Xbox controller to drive the base (face buttons) and control the arm (analog sticks + triggers).
+The robot will spawn in Gazebo with all controllers active. 
+
+In a new terminal - start Xbox controller teleoperation
+
+```bash
+ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
+```
+**🎮 Xbox Controller Mapping:**
+- **🏎️ Base Movement:** Right stick (forward/back + strafe left/right)
+- **🦾 Arm Control:**
+  - **Joint 1 & 2:** Left stick (X/Y axes)
+  - **Joint 3:** Y button (+) / A button (-)
+  - **Joint 4:** B button (+) / X button (-)
+  - **Joint 5:** RB button (+) / LB button (-)
+  - **Joint 6:** RT trigger (+) / LT trigger (-)
+- **📷 Camera Control:**
+  - **Pan:** D-pad left/right
+  - **Tilt:** START button (+) / BACK button (-)
 
 ### 🔧 Real Hardware Setup
 

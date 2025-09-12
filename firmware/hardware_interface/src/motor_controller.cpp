@@ -9,12 +9,14 @@ const float VEL_TO_SERVO_UNIT = 4096;   // Conversion factor from rad/s to servo
 const float COUNTS_PER_REV    = 4096;   // Encoder counts per revolution
 
 // Servo ID configuration
-const uint8_t BASE_SERVO_IDS[BASE_SERVO_COUNT] = {2, 3, 1};              // back, left, right motors
-const uint8_t ARM_SERVO_IDS[ARM_SERVO_COUNT]   = {4, 5, 6, 7, 8, 9, 11}; // joints 1-6 + camera_tilt
+const uint8_t BASE_SERVO_IDS[BASE_SERVO_COUNT] = {2, 3, 1};        // back, left, right motors
+const uint8_t ARM_SERVO_IDS[ARM_SERVO_COUNT]   = {4, 5, 6, 7, 8, 9}; // joints 1-6 only
+const uint8_t HEAD_SERVO_IDS[HEAD_SERVO_COUNT] = {10, 11};         // camera pan, camera tilt
 
 // Global servo objects
 STSServoDriver base_servos;
 STSServoDriver arm_servos;
+STSServoDriver head_servos;
 
 // Track current modes to avoid unnecessary mode switches
 static STSMode base_servo_modes[BASE_SERVO_COUNT] = {
@@ -28,8 +30,9 @@ bool initServos(uint8_t rx_pin, uint8_t tx_pin) {
 
     bool base_init = base_servos.init(&Serial2);
     bool arm_init  = arm_servos.init(&Serial2);
+    bool head_init = head_servos.init(&Serial2);
 
-    return base_init && arm_init;
+    return base_init && arm_init && head_init;
 }
 
 bool checkServos(void* display) {
@@ -77,6 +80,28 @@ bool checkServos(void* display) {
         }
     }
 
+    Serial1.println("Checking head servos...");
+    delay(50);
+
+    // Check head servos (position control)
+    for (int i = 0; i < HEAD_SERVO_COUNT; i++) {
+        uint8_t servo_id = HEAD_SERVO_IDS[i];
+        bool pingStatus  = head_servos.ping(servo_id);
+
+        if (!pingStatus) {
+            Serial.printf("Head servo %d FAIL!\n", servo_id);
+            delay(100);
+        } else {
+            head_servos.setMode(servo_id, STSMode::POSITION);  // Set to position mode
+            delay(50);                                        // Delay after mode change
+            head_servos.setTargetAcceleration(servo_id, 30);   // Set moderate acceleration for head
+            delay(20);
+            head_servos.writeRegister(servo_id, STSRegisters::TORQUE_SWITCH, 1);
+            Serial.printf("Head servo %d OK (accel=30)\n", servo_id);
+            delay(50);
+        }
+    }
+
     Serial1.println("All servos OK!");
     delay(100);
     return true;
@@ -91,11 +116,21 @@ void moveToRelaxedPositions(void* display) {
         arm_servos.setTargetPosition(cal.servo_id, cal.relaxed_position);
         delay(50); // Small delay between commands
 
-        Serial.printf("Servo %d -> %d\n", cal.servo_id, cal.relaxed_position);
+        Serial.printf("Arm servo %d -> %d\n", cal.servo_id, cal.relaxed_position);
         delay(100);
     }
 
-    Serial1.println("Relaxed position set!");
+    // Move head servos to their calibrated relaxed positions
+    for (int i = 0; i < HEAD_CALIBRATION_COUNT; i++) {
+        const ServoCalibration& cal = HEAD_CALIBRATION[i];
+        head_servos.setTargetPosition(cal.servo_id, cal.relaxed_position);
+        delay(50); // Small delay between commands
+
+        Serial.printf("Head servo %d -> %d\n", cal.servo_id, cal.relaxed_position);
+        delay(100);
+    }
+
+    Serial1.println("All relaxed positions set!");
     delay(500);
 }
 
@@ -205,6 +240,89 @@ void controlMultipleArmServos(float radians_array[ARM_SERVO_COUNT], bool servos_
     Serial1.println("SERVO_CONTROL_DISABLED - skipping multiple command");
 #endif
 #endif
+}
+
+void controlHeadServo(uint8_t servo_index, float radians, bool servos_enabled) {
+    if (servo_index >= HEAD_SERVO_COUNT) return;
+
+    uint8_t servo_id = HEAD_SERVO_IDS[servo_index];
+    DEBUG_MOTOR_COMMAND("HEAD", servo_id, radians);
+
+#if ENABLE_DEBUG_PRINTS
+    Serial.printf("Head servo %d (ID=%d): %.4f rad", servo_index, servo_id, radians);
+#endif
+
+#if ENABLE_SERVO_CONTROL
+    if (servos_enabled) {
+        int16_t position = radiansToServoPosition(servo_id, radians);
+        
+#if ENABLE_DEBUG_PRINTS
+        Serial.printf(" -> position %d\n", position);
+#endif
+        
+        head_servos.setMode(servo_id, STSMode::POSITION);
+        delay(1);  // Brief delay after mode change
+        head_servos.setTargetPosition(servo_id, position);
+    } else {
+#if ENABLE_DEBUG_PRINTS
+        Serial1.println(" (SERVOS DISABLED)");
+#endif
+    }
+#else
+#if ENABLE_DEBUG_PRINTS
+    Serial1.println(" (SERVO_CONTROL_DISABLED)");
+#endif
+#endif
+}
+
+void controlMultipleHeadServos(float radians_array[HEAD_SERVO_COUNT], bool servos_enabled) {
+#if ENABLE_DEBUG_PRINTS
+    Serial1.println("=== MULTIPLE HEAD SERVO COMMAND ===");
+#endif
+
+#if ENABLE_SERVO_CONTROL
+    if (servos_enabled) {
+        // Convert all radians to servo positions first
+        int16_t positions[HEAD_SERVO_COUNT];
+
+        for (int i = 0; i < HEAD_SERVO_COUNT; i++) {
+            uint8_t servo_id = HEAD_SERVO_IDS[i];
+            positions[i] = radiansToServoPosition(servo_id, radians_array[i]);
+            
+#if ENABLE_DEBUG_PRINTS
+            Serial.printf("Head servo %d (ID=%d): %.4f rad -> %d counts\n", i, servo_id, radians_array[i], positions[i]);
+#endif
+        }
+
+        // Execute batch position commands
+        for (int i = 0; i < HEAD_SERVO_COUNT; i++) {
+            uint8_t servo_id = HEAD_SERVO_IDS[i];
+            head_servos.setMode(servo_id, STSMode::POSITION);
+            delay(1);  // Brief delay after mode change
+            head_servos.setTargetPosition(servo_id, positions[i]);
+            delay(1);  // Brief delay between commands
+        }
+
+#if ENABLE_DEBUG_PRINTS
+        Serial1.println("HEAD: Multiple servo commands sent");
+#endif
+    } else {
+#if ENABLE_DEBUG_PRINTS
+        Serial1.println("HEAD: SERVOS DISABLED - skipping multiple command");
+#endif
+    }
+#else
+#if ENABLE_DEBUG_PRINTS
+    Serial1.println("SERVO_CONTROL_DISABLED - skipping head multiple command");
+#endif
+#endif
+}
+
+void emergencyStopHead(void* display) {
+    for (int i = 0; i < HEAD_SERVO_COUNT; i++) {
+        head_servos.writeRegister(HEAD_SERVO_IDS[i], STSRegisters::TORQUE_SWITCH, 0);  // Disable torque
+    }
+    Serial1.println("Head emergency stop activated!");
 }
 
 void emergencyStopBase(void* display) {

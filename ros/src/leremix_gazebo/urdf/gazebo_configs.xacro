@@ -4,353 +4,388 @@
 <physics type="ode" default="true">
   <max_step_size>0.001</max_step_size>
   <real_time_update_rate>1000</real_time_update_rate>
-  <ode>
-    <solver><type>quick</type><iters>80</iters><sor>1.2</sor></solver>
-    <constraints>
-      <cfm>1e-5</cfm><erp>0.2</erp>
-      <contact_max_correcting_vel>30.0</contact_max_correcting_vel>
-      <contact_surface_layer>0.002</contact_surface_layer>
-    </constraints>
+   <ode>
+    <solver type="quick" iters="150" sor="1.3"/>
+    <constraints cfm="0.0" erp="0.2"
+      contact_max_correcting_vel="0.5"
+      contact_surface_layer="0.001"/>
   </ode>
 </physics>
 
+<physics type="ode">
+  <max_step_size>0.001</max_step_size>
+  <real_time_update_rate>1000</real_time_update_rate>
+  <ode>
+    <solver type="quick" iters="150" sor="1.3"/>
+    <constraints cfm="0.0" erp="0.2"
+      contact_max_correcting_vel="0.5"
+      contact_surface_layer="0.001"/>
+  </ode>
+</physics>
 
 <gazebo reference="base_link">
-
+  <material>Gazebo/FlatBlack</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
+  <gravity>true</gravity>
+</gazebo>
+
+<gazebo reference="robot_base">
+  <material>Gazebo/FlatBlack</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
   <gravity>true</gravity>
 </gazebo>
 
 <gazebo reference="arm_base_rotation_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_base_rotation_link_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_base_rotation_link_cover_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_shoulder_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_shoulder_link_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_elbow_servo_1">
 
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_elbow_link_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_wrist_tilt_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_wrist_link_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_wrist_roll_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_gripper_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_gripper_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_jaw_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="right_servo_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="right_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 
 <gazebo reference="back_servo_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="left_servo_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="back_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="back_wheel_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="back_wheel_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="left_servo_1">
-
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="left_wheel_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="orin_1">
-
+  <material>Gazebo/Grey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="orin_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="battery_stopper_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="usb_pd_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="arm_base_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="imu_1">
-
+  <material>Gazebo/Blue</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="imu_mount_1">
-
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="hex_1__1__1">
-
+  <material>Gazebo/DarkYellow</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="just_the_tower_v1_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="support_v1_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="head_camera_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="hex_1_1">
 
+  <material>Gazebo/DarkYellow</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="hex_2_1">
 
+  <material>Gazebo/DarkYellow</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="hex_1__1___1__1">
 
+  <material>Gazebo/DarkYellow</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="last_floor_v1_1">
 
+  <material>Gazebo/FlatBlack</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="front_cam_support_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="front_camera_1">
 
+  <material>Gazebo/Blue</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="hex_3_1">
 
+  <material>Gazebo/DarkYellow</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="hex_4_1">
 
+  <material>Gazebo/DarkYellow</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="upper_floor_1">
 
+  <material>Gazebo/FlatBlack</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="pan_link_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="tilt_servo_1">
 
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="tilt_link_cover_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="realsense_support_v1_1">
 
+  <material>Gazebo/DarkGrey</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 <gazebo reference="pan_servo__1__1">
 
+  <material>Gazebo/White</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
+  <self_collide>false</self_collide>
 </gazebo>
 
 
@@ -383,6 +418,26 @@
   <slip2>0.01</slip2>
   <kp>1.8e6</kp>
   <kd>3.5</kd>
+</gazebo>
+
+<gazebo reference="lidar_1">
+  <material>Gazebo/Blue</material>
+</gazebo>
+
+<gazebo reference="head_camera_1">
+  <material>Gazebo/Blue</material>
+</gazebo>
+
+<gazebo reference="wrist_camera_v1_1">
+  <material>Gazebo/Blue</material>
+</gazebo>
+
+<gazebo reference="wrist_camera_mod_v1_1">
+  <material>Gazebo/DarkGrey</material>
+</gazebo>
+
+<gazebo reference="suport_lidar_v1_1">
+  <material>Gazebo/DarkGrey</material>
 </gazebo>
 
 </robot>

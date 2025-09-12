@@ -20,12 +20,14 @@ CallbackReturn Esp32SystemTopic::on_init(const hardware_interface::HardwareInfo 
   if (it != info_.hardware_parameters.end()) base_cmd_topic_ = it->second;
   it = info_.hardware_parameters.find("arm_cmd_topic");
   if (it != info_.hardware_parameters.end()) arm_cmd_topic_ = it->second;
+  it = info_.hardware_parameters.find("head_cmd_topic");
+  if (it != info_.hardware_parameters.end()) head_cmd_topic_ = it->second;
   it = info_.hardware_parameters.find("state_topic");
   if (it != info_.hardware_parameters.end()) state_topic_ = it->second;
   it = info_.hardware_parameters.find("publish_if_unchanged");
   if (it != info_.hardware_parameters.end()) publish_if_unchanged_ = (it->second == "true" || it->second == "1");
 
-  // Split joints into base (velocity cmd) and arm (position cmd)
+  // Split joints into base (velocity cmd), arm (position cmd), and head (position cmd)
   for (const auto & j : info_.joints) {
     bool has_vel_cmd = false, has_pos_cmd = false;
     for (const auto & ci : j.command_interfaces) {
@@ -39,10 +41,15 @@ CallbackReturn Esp32SystemTopic::on_init(const hardware_interface::HardwareInfo 
       vel_state_[j.name] = 0.0;
     }
     if (has_pos_cmd) {
-      arm_joints_.push_back(j.name);
+      // Classify position joints as arm or head based on joint name
+      if (j.name.find("camera") != std::string::npos || j.name.find("head") != std::string::npos) {
+        head_joints_.push_back(j.name);
+      } else {
+        arm_joints_.push_back(j.name);
+      }
       cmd_pos_[j.name] = 0.0;
       pos_state_[j.name] = 0.0;
-      // vel_state_ optional for arm; leave default 0
+      // vel_state_ optional for position joints; leave default 0
     }
   }
 
@@ -61,6 +68,10 @@ std::vector<hardware_interface::StateInterface> Esp32SystemTopic::export_state_i
   for (const auto & name : arm_joints_) {
     state_interfaces.emplace_back(name, HW_IF_POSITION, &pos_state_[name]);
   }
+  // Head joints: position
+  for (const auto & name : head_joints_) {
+    state_interfaces.emplace_back(name, HW_IF_POSITION, &pos_state_[name]);
+  }
   return state_interfaces;
 }
 
@@ -71,6 +82,9 @@ std::vector<hardware_interface::CommandInterface> Esp32SystemTopic::export_comma
     command_interfaces.emplace_back(name, HW_IF_VELOCITY, &cmd_vel_[name]);
   }
   for (const auto & name : arm_joints_) {
+    command_interfaces.emplace_back(name, HW_IF_POSITION, &cmd_pos_[name]);
+  }
+  for (const auto & name : head_joints_) {
     command_interfaces.emplace_back(name, HW_IF_POSITION, &cmd_pos_[name]);
   }
   return command_interfaces;
@@ -86,6 +100,8 @@ CallbackReturn Esp32SystemTopic::on_configure(const rclcpp_lifecycle::State &)
     base_cmd_topic_, rclcpp::QoS(rclcpp::KeepLast(1)).reliable());
   arm_pub_ = node_->create_publisher<std_msgs::msg::Float64MultiArray>(
     arm_cmd_topic_, rclcpp::QoS(rclcpp::KeepLast(1)).reliable());
+  head_pub_ = node_->create_publisher<std_msgs::msg::Float64MultiArray>(
+    head_cmd_topic_, rclcpp::QoS(rclcpp::KeepLast(1)).reliable());
 
   // Subscriber (best-effort for micro-ROS compatibility)
   auto qos = rclcpp::QoS(rclcpp::KeepLast(5)).reliable();
@@ -95,8 +111,8 @@ CallbackReturn Esp32SystemTopic::on_configure(const rclcpp_lifecycle::State &)
 
   exec_.add_node(node_);
 
-  RCLCPP_INFO(node_->get_logger(), "Configured Esp32SystemTopic. base_cmd_topic=%s arm_cmd_topic=%s state_topic=%s",
-              base_cmd_topic_.c_str(), arm_cmd_topic_.c_str(), state_topic_.c_str());
+  RCLCPP_INFO(node_->get_logger(), "Configured Esp32SystemTopic. base_cmd_topic=%s arm_cmd_topic=%s head_cmd_topic=%s state_topic=%s",
+              base_cmd_topic_.c_str(), arm_cmd_topic_.c_str(), head_cmd_topic_.c_str(), state_topic_.c_str());
 
   return CallbackReturn::SUCCESS;
 }
@@ -114,6 +130,7 @@ CallbackReturn Esp32SystemTopic::on_deactivate(const rclcpp_lifecycle::State &)
   state_sub_.reset();
   base_pub_.reset();
   arm_pub_.reset();
+  head_pub_.reset();
   node_.reset();
   return CallbackReturn::SUCCESS;
 }
@@ -162,6 +179,16 @@ return_type Esp32SystemTopic::write(const rclcpp::Time &, const rclcpp::Duration
       msg.data.push_back(cmd_pos_[j]);
     }
     arm_pub_->publish(msg);
+  }
+
+  // Publish head positions in the order of head_joints_
+  {
+    std_msgs::msg::Float64MultiArray msg;
+    msg.data.reserve(head_joints_.size());
+    for (const auto & j : head_joints_) {
+      msg.data.push_back(cmd_pos_[j]);
+    }
+    head_pub_->publish(msg);
   }
 
   return return_type::OK;
