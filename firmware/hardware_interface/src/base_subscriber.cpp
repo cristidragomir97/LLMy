@@ -97,13 +97,15 @@ void base_cmd_callback(const void *msgin) {
                           msg->data.data[0], msg->data.data[1], msg->data.data[2]);
             #endif
             
-            // Store new values and send commands
+            // Store new values and send batch command
+            float rad_per_sec_array[BASE_SERVO_COUNT];
             for (int i = 0; i < BASE_SERVO_COUNT; i++) {
-                float rad_per_sec = msg->data.data[i];
-                last_base_values[i] = rad_per_sec;
-                bool enabled = servos_enabled_ptr ? *servos_enabled_ptr : false;
-                controlBaseServo(i, rad_per_sec, enabled);
+                rad_per_sec_array[i] = msg->data.data[i];
+                last_base_values[i] = rad_per_sec_array[i];
             }
+            
+            bool enabled = servos_enabled_ptr ? *servos_enabled_ptr : false;
+            controlMultipleBaseServos(rad_per_sec_array, enabled);
             
             first_base_message = false;
         }

@@ -21,9 +21,9 @@
       <initial_joint_position name="camera_tilt">0.0</initial_joint_position> <!-- Camera: servo 11, relaxed (2048 counts = center) -->
       
       <!-- Motor initial positions (for reference) -->
-      <initial_joint_position name="back_motor_rotation">0.0</initial_joint_position>
-      <initial_joint_position name="left_motor_rotation">0.0</initial_joint_position>
-      <initial_joint_position name="right_motor_rotation">0.0</initial_joint_position>
+      <initial_joint_position name="wheel1_rotation">0.0</initial_joint_position>
+      <initial_joint_position name="wheel2_rotation">0.0</initial_joint_position>
+      <initial_joint_position name="wheel3_rotation">0.0</initial_joint_position>
     </plugin>
   </gazebo>
 

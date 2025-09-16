@@ -17,10 +17,11 @@ extern const uint8_t BASE_SERVO_IDS[BASE_SERVO_COUNT];
 extern const uint8_t ARM_SERVO_IDS[ARM_SERVO_COUNT];
 extern const uint8_t HEAD_SERVO_IDS[HEAD_SERVO_COUNT];
 
-// Global servo objects
-extern STSServoDriver base_servos;
-extern STSServoDriver arm_servos;
-extern STSServoDriver head_servos;
+// Motor direction multipliers for holonomic drive
+extern const float BASE_SERVO_DIRECTIONS[BASE_SERVO_COUNT];
+
+// Global servo object - single instance for all servos
+extern STSServoDriver servo_driver;
 
 // Initialize servo communication
 bool initServos(uint8_t rx_pin, uint8_t tx_pin);
@@ -33,6 +34,7 @@ void moveToRelaxedPositions(void* display);
 
 // Control functions
 void controlBaseServo(uint8_t servo_index, float rad_per_sec, bool servos_enabled);
+void controlMultipleBaseServos(float rad_per_sec_array[BASE_SERVO_COUNT], bool servos_enabled);  // Batch base servo control
 void controlArmServo(uint8_t servo_index, float radians, bool servos_enabled);
 void controlMultipleArmServos(float radians_array[ARM_SERVO_COUNT], bool servos_enabled);  // Batch arm servo control
 void controlHeadServo(uint8_t servo_index, float radians, bool servos_enabled);

@@ -25,6 +25,18 @@ def generate_launch_description():
         description='Enable Xbox controller (leremix_teleop_xbox)'
     )
     
+    use_base_systems_arg = DeclareLaunchArgument(
+        'use_base_systems',
+        default_value='true',
+        description='Enable base systems (micro-ROS agent)'
+    )
+    
+    use_control_stack_arg = DeclareLaunchArgument(
+        'use_control_stack',
+        default_value='true',
+        description='Enable control stack (controllers, robot state publisher)'
+    )
+    
     microros_transport_arg = DeclareLaunchArgument(
         'microros_transport',
         default_value='serial',
@@ -47,22 +59,35 @@ def generate_launch_description():
     use_camera = LaunchConfiguration('use_camera')
     use_imu = LaunchConfiguration('use_imu')
     use_xbox = LaunchConfiguration('use_xbox')
+    use_base_systems = LaunchConfiguration('use_base_systems')
+    use_control_stack = LaunchConfiguration('use_control_stack')
     microros_transport = LaunchConfiguration('microros_transport')
     microros_device = LaunchConfiguration('microros_device')
     microros_baudrate = LaunchConfiguration('microros_baudrate')
 
-    # Include robot core components (robot_state_publisher, controller_manager, spawners, microros_agent)
-    robot_bringup = IncludeLaunchDescription(
+    # Include base systems (micro-ROS agent)
+    base_systems_launch = IncludeLaunchDescription(
         PathJoinSubstitution([
             FindPackageShare('leremix_control'),
             'launch',
-            'robot_bringup.launch.py'
+            'base_systems.launch.py'
         ]),
         launch_arguments={
             'microros_transport': microros_transport,
             'microros_device': microros_device,
             'microros_baudrate': microros_baudrate
-        }.items()
+        }.items(),
+        condition=IfCondition(use_base_systems)
+    )
+
+    # Include control stack (robot_state_publisher, controller_manager, spawners)
+    control_stack_launch = IncludeLaunchDescription(
+        PathJoinSubstitution([
+            FindPackageShare('leremix_control'),
+            'launch',
+            'control_stack.launch.py'
+        ]),
+        condition=IfCondition(use_control_stack)
     )
     
     # Include leremix_camera launch file
@@ -96,6 +121,35 @@ def generate_launch_description():
     )
 
 
+    # cmd_vel mux node for command velocity multiplexing
+    cmd_vel_mux = Node(
+        package='twist_mux',
+        executable='twist_mux',
+        parameters=[{
+            'topics': {
+                'xbox': {
+                    'topic': 'cmd_vel_xbox',
+                    'timeout': 0.5,
+                    'priority': 10
+                },
+                'nav': {
+                    'topic': 'cmd_vel_nav',
+                    'timeout': 0.5,
+                    'priority': 5
+                },
+                'teleop': {
+                    'topic': 'cmd_vel_teleop',
+                    'timeout': 0.5,
+                    'priority': 15
+                }
+            }
+        }],
+        remappings=[
+            ('cmd_vel_out', '/omnidirectional_controller/cmd_vel_unstamped')
+        ],
+        output='screen'
+    )
+
     # rosboard node for web dashboard
     rosboard = Node(
         package='rosboard',
@@ -108,14 +162,18 @@ def generate_launch_description():
         use_camera_arg,
         use_imu_arg,
         use_xbox_arg,
+        use_base_systems_arg,
+        use_control_stack_arg,
         microros_transport_arg,
         microros_device_arg,
         microros_baudrate_arg,
         
         # Launch includes and nodes
-        robot_bringup,
+        base_systems_launch,
+        control_stack_launch,
         camera_launch,
         imu_launch,
         xbox_launch,
+        cmd_vel_mux,
         rosboard,
     ])

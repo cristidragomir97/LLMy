@@ -43,14 +43,14 @@ head_controller:
 omnidirectional_controller:
   ros__parameters:
     wheel_names: 
-     - wheel3_rotation
      - wheel1_rotation
      - wheel2_rotation
+     - wheel3_rotation
 
-    robot_radius: 0.105
+    robot_radius: 0.10537
     
     wheel_radius: 0.05
-    gamma: 60.0
+    gamma: 30.0
     publish_rate: 50.0
     odom_frame_id: odom
     base_frame_id: base_link

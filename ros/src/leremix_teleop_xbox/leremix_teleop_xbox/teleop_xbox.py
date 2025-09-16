@@ -11,15 +11,16 @@ class XboxTeleop(Node):
         super().__init__('leremix_teleop_xbox')
 
         # Topics / rates
-        self.declare_parameter('cmd_vel_topic', '/omnidirectional_controller/cmd_vel_unstamped')
+        self.declare_parameter('cmd_vel_topic', '/cmd_vel_xbox')
         self.declare_parameter('arm_cmd_topic', '/arm_controller/commands')
         self.declare_parameter('head_cmd_topic', '/head_controller/commands')
-        self.declare_parameter('linear_scale', 0.5)
-        self.declare_parameter('lateral_scale', 0.3)
-        self.declare_parameter('arm_increment', 0.0175)  # 1.0 degree
+        self.declare_parameter('linear_scale', 0.2)
+        self.declare_parameter('angular_scale', 0.5)
+        self.declare_parameter('arm_increment', 0.1745)  # 10.0 degrees
+        self.declare_parameter('arm_increment_fast', 0.1396)  # 8.0 degrees for joints 1-4
         self.declare_parameter('stick_deadband', 0.1)
         self.declare_parameter('trigger_threshold', 0.3)
-        self.declare_parameter('arm_rate', 50.0)
+        self.declare_parameter('arm_rate', 30.0)
         self.declare_parameter('base_rate', 50.0)
         self.declare_parameter('acceleration_limit', 2.0)
 
@@ -29,15 +30,6 @@ class XboxTeleop(Node):
         self.jidx_arm = {name: i for i, name in enumerate(self.arm_joints)}
         self.jidx_head = {name: i for i, name in enumerate(self.head_joints)}
         
-        # Joint limits (from gazebo joint_limits.xacro)
-        self.arm_limits = {
-            '1': (-1.57, 1.57),     # ±90° // 
-            '2': (-0.22, 3.14),     # shoulder
-            '3': (-2.84, 0.0),      # elbow
-            '4': (0.02, 3.32),      # wrist tilt
-            '5': (-1.04, 3.14),     # wrist rotation
-            '6': (0.0, 2.14)        # gripper
-        }
         self.head_limits = {
             'camera_pan': (-3.14, 3.14),    # full rotation
             'camera_tilt': (-1.57, 0.86)     # tilt limits
@@ -48,8 +40,9 @@ class XboxTeleop(Node):
         self.arm_cmd_topic = self.get_parameter('arm_cmd_topic').get_parameter_value().string_value
         self.head_cmd_topic = self.get_parameter('head_cmd_topic').get_parameter_value().string_value
         self.linear_scale  = float(self.get_parameter('linear_scale').value)
-        self.lateral_scale = float(self.get_parameter('lateral_scale').value)
+        self.angular_scale = float(self.get_parameter('angular_scale').value)
         self.arm_inc       = float(self.get_parameter('arm_increment').value)
+        self.arm_inc_fast  = float(self.get_parameter('arm_increment_fast').value)
         self.stick_deadband = float(self.get_parameter('stick_deadband').value)
         self.trigger_threshold = float(self.get_parameter('trigger_threshold').value)
         self.arm_rate      = float(self.get_parameter('arm_rate').value)
@@ -68,10 +61,10 @@ class XboxTeleop(Node):
         self.joystick_driver = JoystickDriver(self.trigger_threshold)
         
         # Smooth movement state
-        self.current_vel_x = 0.0
-        self.current_vel_y = 0.0
-        self.target_vel_x = 0.0
-        self.target_vel_y = 0.0
+        self.current_vel_angular = 0.0
+        self.current_vel_linear = 0.0
+        self.target_vel_angular = 0.0
+        self.target_vel_linear = 0.0
         self.dt = 1.0 / self.base_rate
 
         # Timer
@@ -86,11 +79,8 @@ class XboxTeleop(Node):
     def add_to_arm_joint(self, name, delta, src=""):
         if name in self.jidx_arm:
             i = self.jidx_arm[name]
-            # Apply joint limits
-            min_pos, max_pos = self.arm_limits[name]
-            new_pos = self.arm_targets[i] + delta
-            self.arm_targets[i] = max(min_pos, min(max_pos, new_pos))
-            self.get_logger().info(f"Arm joint {name} += {delta:.3f} from {src}, clamped={self.arm_targets[i]:.3f}")
+            self.arm_targets[i] += delta
+            self.get_logger().info(f"Arm joint {name} += {delta:.3f} from {src}, target={self.arm_targets[i]:.3f}")
     
     def add_to_head_joint(self, name, delta, src=""):
         if name in self.jidx_head:
@@ -106,52 +96,53 @@ class XboxTeleop(Node):
 
         # ----- Motion: right joystick -----
         right_stick = events.get('right_stick', {})
-        rs_x = right_stick.get('x', 0.0)  # Forward/backward
-        rs_y = right_stick.get('y', 0.0)  # Left/right strafe
+        rs_x = right_stick.get('x', 0.0)  # Left/right rotation
+        rs_y = right_stick.get('y', 0.0)  # Forward/backward
         
         # Apply deadband and scaling
         if abs(rs_x) > self.stick_deadband:
-            self.target_vel_x = rs_x * self.linear_scale
+            self.target_vel_angular = rs_x * self.angular_scale
         else:
-            self.target_vel_x = 0.0
+            self.target_vel_angular = 0.0
             
         if abs(rs_y) > self.stick_deadband:
-            self.target_vel_y = -rs_y * self.lateral_scale  # Invert Y for natural movement
+            self.target_vel_linear = rs_y * self.linear_scale
         else:
-            self.target_vel_y = 0.0
+            self.target_vel_linear = 0.0
 
         # ----- Arm joints: buttons and left stick -----
         inc = self.arm_inc
+        inc_fast = self.arm_inc_fast
 
         # Left Stick → joints 1 & 2
         left_stick = events.get('left_stick', {})
         ls_x = left_stick.get('x', 0.0)
         ls_y = left_stick.get('y', 0.0)
         if abs(ls_x) > self.stick_deadband:
-            self.add_to_arm_joint("1", ls_x * inc, "LS_x")
+            self.add_to_arm_joint("1", ls_x * inc_fast, "LS_x")
         if abs(ls_y) > self.stick_deadband:
-            self.add_to_arm_joint("2", ls_y * inc, "LS_y")
+            self.add_to_arm_joint("2", ls_y * inc_fast, "LS_y")
 
         # Face buttons → joints 3 & 4 (single press for small increment, long press for continuous)
         if events.get('y_press', False):
-            self.add_to_arm_joint("3", inc, "Y press")
+            self.add_to_arm_joint("3", inc_fast, "Y press")
         elif events.get('y_long_press_active', False):
-            self.add_to_arm_joint("3", inc, "Y long press")
+            self.add_to_arm_joint("3", inc_fast, "Y long press")
             
         if events.get('a_press', False):
-            self.add_to_arm_joint("3", -inc, "A press")
+            self.add_to_arm_joint("3", -inc_fast, "A press")
         elif events.get('a_long_press_active', False):
-            self.add_to_arm_joint("3", -inc, "A long press")
+            self.add_to_arm_joint("3", -inc_fast, "A long press")
             
         if events.get('x_press', False):
-            self.add_to_arm_joint("4", -inc, "X press")
+            self.add_to_arm_joint("4", -inc_fast, "X press")
         elif events.get('x_long_press_active', False):
-            self.add_to_arm_joint("4", -inc, "X long press")
+            self.add_to_arm_joint("4", -inc_fast, "X long press")
             
         if events.get('b_press', False):
-            self.add_to_arm_joint("4", inc, "B press")
+            self.add_to_arm_joint("4", inc_fast, "B press")
         elif events.get('b_long_press_active', False):
-            self.add_to_arm_joint("4", inc, "B long press")
+            self.add_to_arm_joint("4", inc_fast, "B long press")
 
         # Shoulder buttons → joint 5 (single press for small increment, long press for continuous)
         if events.get('rb_press', False):
@@ -206,22 +197,22 @@ class XboxTeleop(Node):
         # Smooth acceleration/deceleration
         max_delta = self.acceleration_limit * self.dt
         
-        # X velocity
-        vel_diff_x = self.target_vel_x - self.current_vel_x
-        if abs(vel_diff_x) > max_delta:
-            vel_diff_x = max_delta if vel_diff_x > 0 else -max_delta
-        self.current_vel_x += vel_diff_x
+        # Angular velocity
+        vel_diff_angular = self.target_vel_angular - self.current_vel_angular
+        if abs(vel_diff_angular) > max_delta:
+            vel_diff_angular = max_delta if vel_diff_angular > 0 else -max_delta
+        self.current_vel_angular += vel_diff_angular
         
-        # Y velocity
-        vel_diff_y = self.target_vel_y - self.current_vel_y
-        if abs(vel_diff_y) > max_delta:
-            vel_diff_y = max_delta if vel_diff_y > 0 else -max_delta
-        self.current_vel_y += vel_diff_y
+        # Linear velocity
+        vel_diff_linear = self.target_vel_linear - self.current_vel_linear
+        if abs(vel_diff_linear) > max_delta:
+            vel_diff_linear = max_delta if vel_diff_linear > 0 else -max_delta
+        self.current_vel_linear += vel_diff_linear
         
         # Publish smoothed twist
         tw = Twist()
-        tw.linear.x = self.current_vel_x
-        tw.linear.y = self.current_vel_y
+        tw.linear.x = self.current_vel_linear  # Forward/backward
+        tw.angular.z = self.current_vel_angular  # Rotation
         self.pub_twist.publish(tw)
 
 def main():

@@ -5,30 +5,6 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
-    # Declare launch arguments
-    microros_transport_arg = DeclareLaunchArgument(
-        'microros_transport',
-        default_value='serial',
-        description='Transport for micro-ROS agent'
-    )
-    
-    microros_device_arg = DeclareLaunchArgument(
-        'microros_device',
-        default_value='/dev/ttyUSB0',
-        description='Device for micro-ROS agent'
-    )
-    
-    microros_baudrate_arg = DeclareLaunchArgument(
-        'microros_baudrate',
-        default_value='2000000',
-        description='Baudrate for micro-ROS agent'
-    )
-
-    # Launch configurations
-    microros_transport = LaunchConfiguration('microros_transport')
-    microros_device = LaunchConfiguration('microros_device')
-    microros_baudrate = LaunchConfiguration('microros_baudrate')
-
     # Get package share directories
     controllers_cfg = PathJoinSubstitution([
         FindPackageShare('leremix_control'),
@@ -116,24 +92,10 @@ def generate_launch_description():
         ]
     )
 
-    # micro-ROS agent node
-    microros_agent = Node(
-        package='micro_ros_agent',
-        executable='micro_ros_agent',
-        arguments=[microros_transport, '--dev', microros_device, '-b', microros_baudrate],
-        output='screen'
-    )
-
     return LaunchDescription([
-        # Launch arguments
-        microros_transport_arg,
-        microros_device_arg,
-        microros_baudrate_arg,
-        
-        # Core robot nodes
+        # Core control nodes
         robot_state_publisher,
         controller_manager,
-        microros_agent,
         
         # Controller spawners
         spawner_joint_state_broadcaster,

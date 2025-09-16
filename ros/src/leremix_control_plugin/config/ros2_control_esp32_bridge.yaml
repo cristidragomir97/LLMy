@@ -15,13 +15,13 @@ ros2_control:
 
     joints:
       # Base joints — velocity command, position+velocity states
-      - name: back_motor_rotation
+      - name: wheel3_rotation
         command_interfaces: [velocity]
         state_interfaces: [position, velocity]
-      - name: left_motor_rotation
+      - name: wheel1_rotation
         command_interfaces: [velocity]
         state_interfaces: [position, velocity]
-      - name: right_motor_rotation
+      - name: wheel2_rotation
         command_interfaces: [velocity]
         state_interfaces: [position, velocity]
 

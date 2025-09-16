@@ -2,6 +2,11 @@
 #define S_RXD 18
 #define S_TXD 19
 
+// the IIC used to control OLED screen.
+// GPIO 21 - S_SDA, GPIO 22 - S_SCL, as default.
+#define S_SCL 22
+#define S_SDA 21
+
 // Servo calibration data based on physical measurements
 // Each servo has physical limits and relaxed positions measured in encoder counts (0-4095)
 struct ServoCalibration {

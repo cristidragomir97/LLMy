@@ -27,9 +27,9 @@ bool initJointPublisher(rcl_node_t* node, void* display) {
       });
 
     // Initialize joint names for joint state message
-    joint_state_msg.name.data[0] = micro_ros_string_utilities_set(joint_state_msg.name.data[0], "back_motor_rotation");
-    joint_state_msg.name.data[1] = micro_ros_string_utilities_set(joint_state_msg.name.data[1], "left_motor_rotation");
-    joint_state_msg.name.data[2] = micro_ros_string_utilities_set(joint_state_msg.name.data[2], "right_motor_rotation");
+    joint_state_msg.name.data[0] = micro_ros_string_utilities_set(joint_state_msg.name.data[0], "wheel3_rotation");
+    joint_state_msg.name.data[1] = micro_ros_string_utilities_set(joint_state_msg.name.data[1], "wheel1_rotation");
+    joint_state_msg.name.data[2] = micro_ros_string_utilities_set(joint_state_msg.name.data[2], "wheel2_rotation");
     joint_state_msg.name.data[3] = micro_ros_string_utilities_set(joint_state_msg.name.data[3], "1");
     joint_state_msg.name.data[4] = micro_ros_string_utilities_set(joint_state_msg.name.data[4], "2");
     joint_state_msg.name.data[5] = micro_ros_string_utilities_set(joint_state_msg.name.data[5], "3");
@@ -75,7 +75,7 @@ void publishJointStates() {
     
     // Read base servo positions (convert to radians)
     for (int i = 0; i < BASE_SERVO_COUNT; i++) {
-        int16_t pos = base_servos.getCurrentPosition(BASE_SERVO_IDS[i]);
+        int16_t pos = servo_driver.getCurrentPosition(BASE_SERVO_IDS[i]);
         if (pos != -1) {
             // Convert servo position to radians (for wheels, this is cumulative rotation)
             joint_state_msg.position.data[i] = (pos * 2.0 * PI) / 4096.0;
@@ -83,7 +83,7 @@ void publishJointStates() {
             joint_state_msg.position.data[i] = 0.0;  // Default if read fails
         }
         
-        int16_t speed = base_servos.getCurrentSpeed(BASE_SERVO_IDS[i]);
+        int16_t speed = servo_driver.getCurrentSpeed(BASE_SERVO_IDS[i]);
         if (speed != -1) {
             // Convert servo speed to rad/s
             joint_state_msg.velocity.data[i] = speed / VEL_TO_SERVO_UNIT;
@@ -94,7 +94,7 @@ void publishJointStates() {
     
     // Read arm servo positions (convert to radians using calibration)
     for (int i = 0; i < ARM_SERVO_COUNT; i++) {
-        int16_t pos = arm_servos.getCurrentPosition(ARM_SERVO_IDS[i]);
+        int16_t pos = servo_driver.getCurrentPosition(ARM_SERVO_IDS[i]);
         if (pos != -1) {
             // Use calibrated conversion function
             joint_state_msg.position.data[BASE_SERVO_COUNT + i] = servoPositionToRadians(ARM_SERVO_IDS[i], pos);
@@ -102,7 +102,7 @@ void publishJointStates() {
             joint_state_msg.position.data[BASE_SERVO_COUNT + i] = 0.0;  // Default if read fails
         }
         
-        int16_t speed = arm_servos.getCurrentSpeed(ARM_SERVO_IDS[i]);
+        int16_t speed = servo_driver.getCurrentSpeed(ARM_SERVO_IDS[i]);
         if (speed != -1) {
             // Convert servo speed to rad/s  
             joint_state_msg.velocity.data[BASE_SERVO_COUNT + i] = (speed * 2.0 * PI) / (4096.0 * 60.0);  // Assuming speed in RPM
@@ -113,7 +113,7 @@ void publishJointStates() {
     
     // Read head servo positions (convert to radians using calibration)
     for (int i = 0; i < HEAD_SERVO_COUNT; i++) {
-        int16_t pos = head_servos.getCurrentPosition(HEAD_SERVO_IDS[i]);
+        int16_t pos = servo_driver.getCurrentPosition(HEAD_SERVO_IDS[i]);
         if (pos != -1) {
             // Use calibrated conversion function
             joint_state_msg.position.data[BASE_SERVO_COUNT + ARM_SERVO_COUNT + i] = servoPositionToRadians(HEAD_SERVO_IDS[i], pos);
@@ -121,7 +121,7 @@ void publishJointStates() {
             joint_state_msg.position.data[BASE_SERVO_COUNT + ARM_SERVO_COUNT + i] = 0.0;  // Default if read fails
         }
         
-        int16_t speed = head_servos.getCurrentSpeed(HEAD_SERVO_IDS[i]);
+        int16_t speed = servo_driver.getCurrentSpeed(HEAD_SERVO_IDS[i]);
         if (speed != -1) {
             // Convert servo speed to rad/s  
             joint_state_msg.velocity.data[BASE_SERVO_COUNT + ARM_SERVO_COUNT + i] = (speed * 2.0 * PI) / (4096.0 * 60.0);  // Assuming speed in RPM

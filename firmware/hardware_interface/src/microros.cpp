@@ -28,8 +28,8 @@ bool initMicroROS(void* display) {
         Serial1.println("Successfully created micro-ROS node");
     }
 
-    // Create executor with 2 subscribers
-    rclc_executor_init(&executor, &support.context, 2, &allocator);
+    // Create executor with 3 subscribers (base, arm, head)
+    rclc_executor_init(&executor, &support.context, 3, &allocator);
 
     Serial1.println("micro-ROS node and basic setup ready");
     return true;

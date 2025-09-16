@@ -35,7 +35,7 @@ def generate_launch_description():
     
     declare_wrist_camera_device = DeclareLaunchArgument(
         'wrist_camera_device',
-        default_value='/dev/video2',
+        default_value='/dev/video0',
         description='Wrist camera device path'
     )
     
@@ -177,7 +177,7 @@ def generate_launch_description():
             'camera_frame_id': 'wrist_camera_frame',
             'image_width': 640,
             'image_height': 480,
-            'pixel_format': 'yuyv',
+            'pixel_format': 'raw_mjpeg',
             'framerate': 30.0,
             'camera_name': 'wrist_camera',
             'io_method': 'mmap',

@@ -15,17 +15,17 @@
         </hardware>
         
 
-        <joint name="back_motor_rotation">
+        <joint name="wheel3_rotation">
             <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
-        <joint name="left_motor_rotation">
+        <joint name="wheel1_rotation">
             <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
-        <joint name="right_motor_rotation">
+        <joint name="wheel2_rotation">
             <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
