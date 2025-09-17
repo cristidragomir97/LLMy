@@ -1,14 +1,14 @@
-# ros2_control hardware config that loads the Esp32SystemTopic plugin
+# ros2_control hardware config that loads the MotorManager bridge plugin
 ros2_control:
   ros__parameters:
     hardware:
       plugin: leremix_control_plugin/Esp32SystemTopic
 
-      # Topics to use for micro-ROS bridge
-      base_cmd_topic: /esp32/base_cmd
-      arm_cmd_topic: /esp32/arm_cmd
-      head_cmd_topic: /esp32/head_cmd
-      state_topic: /esp32/joint_states
+      # Topics to use for motor manager bridge
+      base_cmd_topic: /motor_manager/base_cmd
+      arm_cmd_topic: /motor_manager/arm_cmd
+      head_cmd_topic: /motor_manager/head_cmd
+      state_topic: /motor_manager/joint_states
 
       # optional
       publish_if_unchanged: true
