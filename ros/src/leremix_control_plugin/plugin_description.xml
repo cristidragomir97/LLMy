@@ -3,6 +3,6 @@
     name="leremix_control_plugin/Esp32SystemTopic"
     type="leremix_control_plugin::Esp32SystemTopic"
     base_class_type="hardware_interface::SystemInterface">
-    <description>ros2_control SystemInterface that publishes commands to topics and reads joint states from a topic (micro-ROS on ESP32).</description>
+    <description>ros2_control SystemInterface that publishes commands to topics and reads joint states from a topic (motor manager bridge).</description>
   </class>
 </library>

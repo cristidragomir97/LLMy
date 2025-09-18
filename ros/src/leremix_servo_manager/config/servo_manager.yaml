@@ -1,0 +1,25 @@
+sts_bus_node:
+  ros__parameters:
+    port: "/dev/ttyTHS1"
+    baud: 1000000
+
+    loc_enable: true    # Enable/disable locomotion motors
+    arm_enable: false   # Enable/disable arm motors  
+    head_enable: false  # Enable/disable head motors
+
+    loc_ids:  [1, 2, 3]
+    arm_ids:  [4, 5, 6, 7, 8, 9]
+    head_ids: [10, 11]
+
+    ticks_per_rev: 4096
+    telemetry_rate:  30.0  # Reduced from 50Hz to reduce bus load
+    command_timeout_ms: 100.0  # Reduced timeout for faster response
+
+    # Acceleration parameters (0-255, lower = smoother acceleration)
+    loc_accel:  [15, 15, 15]  # Locomotion motors - moderate acceleration
+    arm_accel:  [20, 20, 15, 15, 25, 25]  # Arm motors - smooth acceleration for less choppy movement
+    head_accel: [15, 15]  # Head motors - moderate acceleration
+    
+    # Velocity threshold for torque disable (rad/s)
+    velocity_threshold: 0.01  # Below this threshold, disable torque instead of sending zero velocity
+

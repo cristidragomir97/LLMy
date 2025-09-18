@@ -7,10 +7,10 @@
     <ros2_control name="leremix_hardware" type="system">
         <hardware>
             <plugin>leremix_control_plugin/Esp32SystemTopic</plugin>
-            <param name="base_cmd_topic">/esp32/base_cmd</param>
-            <param name="arm_cmd_topic">/esp32/arm_cmd</param>
-            <param name="head_cmd_topic">/esp32/head_cmd</param>
-            <param name="state_topic">/esp32/joint_states</param>
+            <param name="base_cmd_topic">/motor_manager/base_cmd</param>
+            <param name="arm_cmd_topic">/motor_manager/arm_cmd</param>
+            <param name="head_cmd_topic">/motor_manager/head_cmd</param>
+            <param name="state_topic">/motor_manager/joint_states</param>
             <param name="publish_if_unchanged">true</param>
         </hardware>
         

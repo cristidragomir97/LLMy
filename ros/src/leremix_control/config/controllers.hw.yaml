@@ -1,7 +1,7 @@
 # Controllers (your original settings), kept separate from the ros2_control hardware config.
 controller_manager:
   ros__parameters:
-    update_rate: 50  # Hz
+    update_rate: 100  # Hz
     use_sim_time: false
 
     joint_state_broadcaster:
@@ -51,7 +51,7 @@ omnidirectional_controller:
     
     wheel_radius: 0.05
     gamma: 30.0
-    publish_rate: 50.0
+    publish_rate: 50.00
     odom_frame_id: odom
     base_frame_id: base_link
     pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]

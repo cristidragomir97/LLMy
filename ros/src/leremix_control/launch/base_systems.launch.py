@@ -1,47 +1,52 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
-    # Declare launch arguments
-    microros_transport_arg = DeclareLaunchArgument(
-        'microros_transport',
-        default_value='serial',
-        description='Transport for micro-ROS agent'
+    # Declare launch arguments for servo manager
+    servo_port_arg = DeclareLaunchArgument(
+        'servo_port',
+        default_value='/dev/ttyTHS1',
+        description='Serial port for servo manager'
     )
     
-    microros_device_arg = DeclareLaunchArgument(
-        'microros_device',
-        default_value='/dev/ttyUSB0',
-        description='Device for micro-ROS agent'
+    servo_baud_arg = DeclareLaunchArgument(
+        'servo_baud',
+        default_value='1000000',
+        description='Baudrate for servo manager'
     )
     
-    microros_baudrate_arg = DeclareLaunchArgument(
-        'microros_baudrate',
-        default_value='115200',
-        description='Baudrate for micro-ROS agent'
+    servo_config_arg = DeclareLaunchArgument(
+        'servo_config',
+        default_value='',
+        description='Path to servo manager config file (uses package default if empty)'
     )
 
     # Launch configurations
-    microros_transport = LaunchConfiguration('microros_transport')
-    microros_device = LaunchConfiguration('microros_device')
-    microros_baudrate = LaunchConfiguration('microros_baudrate')
+    servo_port = LaunchConfiguration('servo_port')
+    servo_baud = LaunchConfiguration('servo_baud')
+    servo_config = LaunchConfiguration('servo_config')
 
-    # micro-ROS agent node
-    microros_agent = Node(
-        package='micro_ros_agent',
-        executable='micro_ros_agent',
-        arguments=[microros_transport, '--dev', microros_device, '-b', microros_baudrate],
-        output='screen'
+    # Include servo manager launch
+    servo_manager_launch = IncludeLaunchDescription(
+        PathJoinSubstitution([
+            FindPackageShare('leremix_servo_manager'),
+            'launch',
+            'servo_manager.launch.py'
+        ]),
+        launch_arguments={
+            'port': servo_port,
+            'baud': servo_baud,
+        }.items()
     )
 
     return LaunchDescription([
         # Launch arguments
-        microros_transport_arg,
-        microros_device_arg,
-        microros_baudrate_arg,
+        servo_port_arg,
+        servo_baud_arg,
+        servo_config_arg,
         
         # Base system nodes
-        microros_agent,
+        servo_manager_launch,
     ])

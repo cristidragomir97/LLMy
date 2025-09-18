@@ -28,7 +28,7 @@ def generate_launch_description():
     use_base_systems_arg = DeclareLaunchArgument(
         'use_base_systems',
         default_value='true',
-        description='Enable base systems (micro-ROS agent)'
+        description='Enable base systems (servo manager)'
     )
     
     use_control_stack_arg = DeclareLaunchArgument(
@@ -37,22 +37,16 @@ def generate_launch_description():
         description='Enable control stack (controllers, robot state publisher)'
     )
     
-    microros_transport_arg = DeclareLaunchArgument(
-        'microros_transport',
-        default_value='serial',
-        description='Transport for micro-ROS agent'
+    servo_port_arg = DeclareLaunchArgument(
+        'servo_port',
+        default_value='/dev/ttyTHS1',
+        description='Serial port for servo manager'
     )
     
-    microros_device_arg = DeclareLaunchArgument(
-        'microros_device',
-        default_value='/dev/ttyUSB0',
-        description='Device for micro-ROS agent'
-    )
-    
-    microros_baudrate_arg = DeclareLaunchArgument(
-        'microros_baudrate',
-        default_value='115200',
-        description='Baudrate for micro-ROS agent'
+    servo_baud_arg = DeclareLaunchArgument(
+        'servo_baud',
+        default_value='1000000',
+        description='Baudrate for servo manager'
     )
 
     # Launch configurations
@@ -61,11 +55,10 @@ def generate_launch_description():
     use_xbox = LaunchConfiguration('use_xbox')
     use_base_systems = LaunchConfiguration('use_base_systems')
     use_control_stack = LaunchConfiguration('use_control_stack')
-    microros_transport = LaunchConfiguration('microros_transport')
-    microros_device = LaunchConfiguration('microros_device')
-    microros_baudrate = LaunchConfiguration('microros_baudrate')
+    servo_port = LaunchConfiguration('servo_port')
+    servo_baud = LaunchConfiguration('servo_baud')
 
-    # Include base systems (micro-ROS agent)
+    # Include base systems (servo manager)
     base_systems_launch = IncludeLaunchDescription(
         PathJoinSubstitution([
             FindPackageShare('leremix_control'),
@@ -73,9 +66,8 @@ def generate_launch_description():
             'base_systems.launch.py'
         ]),
         launch_arguments={
-            'microros_transport': microros_transport,
-            'microros_device': microros_device,
-            'microros_baudrate': microros_baudrate
+            'servo_port': servo_port,
+            'servo_baud': servo_baud,
         }.items(),
         condition=IfCondition(use_base_systems)
     )
@@ -164,9 +156,8 @@ def generate_launch_description():
         use_xbox_arg,
         use_base_systems_arg,
         use_control_stack_arg,
-        microros_transport_arg,
-        microros_device_arg,
-        microros_baudrate_arg,
+        servo_port_arg,
+        servo_baud_arg,
         
         # Launch includes and nodes
         base_systems_launch,

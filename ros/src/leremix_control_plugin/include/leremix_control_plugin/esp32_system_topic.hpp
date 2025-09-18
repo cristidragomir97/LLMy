@@ -36,10 +36,10 @@ public:
 
 private:
   // Parameters
-  std::string base_cmd_topic_{"/esp32/base_cmd"};
-  std::string arm_cmd_topic_{"/esp32/arm_cmd"};
-  std::string head_cmd_topic_{"/esp32/head_cmd"};
-  std::string state_topic_{"/esp32/joint_states"};
+  std::string base_cmd_topic_{"/motor_manager/base_cmd"};
+  std::string arm_cmd_topic_{"/motor_manager/arm_cmd"};
+  std::string head_cmd_topic_{"/motor_manager/head_cmd"};
+  std::string state_topic_{"/motor_manager/joint_states"};
   bool publish_if_unchanged_{true};
 
   // Joint sets derived from interfaces:

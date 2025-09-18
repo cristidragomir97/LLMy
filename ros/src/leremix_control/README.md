@@ -1,11 +1,9 @@
 # leremix_control
-
 Controllers and parameters for the LeRemix robot, providing ros2_control configuration for base movement and arm control.
 
 ## Features
-
 - Controller configurations for omnidirectional base movement
-- Arm controller parameters for 6-DOF robotic arm + camera tilt
+- Arm controller parameters for 6-DOF robotic arm + pan-tilt head 
 - Hardware and simulation controller configurations
 - Test motion script for validating robot control
 
@@ -20,9 +18,10 @@ Controllers and parameters for the LeRemix robot, providing ros2_control configu
 - Accepts `std_msgs/Float64MultiArray` commands on `/arm_group_position_controller/commands`
 - Joint order: ['1', '2', '3', '4', '5', '6', 'camera_tilt']
 
+### Head Controller
+
 ## Configuration Files
 
-- `config/controllers.base.yaml` - Base controller configuration
 - `config/controllers.hw.yaml` - Hardware-specific controller settings  
 - `config/controllers.sim.yaml` - Simulation controller settings
 
