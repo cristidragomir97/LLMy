@@ -20,58 +20,75 @@
 
 **LeRemix** is a fully 3D-printed mobile manipulator designed to be **affordable**, **easy to build**, and **simulation-ready**. Built on the shoulders of giants like [LeRobot](https://github.com/huggingface/lerobot) and [LeKiwi](https://github.com/SIGRobotics-UIUC), it delivers ROS2 integration and extensibility - making it the perfect foundation for **AI/VLM experimentation**, **research**, **prototyping**, and **education**.
 
-
-
-> 💡 **Why LeRemix?** 
-
-<!-- Feature 1 -->
-<div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap; margin:32px 0;">
-  <div style="flex:1 1 320px; min-width:280px; order:2;">
-    <h3 style="margin:0 0 8px;">Blazing-fast Setup</h3>
-    <p style="margin:0; line-height:1.6;">
-      Go from zero to working prototype in minutes. Opinionated defaults and
-      sensible conventions keep you moving—no endless config screens.
-    </p>
-  </div>
-  <div style="flex:1 1 320px; min-width:280px; order:1;">
-    <img src="https://via.placeholder.com/800x500" alt="Setup screenshot" style="width:100%; border-radius:12px;">
-  </div>
-</div>
-
-
-<hr style="border:none; border-top:1px solid #e5e7eb; margin:24px 0;">
-
-<!-- Feature 2 -->
-<div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap; margin:32px 0;">
-  <div style="flex:1 1 320px; min-width:280px;">
-    <img src="https://via.placeholder.com/800x500" alt="Live preview example" style="width:100%; border-radius:12px;">
-  </div>
-  <div style="flex:1 1 320px; min-width:280px;">
-    <h3 style="margin:0 0 8px;">Live Preview, Real Results</h3>
-    <p style="margin:0; line-height:1.6;">
-      See changes as you type. Accurate previews mean fewer surprises when you ship.
-    </p>
-  </div>
-</div>
-
-**🎯 Built for Modern Robotics Development**
-- **Full ROS2 Integration**: Complete ros2_control framework with standard interfaces that work seamlessly with MoveIt2, Navigation2, and the entire ROS2 ecosystem
+- **3D Printable and modular**: Based on the [ORP Grid](), All structural components are 3D printable, with [STL](), [STEP]() and [Fusion 360 Project]() available. Feel free to modify, remix and add yours. 
 - **URDF Model**: Kinematics, dynamics, and collision models enable proper motion planning and realistic simulation
-- **Simulation**: Gazebo integration allows you to develop and test algorithms before touching hardware
-
-**💰 Accessible & Affordable** 
-- **~$300 Base Cost**: Core robot platform costs under $300, making professional robotics accessible to students, researchers, and hobbyists
-- **3D Printable**: All structural components are 3D printable, reducing costs and enabling customization
-
-**🚀 Perfect for AI/ML Experimentation**
-- **Rich Sensor Suite**: RGB-D camera provides both color and depth data for computer vision and manipulation tasks
-- **Real-time Control**: 100Hz motor control enables responsive AI control loops
-- **Dual Camera Setup**: Head-mounted RealSense for navigation/SLAM + wrist camera for manipulation tasks
-
-
+- **Simulation**: Gazebo integration allows you to develop and test before touching hardware. 
+- **Full ROS2 Integration**: Complete ros2_control implementation with standard interfaces that work seamlessly with MoveIt2, Navigation2, and the entire ROS2 ecosystem. 
 - **Open Source**: Full access to all code, models, and documentation for learning and modification
-- **Community Driven**: Built on proven open-source foundations (LeRobot, LeKiwi) with active community support
 
+
+# 🛠️ Hardware
+
+LeRemix builds upon [LeKiwi](https://github.com/SIGRobotics-UIUC) with several key improvements:
+- Still based on the ORP grid (20mmx20mm with 3.5mm holes)
+- Larger surface area for more components
+- A camera tower that allows for better perception of the surrounding environment 
+- A beefy 145W power pack that gives about 4-5h of runtime, and charges over USB-C
+
+### Parts
+
+### Bill of Materials (BOM)
+
+#### 🤖 Main Platform
+| Part | Amount | Unit Cost (US) | Buy (US) | Unit Cost (EU) | Buy (EU) | Total(US) | Total(EU) |
+|:---|:---:|:---:|:---|:---:|---:|:-:|-|
+| 12v ST3215 Feetech Servo | 10| $13.89 | [Alibaba](https://www.alibaba.com/product-detail/Feetech-STS3215-SO-ARM100-Servo-12V_1601292634404.html?spm=a2700.details.you_may_like.3.5ab1478e45kY42) | €13.38 | [Alibaba](https://www.alibaba.com/product-detail/Feetech-STS3215-SO-ARM100-Servo-12V_1601292634404.html?spm=a2700.details.you_may_like.3.5ab1478e45kY42)  | 138.9$  | €133.8 | 
+| 4" Omni wheels | 3 | $9.99 | [VEX Robotics](https://www.vexrobotics.com/omni-wheels.html?srsltid=AfmBOorWdWT-FIiWSAbicYWSxqYr-d5X3CJSGxMkO33WO0thwlTn4DQu) | €24.5 | [RobotShop](https://eu.robotshop.com/products/100mm-omnidirectional-wheel-brass-bearing-rollers) | $29.97 | €73.50 | 
+| WaveShare ESP32 Servo Controller | 1 | $23.99 | [Amazon](https://www.amazon.com/Expansion-Bluetooth-Control-Application-Structures/dp/B09TJ3L72Q)| €17.60  |  [Kamami](https://kamami.pl/en/Servo-Controllers/1178586-servo-driver-with-esp32-servo-driver-with-wifi-and-bluetooth-esp32-module-5906623426379.html)| $23.99 | €17.60
+| Adafruit USB-PD Trigger | 2 | $5.95 | [Adafruit](https://www.adafruit.com/product/5807?srsltid=AfmBOorGANfsSrXFtplHfJPSbXODZ6rRvPt-WMq5SHoeJAwd-LjJrS7J)| €6.90| [Kamami](https://kamami.pl/en/wyzwalacze-usb-pd-elektonika/1188206-usb-type-c-power-delivery-dummy-breakout-module-with-usb-type-c-power-delivery-husb238-power-supply-controller-5906623469918.html) | $11.90 | €13.80
+| Adafruit ICM20948 IMU| 1 | $14.95 | [Adafruit](https://www.adafruit.com/product/4554)| €18.91 | [Kamami](https://kamami.pl/en/sensors-6dof-9dof-10dof/587247-stemma-qt-tdk-invensense-icm-20948-9-dof-imu-module-with-9-dof-sensor-icm-20948-adafruit-4554-5906623430239.html) | $14.95 | €18.91
+| Baseus GP12 Battery Pack | 1 | $59.99 | [Amazon](https://www.amazon.com/Baseus-20800mAh-Portable-Charger-Charging/dp/B0DQTYLGYK?th) | €48.99 | [Baseus EU](https://eu.baseus.com/products/energeek-gp12-power-bank-145w-20800mah?srsltid=AfmBOorIXbW42jd_DKrEXTmsDzPih-Fyf3ZeOLM2nc7CQ4IjJVjFf2mJ) | $59.99 | €48.99
+| **Total** |  | |  |  |  | $279.70 | €306.60
+
+#### 📷 RGBD Cameras
+
+**The core of this robot's perception system** is an RGB-D camera due to its incredible flexibility. Unlike a standard RGB camera, it delivers both **color and depth**, making it a versatile tool for **AI inference**, **manipulation** and **navigation**.
+
+> 🎯 **Why RGB-D?** The robot can identify objects while estimating their distance and size, providing richer scene understanding from a single sensor. The depth stream enables multiple SLAM approaches—RGB-SLAM, RGB-D SLAM, or even 2D SLAM via `depthimage_to_laserscan`.
+
+All software is built on the **Intel RealSense SDK** and ROS driver, but other depth cameras serve as near drop-in replacements.
+
+
+| Part                | Unit Cost (US) | Buy (US) | Unit Cost (EU) | Buy (EU) | Robot + Camera (US) | Robot + Camera (EU) |
+|---------------------|---------------:|:---------|---------------:|:---------|-----------------------------:|-----------------------------:|
+| **YDLidar HP60C**   |  $202.00        | [RobotShop US](https://www.robotshop.com/products/ydlidar-hp60c-compact-lidar-sensor-02-4m-range-73-8-scan-angle) | €190.00 | [RobotShop EU](https://eu.robotshop.com/products/ydlidar-hp60c-compact-lidar-sensor-02-4m-range-73-8-scan-angle) | **$481.70** | **€496.60** |
+| **Orbbec Gemini 2** | $234.00        | [Orbbec Store](https://store.orbbec.com/products/gemini-2) | €230.00 | [Orbbec EU](https://store.orbbec3d.com) | **$513.70** | **€536.60** |
+| **Realsense D415**  |  $272.00        | [Realsense Store](https://store.realsenseai.com/buy-intel-realsense-depth-camera-d415.html) | €310.00 | [Mouser EU](https://eu.mouser.com/ProductDetail/Intel/82635AWGDVKPRQ) | **$551.70** | **€616.60**v |
+| **Realsense D435**  |  $314.00        | [Realsense Store](https://store.realsenseai.com/buy-intel-realsense-depth-camera-d435.html) | €317.60 | [Mouser EU](https://eu.mouser.com/ProductDetail/Intel/82635AWGDVKPRQ) |**$593.70** | **€624.20** |
+| **Stereolabs ZED 2i** |  $499.00        | [Stereolabs Store](https://store.stereolabs.com/products/zed-2i) | **€449.00** | [Stereolabs EU](https://store.stereolabs.com/products/zed-2i) | **$778.70** | **€755.60** |
+
+
+#### 💻 Single Board Computers & Mini-PCs
+
+**My setup:** Powered by an **Nvidia Orin Nano Super**, but the battery pack delivers up to **65W per power lane** and **20V**, so you can use:
+
+- 🥧 **Raspberry Pi 5**
+- 🚀 **Nvidia Orin Series**  
+- 💪 **Intel NUC or other Mini-PCs**
+- 🔧 **Any compatible SBC with proper power requirements**
+
+
+
+### Core Components
+
+| Component | Purpose | Interface |
+|-----------|---------|-----------|
+| 10x ST3215 Feetech Servos | Joint actuation (base + arm + head) | Serial communication |
+| 3x 4" Omni wheels | Omnidirectional base movement | Motor control |
+| ESP32 Servo Controller | Motor driver and communication | USB/UART |
+| ICM20948 IMU | Orientation and motion sensing | I2C |
+| RealSense D435 Camera | RGB-D perception | USB 3.0 |
+| 20.8Ah Power Bank | System power (145W, 4-5h runtime) | USB-C PD |
 
 ---
 
@@ -111,155 +128,11 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
   - **Pan:** D-pad left/right
   - **Tilt:** START button (+) / BACK button (-)
 
----
+## 📚 Documentation
 
-## 🚀 Getting Started Guide
+For detailed setup instructions, hardware configuration, and troubleshooting, see:
 
-### 📋 Prerequisites
-
-**For Simulation:**
-- Ubuntu 22.04 LTS
-- ROS2 Humble
-- Gazebo Classic
-
-**For Hardware:**
-- All simulation requirements +
-- FEETECH STS servos connected via serial (USB or UART)
-- Xbox controller (optional)
-- RealSense camera (optional)
-
-### 🔧 Installation
-
-```bash
-# 1. Install ROS2 Humble (if not already installed)
-sudo apt install ros-humble-desktop
-
-# 2. Clone the repository
-git clone https://github.com/cristidragomir97/leremix.git leremix_ws
-cd leremix_ws/ros
-
-# 3. Install dependencies
-rosdep install --from-paths src --ignore-src -r -y
-
-# 4. Build the workspace
-colcon build
-
-# 5. Source the workspace
-source install/setup.bash
-```
-
-### 🎮 Quick Test - Simulation
-
-```bash
-# Terminal 1: Launch simulation
-ros2 launch leremix_gazebo sim.launch.py
-
-# Terminal 2: Launch Xbox controller (optional)
-ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
-```
-
-You should see the robot in Gazebo. Use your Xbox controller to drive around!
-
-### 🤖 Quick Test - Hardware
-
-```bash
-# Single command launch (recommended)
-ros2 launch leremix_bringup bringup_robot.launch.py
-
-# Or with custom serial settings
-ros2 launch leremix_bringup bringup_robot.launch.py servo_port:=/dev/ttyTHS1 servo_baud:=1000000
-```
-
-### 🔍 Verify Everything Works
-
-```bash
-# Check that controllers are running
-ros2 control list_controllers
-
-# Monitor motor communication
-ros2 topic echo /motor_manager/joint_states --once
-
-# Test motor connectivity
-ros2 launch leremix_servo_manager ping_test.launch.py
-```
-
-### 🎯 Next Steps
-
-**For Development:**
-- Explore the [detailed package documentation](#-detailed-package-information) below
-- Try the individual component launches for debugging
-- Check out the [architecture diagrams](#-architecture) to understand the system
-
-**For Applications:**
-- Use MoveIt2 for motion planning: `ros2 launch leremix_moveit_config demo.launch.py`
-- Enable navigation with Nav2: `ros2 launch leremix_navigation navigation.launch.py`
-- Integrate your AI/ML code via standard ROS2 topics and services
-
----
-
-### 🔧 Real Hardware Setup
-
-#### Prerequisites
-
-
-   ```bash
-   # Install ROS2 Humble
-   sudo apt install ros-humble-desktop
-   
-   # Install additional packages
-   sudo apt install ros-humble-realsense2-camera \
-                    ros-humble-compressed-image-transport \
-                    ros-humble-depthimage-to-laserscan \
-                    ros-humble-imu-filter-madgwick
-   ```
-
-#### 🚀 Launch Robot System
-
-```bash
-# Build workspace
-cd leremix_ws/ros
-colcon build
-source install/setup.bash
-
-# Launch complete robot system (single command)
-ros2 launch leremix_bringup bringup_robot.launch.py
-
-# Custom serial port and baud rate
-ros2 launch leremix_bringup bringup_robot.launch.py servo_port:=/dev/ttyTHS1 servo_baud:=1000000
-
-# Disable specific components
-ros2 launch leremix_bringup bringup_robot.launch.py use_camera:=false use_xbox:=false
-
-# Or launch components individually (in separate terminals)
-ros2 launch leremix_control base_systems.launch.py         # Servo manager
-ros2 launch leremix_control_plugin bringup.launch.py       # Hardware interface
-ros2 launch leremix_camera camera.launch.py                # Camera system  
-ros2 launch leremix_imu imu.launch.py                      # IMU sensor
-ros2 launch leremix_teleop_xbox teleop_xbox.launch.py      # Xbox control
-
-# Optional: Monitor system status
-ros2 topic list
-ros2 control list_controllers
-```
-
-#### ✅ Verification
-
-Check that all systems are running:
-```bash
-# Verify controllers are active
-ros2 control list_controllers
-
-# Check camera streams
-ros2 topic echo /camera/color/image_raw --once
-
-# Verify IMU data
-ros2 topic echo /imu/fused --once  
-
-# Check joint states from motor manager
-ros2 topic echo /motor_manager/joint_states --once
-```
-
-The robot should now respond to Xbox controller inputs with real hardware!
+**📖 [Getting Started Guide](docs/getting-started.md)** - Complete installation and setup instructions for both simulation and hardware
 
 ---
 
@@ -270,6 +143,7 @@ The robot should now respond to Xbox controller inputs with real hardware!
 LeRemix follows a modular ROS2 architecture that separates concerns between simulation, hardware interfaces, control, and user interaction. The system uses standard ROS2 patterns like `ros2_control` for hardware abstraction and topic-based communication for sensor data.
 
 #### **General Block Schematic**
+
 ```mermaid
 graph TB
 
@@ -344,6 +218,19 @@ graph LR
 ```
 
 
+
+### 📦 Package Overview
+
+| Package | Purpose | Language | Key Topics | Launch Command |
+|---------|---------|----------|------------|----------------|
+| **leremix_description** | Robot URDF model & transforms | XML/Python | `/robot_description`, `/tf`, `/joint_states` | `ros2 launch leremix_description view_robot.launch.py` |
+| **leremix_servo_manager** | Direct motor control (C++) | C++ | `/motor_manager/*_cmd`, `/motor_manager/joint_states` | `ros2 launch leremix_servo_manager servo_manager.launch.py` |
+| **leremix_servo_manager_py** | Motor control with advanced braking | Python | `/motor_manager/*_cmd`, `/motor_manager/joint_states` | `ros2 launch leremix_servo_manager_py servo_manager.launch.py` |
+| **leremix_control_plugin** | ros2_control hardware bridge | C++ | `/cmd_vel`, `/arm_controller/joint_trajectory` | `ros2 launch leremix_control_plugin bringup.launch.py` |
+| **leremix_teleop_xbox** | Xbox controller interface | Python | `/cmd_vel`, `/joy` | `ros2 launch leremix_teleop_xbox teleop_xbox.launch.py` |
+| **leremix_control** | Controller configurations | YAML | N/A (config files) | Loaded by control_plugin |
+| **leremix_camera** | RGB-D camera & vision | Python | `/head_camera/*`, `/scan`, `/wrist_camera/*` | `ros2 launch leremix_camera camera.launch.py` |
+| **leremix_imu** | IMU sensor & fusion | Python | `/imu/data`, `/imu/fused` | `ros2 launch leremix_imu imu.launch.py` |
 
 ### 📦 Detailed Package Information
 
