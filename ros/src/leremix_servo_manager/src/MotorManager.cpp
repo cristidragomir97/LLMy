@@ -172,6 +172,13 @@ bool MotorManager::setSpeed(uint8_t id, uint16_t speed_raw) {
     return writeRegs(id, Reg::RUN_SPEED_H, {H, L});
 }
 
+bool MotorManager::setVelocity(uint8_t id, int16_t velocity) {
+    uint16_t velocity_raw = static_cast<uint16_t>(velocity);
+    uint8_t L = velocity_raw & 0xFF;
+    uint8_t H = (velocity_raw >> 8) & 0xFF;
+    return writeRegs(id, Reg::RUN_SPEED_H, {H, L});
+}
+
 bool MotorManager::moveTo(uint8_t id, uint16_t pos_ticks, uint16_t time_ms, uint16_t speed_raw) {
     std::vector<uint8_t> d;
     d.reserve(6);

@@ -370,7 +370,7 @@ ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_descrip
 - `/joint_states` - Current joint positions
 
 
-#### **🔧 leremix_servo_manager - Direct Motor Control**
+#### **🔧 leremix_servo_manager - Direct Motor Control (C++)**
 
 **What it does:** Handles low-level communication with FEETECH STS servos via serial protocol. Converts ROS2 joint commands into servo-specific position/velocity commands and provides real-time telemetry feedback.
 
@@ -397,6 +397,43 @@ ros2 launch leremix_servo_manager servo_manager.launch.py port:=/dev/ttyTHS1 bau
 - `/motor_manager/joint_states` - Motor telemetry feedback
 
 **Configuration:** Edit `config/servo_manager.yaml` to adjust motor IDs, serial settings, and control parameters.
+
+---
+
+#### **🐍 leremix_servo_manager_py - Python Motor Control**
+
+**What it does:** Python-based alternative to the C++ servo manager with modular architecture, advanced braking system, and improved error handling. Provides the same functionality with enhanced safety features and easier customization.
+
+**Features:**
+- **Advanced Braking System**: Three configurable braking methods to prevent power spikes
+- **Modular Architecture**: Clean separation of motor management, configuration, and command handling
+- **Improved Safety**: Comprehensive connectivity testing and graceful error recovery
+- **Enhanced Telemetry**: Detailed motor state monitoring and diagnostics
+
+**Nodes launched:**
+- `servo_manager_node.py` - Main Python servo manager node
+
+**How to run:**
+```bash
+# Main Python servo manager (requires hardware)
+ros2 launch leremix_servo_manager_py servo_manager.launch.py
+
+# Test brake methods
+ros2 launch leremix_servo_manager_py test_brake_methods.launch.py
+
+# Custom configuration
+ros2 launch leremix_servo_manager_py servo_manager.launch.py config_file:=custom_config.yaml
+```
+
+**Key topics:** (Same as C++ version)
+- `/motor_manager/base_cmd` - Base motor velocity commands
+- `/motor_manager/arm_cmd` - Arm motor position commands  
+- `/motor_manager/head_cmd` - Head motor position commands
+- `/motor_manager/joint_states` - Motor telemetry feedback
+
+**Configuration:** Edit `config/servo_manager.yaml` to adjust motor IDs, serial settings, braking method, and control parameters.
+
+> **💡 When to use:** Choose the Python version for enhanced safety features, easier customization, or when you need advanced braking control. Both versions are fully compatible with the rest of the system.
 
 ---
 

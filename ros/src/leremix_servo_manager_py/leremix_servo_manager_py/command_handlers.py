@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+"""
+Command Handlers for LeRemix Robot
+Handles ROS message processing and motor command conversion
+"""
+
+from rclpy.node import Node
+from std_msgs.msg import Float64MultiArray
+
+
+class CommandHandlers:
+    """Handles ROS command message processing and motor control"""
+    
+    def __init__(self, node: Node, motor_manager, config):
+        self.node = node
+        self.motor_manager = motor_manager
+        self.config = config
+        
+        # Command state tracking
+        self.last_base_commands = []
+        self.last_arm_commands = []
+        self.last_head_commands = []
+    
+    def handle_base_command(self, msg: Float64MultiArray):
+        """Handle base/locomotion motor commands with new control logic"""
+        
+        if not self.config.loc_enable:
+            return
+            
+        if len(msg.data) != len(self.config.loc_ids):
+            self.node.get_logger().warn(f"Base command size mismatch: expected {len(self.config.loc_ids)}, got {len(msg.data)}")
+            return
+            
+        # Check if commands have changed
+        if (len(self.last_base_commands) == len(msg.data) and 
+            all(abs(a - b) < 1e-6 for a, b in zip(msg.data, self.last_base_commands))):
+            return
+            
+        self.last_base_commands = list(msg.data)
+        
+        # Process each motor individually
+        for i, motor_id in enumerate(self.config.loc_ids):
+            velocity = msg.data[i]
+            
+            try:
+                # Convert velocity to motor speed
+                rad_per_sec = velocity * self.config.loc_speed_scale
+                max_rad_per_sec = 10.0
+                speed_float = rad_per_sec / max_rad_per_sec * 3400.0
+                speed_raw = int(max(-3400, min(3400, speed_float)))
+                
+                # Send command to motor
+                self.motor_manager.send_velocity_command(motor_id, speed_raw)
+                    
+            except Exception as e:
+                self.node.get_logger().error(f"Failed to send velocity command to motor {motor_id}: {e}")
+    
+    def handle_arm_command(self, msg: Float64MultiArray):
+        """Handle arm motor commands"""
+        if not self.config.arm_enable:
+            return
+            
+        if len(msg.data) != len(self.config.arm_ids):
+            self.node.get_logger().warn(f"Arm command size mismatch: expected {len(self.config.arm_ids)}, got {len(msg.data)}")
+            return
+            
+        # Check if commands have changed
+        if (len(self.last_arm_commands) == len(msg.data) and 
+            all(abs(a - b) < 1e-6 for a, b in zip(msg.data, self.last_arm_commands))):
+            return
+            
+        self.last_arm_commands = list(msg.data)
+        
+        for i, motor_id in enumerate(self.config.arm_ids):
+            try:
+                # Convert from ROS radians to servo ticks
+                angle_rad = msg.data[i]
+                pos_ticks = self._radians_to_ticks(angle_rad)
+                
+                self.motor_manager.send_position_command(motor_id, pos_ticks, 200, 500)
+                
+            except Exception as e:
+                self.node.get_logger().error(f"Failed to send arm command to motor {motor_id}: {e}")
+    
+    def handle_head_command(self, msg: Float64MultiArray):
+        """Handle head motor commands"""
+        if not self.config.head_enable:
+            return
+            
+        if len(msg.data) != len(self.config.head_ids):
+            self.node.get_logger().warn(f"Head command size mismatch: expected {len(self.config.head_ids)}, got {len(msg.data)}")
+            return
+            
+        # Check if commands have changed
+        if (len(self.last_head_commands) == len(msg.data) and 
+            all(abs(a - b) < 1e-6 for a, b in zip(msg.data, self.last_head_commands))):
+            return
+            
+        self.last_head_commands = list(msg.data)
+        
+        for i, motor_id in enumerate(self.config.head_ids):
+            try:
+                # Convert from ROS radians to servo ticks
+                angle_rad = msg.data[i]
+                pos_ticks = self._radians_to_ticks(angle_rad)
+                
+                self.motor_manager.send_position_command(motor_id, pos_ticks, 100, 800)
+                
+            except Exception as e:
+                self.node.get_logger().error(f"Failed to send head command to motor {motor_id}: {e}")
+    
+    def _radians_to_ticks(self, angle_rad: float) -> int:
+        """Convert radians to servo ticks"""
+        servo_center = 2048
+        pos_ticks = int(servo_center + (angle_rad / (2.0 * 3.14159)) * self.config.ticks_per_rev)
+        return max(0, min(4095, pos_ticks))
+    
+    def _ticks_to_radians(self, pos_ticks: int) -> float:
+        """Convert servo ticks to radians"""
+        servo_center = 2048
+        return (pos_ticks - servo_center) / self.config.ticks_per_rev * 2.0 * 3.14159

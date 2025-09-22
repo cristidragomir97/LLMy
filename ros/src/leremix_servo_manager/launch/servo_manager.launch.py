@@ -22,13 +22,13 @@ def generate_launch_description():
     
     port_arg = DeclareLaunchArgument(
         'port',
-        default_value='/dev/ttyUSB0',
+        default_value='/dev/ttyTHS1',
         description='Serial port for motor communication'
     )
     
     baud_arg = DeclareLaunchArgument(
         'baud',
-        default_value='2000000',
+        default_value='1000000',
         description='Baud rate for serial communication'
     )
 

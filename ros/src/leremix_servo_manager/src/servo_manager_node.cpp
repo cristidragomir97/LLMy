@@ -26,11 +26,12 @@ public:
         declare_parameter("head_ids", std::vector<long>{10, 11});
         declare_parameter("ticks_per_rev", 4096);
         declare_parameter("telemetry_rate", 50.0);
-        declare_parameter("command_timeout_ms", 150.0);
         declare_parameter("loc_accel", std::vector<long>{50, 50, 50});
         declare_parameter("arm_accel", std::vector<long>{20, 20, 15, 15, 25, 25});
         declare_parameter("head_accel", std::vector<long>{30, 30});
-        declare_parameter("velocity_threshold", 0.01);
+        declare_parameter("loc_speed_scale", 1.0);
+        declare_parameter("arm_speed_scale", 1.0);
+        declare_parameter("head_speed_scale", 1.0);
         
         RCLCPP_INFO(get_logger(), "Loading servo manager configuration...");
 
@@ -47,7 +48,9 @@ public:
         auto head_accel_param = get_parameter("head_accel").as_integer_array();
         ticks_per_rev_ = get_parameter("ticks_per_rev").as_int();
         auto rate = get_parameter("telemetry_rate").as_double();
-        velocity_threshold_ = get_parameter("velocity_threshold").as_double();
+        loc_speed_scale_ = get_parameter("loc_speed_scale").as_double();
+        arm_speed_scale_ = get_parameter("arm_speed_scale").as_double();
+        head_speed_scale_ = get_parameter("head_speed_scale").as_double();
 
         // Convert to uint8_t vectors
         for (auto id : loc_ids_param) loc_ids_.push_back(static_cast<uint8_t>(id));
@@ -63,9 +66,9 @@ public:
         RCLCPP_INFO(get_logger(), "  Baud Rate: %ld", baud);
         RCLCPP_INFO(get_logger(), "  Ticks per Revolution: %d", ticks_per_rev_);
         RCLCPP_INFO(get_logger(), "  Telemetry Rate: %.1f Hz", rate);
-        RCLCPP_INFO(get_logger(), "  Locomotion Enabled: %s", loc_enable_ ? "YES" : "NO");
-        RCLCPP_INFO(get_logger(), "  Arm Enabled: %s", arm_enable_ ? "YES" : "NO");
-        RCLCPP_INFO(get_logger(), "  Head Enabled: %s", head_enable_ ? "YES" : "NO");
+        RCLCPP_INFO(get_logger(), "  Locomotion Enabled: %s (Speed: %.1f%%)", loc_enable_ ? "YES" : "NO", loc_speed_scale_ * 100.0);
+        RCLCPP_INFO(get_logger(), "  Arm Enabled: %s (Speed: %.1f%%)", arm_enable_ ? "YES" : "NO", arm_speed_scale_ * 100.0);
+        RCLCPP_INFO(get_logger(), "  Head Enabled: %s (Speed: %.1f%%)", head_enable_ ? "YES" : "NO", head_speed_scale_ * 100.0);
         
         // Log motor configuration
         RCLCPP_INFO(get_logger(), "Motor Configuration:");
@@ -171,6 +174,7 @@ public:
             std::chrono::milliseconds(static_cast<int>(1000.0 / rate)),
             [this]() { publish_telemetry(); });
         RCLCPP_INFO(get_logger(), "  ✅ Telemetry timer started at %.1f Hz", rate);
+        
 
         RCLCPP_INFO(get_logger(), "🚀 === Servo Manager Node Successfully Started ===");
         RCLCPP_INFO(get_logger(), "📊 System Summary:");
@@ -187,11 +191,7 @@ public:
 private:
     void handle_base_command(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
     {
-        RCLCPP_DEBUG(get_logger(), "Received base command with %zu values", msg->data.size());
-        
-        // Check if locomotion motors are enabled
         if (!loc_enable_) {
-            RCLCPP_DEBUG(get_logger(), "Locomotion motors disabled, ignoring base command");
             return;
         }
         
@@ -211,7 +211,6 @@ private:
                 }
             }
             if (!commands_changed) {
-                RCLCPP_DEBUG(get_logger(), "Base commands unchanged, skipping motor update");
                 return;
             }
         }
@@ -219,97 +218,47 @@ private:
         // Store current commands for next comparison
         last_base_commands_ = msg->data;
 
-        // Check if all velocities are below threshold for position braking
-        bool all_velocities_low = true;
+        // Convert velocities to motor speeds
         std::vector<int16_t> speeds;
-        for (size_t i = 0; i < msg->data.size(); ++i) {
-            double rad_per_sec = msg->data[i];
-            if (std::abs(rad_per_sec) >= velocity_threshold_) {
-                all_velocities_low = false;
-            }
-            
-            // Convert from rad/s to motor raw speed 
-            double max_rad_per_sec = 10.0; // Adjust based on servo specs
-            int16_t speed_raw = static_cast<int16_t>(std::clamp(rad_per_sec / max_rad_per_sec * 1023.0, -1023.0, 1023.0));
+        for (double rad_per_sec : msg->data) {
+            double scaled_rad_per_sec = rad_per_sec * loc_speed_scale_;
+            double max_rad_per_sec = 10.0;
+            int16_t speed_raw = static_cast<int16_t>(std::clamp(scaled_rad_per_sec / max_rad_per_sec * 3400.0, -3400.0, 3400.0));
             speeds.push_back(speed_raw);
         }
         
-        if (all_velocities_low) {
-            // Position braking: read current position and switch to position mode for instant stop
-            RCLCPP_DEBUG(get_logger(), "All velocities below threshold (%.4f rad/s), applying position braking", velocity_threshold_);
+        // Handle torque control per motor based on individual speed
+        const double speed_threshold = 0.001; // Small threshold for near-zero speeds
+        for (size_t i = 0; i < loc_ids_.size() && i < msg->data.size(); ++i) {
+            uint8_t id = loc_ids_[i];
+            bool should_have_torque = std::abs(msg->data[i]) > speed_threshold;
             
-            std::vector<uint8_t> brake_ids;
-            std::vector<uint16_t> brake_positions, brake_times, brake_speeds;
-            
-            for (size_t i = 0; i < loc_ids_.size(); ++i) {
-                uint8_t id = loc_ids_[i];
-                
-                // Only apply braking if not already in brake mode
-                if (!motor_position_brake_active_[id]) {
-                    auto current_pos = motor_manager_->readPresentPosition(id);
-                    if (current_pos) {
-                        // Switch to position mode for instant braking
-                        if (motor_manager_->setMode(id, 0)) { // Mode 0 = position mode
-                            brake_ids.push_back(id);
-                            brake_positions.push_back(*current_pos);
-                            brake_times.push_back(50);  // Very short time for instant brake
-                            brake_speeds.push_back(1000); // High speed for quick response
-                            motor_position_brake_active_[id] = true;
-                            RCLCPP_DEBUG(get_logger(), "Applied position brake to motor %d at position %d", id, *current_pos);
-                        }
-                    }
+            if (should_have_torque) {
+                // Enable torque for this motor
+                if (!motor_manager_->setTorque(id, true)) {
+                    RCLCPP_WARN(get_logger(), "Failed to enable torque for motor %d", id);
                 }
-            }
-            
-            // Send position brake commands if any motors need braking
-            if (!brake_ids.empty()) {
-                if (!motor_manager_->syncWritePositionTimeSpeed(brake_ids, brake_positions, brake_times, brake_speeds)) {
-                    RCLCPP_ERROR(get_logger(), "❌ Failed to send position brake commands");
-                } else {
-                    RCLCPP_DEBUG(get_logger(), "✅ Applied position braking to %zu motors", brake_ids.size());
-                }
-            }
-        } else {
-            // Release position braking and switch back to velocity mode for any motors that were braking
-            std::vector<uint8_t> release_ids;
-            for (size_t i = 0; i < loc_ids_.size(); ++i) {
-                uint8_t id = loc_ids_[i];
-                if (motor_position_brake_active_[id]) {
-                    if (motor_manager_->setMode(id, 1)) { // Mode 1 = velocity mode
-                        release_ids.push_back(id);
-                        motor_position_brake_active_[id] = false;
-                        RCLCPP_DEBUG(get_logger(), "Released position brake for motor %d", id);
-                    }
-                }
-            }
-            
-            if (!release_ids.empty()) {
-                RCLCPP_DEBUG(get_logger(), "✅ Released position braking for %zu motors", release_ids.size());
-                // Small delay to let mode switch settle
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            }
-            
-            // Send velocity commands
-            RCLCPP_DEBUG(get_logger(), "Sending velocity commands to %zu locomotion motors", loc_ids_.size());
-            if (!motor_manager_->syncWriteVelocity(loc_ids_, speeds)) {
-                RCLCPP_ERROR(get_logger(), "❌ Failed to send base velocity commands to motors");
             } else {
-                static int command_count = 0;
-                command_count++;
-                if (command_count % 50 == 0) { // Log every 50 commands to avoid spam
-                    RCLCPP_INFO(get_logger(), "✅ Base commands sent successfully (%d total)", command_count);
+                // Set velocity to zero before disabling torque
+                if (!motor_manager_->setVelocity(id, 0)) {
+                    RCLCPP_WARN(get_logger(), "Failed to set zero velocity for motor %d", id);
+                }
+                // Disable torque for this motor
+                if (!motor_manager_->setTorque(id, false)) {
+                    RCLCPP_WARN(get_logger(), "Failed to disable torque for motor %d", id);
                 }
             }
+        }
+        
+        // Send velocity commands only to motors with torque enabled
+        if (!motor_manager_->syncWriteVelocity(loc_ids_, speeds)) {
+            RCLCPP_ERROR(get_logger(), "Failed to send velocity commands");
         }
     }
 
     void handle_arm_command(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
     {
-        RCLCPP_DEBUG(get_logger(), "Received arm command with %zu values", msg->data.size());
-        
-        // Check if arm motors are enabled
         if (!arm_enable_) {
-            RCLCPP_DEBUG(get_logger(), "Arm motors disabled, ignoring arm command");
             return;
         }
         
@@ -329,7 +278,6 @@ private:
                 }
             }
             if (!commands_changed) {
-                RCLCPP_DEBUG(get_logger(), "Arm commands unchanged, skipping motor update");
                 return;
             }
         }
@@ -349,25 +297,14 @@ private:
             speeds.push_back(500); // Default speed
         }
         
-        RCLCPP_DEBUG(get_logger(), "Sending position commands to %zu arm motors", arm_ids_.size());
         if (!motor_manager_->syncWritePositionTimeSpeed(arm_ids_, positions, times, speeds)) {
-            RCLCPP_ERROR(get_logger(), "❌ Failed to send arm position commands to motors");
-        } else {
-            static int command_count = 0;
-            command_count++;
-            if (command_count % 25 == 0) { // Log every 25 commands to avoid spam
-                RCLCPP_INFO(get_logger(), "✅ Arm commands sent successfully (%d total)", command_count);
-            }
+            RCLCPP_ERROR(get_logger(), "Failed to send arm position commands");
         }
     }
 
     void handle_head_command(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
     {
-        RCLCPP_DEBUG(get_logger(), "Received head command with %zu values", msg->data.size());
-        
-        // Check if head motors are enabled
         if (!head_enable_) {
-            RCLCPP_DEBUG(get_logger(), "Head motors disabled, ignoring head command");
             return;
         }
         
@@ -387,7 +324,6 @@ private:
                 }
             }
             if (!commands_changed) {
-                RCLCPP_DEBUG(get_logger(), "Head commands unchanged, skipping motor update");
                 return;
             }
         }
@@ -407,15 +343,8 @@ private:
             speeds.push_back(800); // Faster speed for head
         }
         
-        RCLCPP_DEBUG(get_logger(), "Sending position commands to %zu head motors", head_ids_.size());
         if (!motor_manager_->syncWritePositionTimeSpeed(head_ids_, positions, times, speeds)) {
-            RCLCPP_ERROR(get_logger(), "❌ Failed to send head position commands to motors");
-        } else {
-            static int command_count = 0;
-            command_count++;
-            if (command_count % 25 == 0) { // Log every 25 commands to avoid spam
-                RCLCPP_INFO(get_logger(), "✅ Head commands sent successfully (%d total)", command_count);
-            }
+            RCLCPP_ERROR(get_logger(), "Failed to send head position commands");
         }
     }
 
@@ -461,7 +390,7 @@ private:
                 
                 // Convert raw speed to rad/s - use same scaling as command conversion
                 double max_rad_per_sec = 10.0;
-                double vel_rad_s = static_cast<double>(*speed) / 1023.0 * max_rad_per_sec;
+                double vel_rad_s = static_cast<double>(*speed) / 3400.0 * max_rad_per_sec;
                 msg->velocity.push_back(vel_rad_s);
                 successful_reads++;
             } else {
@@ -514,10 +443,10 @@ private:
                 } else {
                     RCLCPP_INFO(get_logger(), "Set acceleration %d for locomotion motor %d", accel, id);
                 }
-                if (!motor_manager_->setTorque(id, true)) {
-                    RCLCPP_WARN(get_logger(), "Failed to enable torque for locomotion motor %d", id);
+                // Start with torque disabled
+                if (!motor_manager_->setTorque(id, false)) {
+                    RCLCPP_WARN(get_logger(), "Failed to disable torque for locomotion motor %d", id);
                 }
-                motor_position_brake_active_[id] = false;
             }
         }
 
@@ -610,16 +539,16 @@ private:
         
         RCLCPP_INFO(get_logger(), "Motor initialization complete!");
     }
+    
 
     std::unique_ptr<MotorManager> motor_manager_;
     std::vector<uint8_t> loc_ids_, arm_ids_, head_ids_;
     std::vector<uint8_t> loc_accel_, arm_accel_, head_accel_;
     int ticks_per_rev_;
-    double velocity_threshold_;
     bool loc_enable_, arm_enable_, head_enable_;
-    std::map<uint8_t, bool> motor_position_brake_active_;
+    double loc_speed_scale_, arm_speed_scale_, head_speed_scale_;
     
-    // Message change detection
+    // Command change detection
     std::vector<double> last_base_commands_;
     std::vector<double> last_arm_commands_;
     std::vector<double> last_head_commands_;

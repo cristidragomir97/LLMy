@@ -22,7 +22,7 @@ def generate_launch_description():
     
     port_arg = DeclareLaunchArgument(
         'port',
-        default_value='/dev/ttyUSB0',
+        default_value='/dev/ttyTHS1',
         description='Serial port for motor communication'
     )
     

@@ -31,6 +31,7 @@ public:
     bool setTorque(uint8_t id, bool on);
     bool setAcceleration(uint8_t id, uint8_t accel);
     bool setSpeed(uint8_t id, uint16_t speed_raw); // write "running speed" (H,L)
+    bool setVelocity(uint8_t id, int16_t velocity); // write individual velocity (signed)
 
     // Composite move (position/time/speed) starting at GOAL_POS_L (0x2A).
     bool moveTo(uint8_t id, uint16_t pos_ticks, uint16_t time_ms, uint16_t speed_raw);

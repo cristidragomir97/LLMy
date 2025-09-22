@@ -16,10 +16,15 @@ sts_bus_node:
     command_timeout_ms: 100.0  # Reduced timeout for faster response
 
     # Acceleration parameters (0-255, lower = smoother acceleration)
-    loc_accel:  [15, 15, 15]  # Locomotion motors - moderate acceleration
+    loc_accel:  [8, 8, 8]  # Locomotion motors - reduced acceleration for smoother movement
     arm_accel:  [20, 20, 15, 15, 25, 25]  # Arm motors - smooth acceleration for less choppy movement
     head_accel: [15, 15]  # Head motors - moderate acceleration
     
-    # Velocity threshold for torque disable (rad/s)
-    velocity_threshold: 0.01  # Below this threshold, disable torque instead of sending zero velocity
+    # Velocity threshold for position braking (rad/s)
+    velocity_threshold: 0.001  # Below this threshold, apply position braking
+    
+    # Speed scaling factors (0.0 to 1.0, lower = slower)
+    loc_speed_scale: 0.1  # Further reduced locomotion speed (10% of max)
+    arm_speed_scale: 1.0  # Normal arm speed
+    head_speed_scale: 1.0  # Normal head speed
 
