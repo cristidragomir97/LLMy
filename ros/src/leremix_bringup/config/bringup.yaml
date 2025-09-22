@@ -1,0 +1,52 @@
+# LeRemix Robot Bringup Configuration
+
+# Component Enable/Disable Flags
+components:
+  camera:
+    enabled: true
+    description: "Enable camera (leremix_camera)"
+  
+  imu:
+    enabled: true
+    description: "Enable IMU (leremix_imu)"
+  
+  xbox_controller:
+    enabled: true
+    description: "Enable Xbox controller (leremix_teleop_xbox)"
+  
+  base_systems:
+    enabled: true
+    description: "Enable base systems (servo manager)"
+  
+  control_stack:
+    enabled: true
+    description: "Enable control stack (controllers, robot state publisher)"
+  
+  rosbridge:
+    enabled: true
+    description: "Enable rosbridge websocket server"
+
+# Servo Manager Configuration
+servo_manager:
+  port: "/dev/ttyTHS1"
+  baud_rate: 1000000
+
+# Command Velocity Multiplexer Configuration
+cmd_vel_mux:
+  topics:
+    xbox:
+      topic: "cmd_vel_xbox"
+      timeout: 0.5
+      priority: 10
+    
+    nav:
+      topic: "cmd_vel_nav"
+      timeout: 0.5
+      priority: 5
+    
+    teleop:
+      topic: "cmd_vel_teleop"
+      timeout: 0.5
+      priority: 15
+  
+  output_topic: "/omnidirectional_controller/cmd_vel_unstamped"

@@ -31,7 +31,7 @@ def generate_launch_description():
     # Include servo manager launch
     servo_manager_launch = IncludeLaunchDescription(
         PathJoinSubstitution([
-            FindPackageShare('leremix_servo_manager'),
+            FindPackageShare('leremix_servo_manager_py'),
             'launch',
             'servo_manager.launch.py'
         ]),

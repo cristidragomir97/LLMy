@@ -27,6 +27,11 @@
   <!-- Controller manager and micro-ROS -->
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>micro_ros_agent</exec_depend>
+  
+  <!-- Additional runtime dependencies -->
+  <exec_depend>twist_mux</exec_depend>
+  <exec_depend>rosboard</exec_depend>
+  <exec_depend>rosbridge_server</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

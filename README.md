@@ -21,38 +21,10 @@
 **LeRemix** is a fully 3D-printed mobile manipulator designed to be **affordable**, **easy to build**, and **simulation-ready**. Built on the shoulders of giants like [LeRobot](https://github.com/huggingface/lerobot) and [LeKiwi](https://github.com/SIGRobotics-UIUC), it delivers ROS2 integration and extensibility - making it the perfect foundation for **AI/VLM experimentation**, **research**, **prototyping**, and **education**.
 
 
+## Design
 
-> 💡 **Why LeRemix?** 
+### Updates from LeKiwi 
 
-<!-- Feature 1 -->
-<div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap; margin:32px 0;">
-  <div style="flex:1 1 320px; min-width:280px; order:2;">
-    <h3 style="margin:0 0 8px;">Blazing-fast Setup</h3>
-    <p style="margin:0; line-height:1.6;">
-      Go from zero to working prototype in minutes. Opinionated defaults and
-      sensible conventions keep you moving—no endless config screens.
-    </p>
-  </div>
-  <div style="flex:1 1 320px; min-width:280px; order:1;">
-    <img src="https://via.placeholder.com/800x500" alt="Setup screenshot" style="width:100%; border-radius:12px;">
-  </div>
-</div>
-
-
-<hr style="border:none; border-top:1px solid #e5e7eb; margin:24px 0;">
-
-<!-- Feature 2 -->
-<div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap; margin:32px 0;">
-  <div style="flex:1 1 320px; min-width:280px;">
-    <img src="https://via.placeholder.com/800x500" alt="Live preview example" style="width:100%; border-radius:12px;">
-  </div>
-  <div style="flex:1 1 320px; min-width:280px;">
-    <h3 style="margin:0 0 8px;">Live Preview, Real Results</h3>
-    <p style="margin:0; line-height:1.6;">
-      See changes as you type. Accurate previews mean fewer surprises when you ship.
-    </p>
-  </div>
-</div>
 
 **🎯 Built for Modern Robotics Development**
 - **Full ROS2 Integration**: Complete ros2_control framework with standard interfaces that work seamlessly with MoveIt2, Navigation2, and the entire ROS2 ecosystem
