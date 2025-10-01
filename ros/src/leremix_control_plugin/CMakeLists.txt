@@ -10,7 +10,7 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
-  src/esp32_system_topic.cpp
+  src/ros2_control_bridge.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)

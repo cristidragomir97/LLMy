@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 from glob import glob
 
-package_name = 'leremix_servo_manager_py'
+package_name = 'leremix_servo_manager'
 
 setup(
     name=package_name,
@@ -19,12 +19,12 @@ setup(
     zip_safe=True,
     maintainer='LeRemix Team',
     maintainer_email='dev@leremix.com',
-    description='Python-based servo manager for LeRemix robot using ST3215 library',
+    description='Servo manager for LeRemix robot using ST3215 servos',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'servo_manager_node = leremix_servo_manager_py.servo_manager_node:main',
+            'servo_manager_node = leremix_servo_manager.servo_manager_node:main',
         ],
     },
 )

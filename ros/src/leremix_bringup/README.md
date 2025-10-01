@@ -1,300 +1,102 @@
 # leremix_bringup
 
-Launch configuration package for bringing up the complete LeRemix robot system, providing convenient launch files for different deployment scenarios.
+The LeRemix Bringup package provides a single, modular launch file that coordinates all LeRemix subsystems to bring up the complete robot. It provides flexible configuration through launch arguments to enable/disable specific components as needed.
 
-## Overview
-
-The LeRemix Bringup package contains launch files that coordinate multiple LeRemix packages to bring up the complete robot system. It provides different launch configurations for simulation, hardware, and development scenarios.
-
-## Features
-
-- **Complete System Launch**: Single launch files for full robot startup
-- **Modular Configuration**: Enable/disable specific components as needed
-- **Hardware/Simulation Switch**: Easy switching between real robot and simulation
-- **Development Support**: Debug and testing configurations
-- **Parameterized Launch**: Configurable robot parameters and components
+- **Command Velocity Multiplexing**: Integrates twist_mux for multiple control sources
+- **Web Dashboard**: Includes rosboard for browser-based monitoring
 
 ## Launch Files
 
-### Core Launch Files
+### `bringup_robot.launch.py`
 
-#### `robot.launch.py`
-Brings up the complete LeRemix robot for hardware operation:
-- Robot description and state publisher
-- Hardware control plugin and servo manager
-- Controller spawning and configuration
-- IMU and sensor nodes
-- Camera system (if enabled)
+The main launch file that brings up all LeRemix subsystems:
 
-```bash
-# Launch complete hardware robot
-ros2 launch leremix_bringup robot.launch.py
-
-# Launch without camera
-ros2 launch leremix_bringup robot.launch.py enable_camera:=false
-
-# Launch with custom servo manager
-ros2 launch leremix_bringup robot.launch.py servo_manager_type:=cpp
-```
-
-#### `simulation.launch.py`
-Brings up the complete robot in Gazebo simulation:
-- Gazebo world and robot spawning
-- Simulated controllers and hardware interfaces
-- Robot description for simulation
-- Optional sensor simulation
-
-```bash
-# Launch complete simulation
-ros2 launch leremix_bringup simulation.launch.py
-
-# Launch simulation without GUI
-ros2 launch leremix_bringup simulation.launch.py gui:=false
-
-# Launch with Xbox controller
-ros2 launch leremix_bringup simulation.launch.py enable_teleop:=true
-```
-
-#### `minimal.launch.py`
-Minimal robot setup for development and testing:
-- Robot description only
-- Basic joint state publisher
-- No hardware interfaces
-
-```bash
-# Launch minimal robot for development
-ros2 launch leremix_bringup minimal.launch.py
-
-# Launch minimal with RViz
-ros2 launch leremix_bringup minimal.launch.py enable_rviz:=true
-```
-
-### Specialized Launch Files
-
-#### `teleop.launch.py`
-Teleoperation-focused launch for manual control:
-- Hardware or simulation robot
-- Xbox controller teleoperation
-- Optional camera feed
-- RViz visualization
-
-```bash
-# Launch robot with teleoperation
-ros2 launch leremix_bringup teleop.launch.py
-
-# Launch simulation teleop
-ros2 launch leremix_bringup teleop.launch.py use_sim_time:=true
-```
-
-#### `sensors.launch.py`
-Sensor-only launch for perception development:
-- Camera system
-- IMU sensor
-- TF publishing
-- No motor control
-
-```bash
-# Launch sensors only
-ros2 launch leremix_bringup sensors.launch.py
-
-# Launch with specific camera
-ros2 launch leremix_bringup sensors.launch.py camera_type:=d435i
-```
+**Components:**
+- **Base Systems** (`leremix_control/base_systems.launch.py`): Servo manager for motor control
+- **Control Stack** (`leremix_control/control_stack.launch.py`): Robot state publisher, controller manager, and controller spawners
+- **Camera** (`leremix_camera/camera.launch.py`): RGB-D camera system
+- **IMU** (`leremix_imu/imu.launch.py`): Orientation sensor
+- **Xbox Teleoperation** (`leremix_teleop_xbox/teleop_xbox.launch.py`): Manual control interface
+- **RPLidar** (`rplidar_ros/view_rplidar_c1_launch.py`): 2D laser scanner (optional)
+- **Command Velocity Mux**: Multiplexes control commands from different sources (xbox, nav, teleop)
+- **Rosboard**: Web-based dashboard for monitoring and visualization
 
 ## Launch Arguments
 
-### Common Arguments
-
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `use_sim_time` | `false` | Use simulation time |
-| `enable_camera` | `true` | Launch camera system |
-| `enable_imu` | `true` | Launch IMU sensor |
-| `enable_teleop` | `false` | Launch Xbox teleoperation |
-| `enable_rviz` | `false` | Launch RViz visualization |
-| `servo_manager_type` | `python` | Servo manager type: `python` or `cpp` |
-
-### Hardware-Specific Arguments
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `robot_description_file` | `LeRemix.xacro` | URDF file to use |
-| `controllers_file` | `controllers.hw.yaml` | Controller configuration |
-| `servo_config_file` | `servo_manager.yaml` | Servo manager configuration |
-| `serial_port` | `/dev/ttyTHS1` | Serial port for motor communication |
-
-### Simulation-Specific Arguments
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `world_file` | `turtlebot3_house.world` | Gazebo world file |
-| `spawn_x` | `0.0` | Robot spawn X position |
-| `spawn_y` | `0.0` | Robot spawn Y position |
-| `spawn_z` | `0.05` | Robot spawn Z position |
-| `gui` | `true` | Show Gazebo GUI |
-| `pause` | `false` | Start simulation paused |
+| `use_camera` | `true` | Enable camera system |
+| `use_imu` | `true` | Enable IMU sensor |
+| `use_xbox` | `true` | Enable Xbox controller teleoperation |
+| `use_rplidar` | `false` | Enable RPLidar C1 |
+| `use_base_systems` | `true` | Enable servo manager (motor control) |
+| `use_control_stack` | `true` | Enable robot state publisher and controllers |
+| `servo_port` | `/dev/ttyTHS1` | Serial port for servo communication |
+| `servo_baud` | `1000000` | Baudrate for servo communication |
 
 ## Usage Examples
 
-### Hardware Deployment
+### Full System Startup
 
 ```bash
-# Basic robot startup
-ros2 launch leremix_bringup robot.launch.py
-
-# Robot with teleoperation
-ros2 launch leremix_bringup robot.launch.py enable_teleop:=true
-
-# Robot without camera (faster startup)
-ros2 launch leremix_bringup robot.launch.py enable_camera:=false
-
-# Custom serial port
-ros2 launch leremix_bringup robot.launch.py serial_port:=/dev/ttyUSB0
+# Launch complete robot with all systems
+ros2 launch leremix_bringup bringup_robot.launch.py
 ```
 
-### Simulation Development
+### Custom Configurations
 
 ```bash
-# Complete simulation
-ros2 launch leremix_bringup simulation.launch.py
+# Launch without camera (faster startup)
+ros2 launch leremix_bringup bringup_robot.launch.py use_camera:=false
 
-# Headless simulation for CI
-ros2 launch leremix_bringup simulation.launch.py gui:=false
+# Launch with RPLidar C1
+ros2 launch leremix_bringup bringup_robot.launch.py use_rplidar:=true
 
-# Simulation with teleoperation
-ros2 launch leremix_bringup simulation.launch.py enable_teleop:=true
+# Launch without Xbox controller
+ros2 launch leremix_bringup bringup_robot.launch.py use_xbox:=false
 
-# Custom spawn position
-ros2 launch leremix_bringup simulation.launch.py spawn_x:=2.0 spawn_y:=1.0
+# Launch with custom serial port
+ros2 launch leremix_bringup bringup_robot.launch.py servo_port:=/dev/ttyUSB0
+
+# Minimal setup (only control stack, no sensors or teleop)
+ros2 launch leremix_bringup bringup_robot.launch.py use_camera:=false use_imu:=false use_xbox:=false
+
+# Full sensor suite (camera, IMU, and LiDAR)
+ros2 launch leremix_bringup bringup_robot.launch.py use_rplidar:=true
 ```
 
-### Development and Testing
+### Development Scenarios
 
 ```bash
-# Minimal setup for URDF testing
-ros2 launch leremix_bringup minimal.launch.py enable_rviz:=true
+# Sensors only (no motor control)
+ros2 launch leremix_bringup bringup_robot.launch.py use_base_systems:=false use_control_stack:=false
 
-# Sensor testing only
-ros2 launch leremix_bringup sensors.launch.py
-
-# Teleoperation testing
-ros2 launch leremix_bringup teleop.launch.py
+# Control only (no sensors)
+ros2 launch leremix_bringup bringup_robot.launch.py use_camera:=false use_imu:=false
 ```
 
-## Configuration Files
+## Command Velocity Multiplexing
 
-The bringup package relies on configuration files from other packages:
+The launch file includes a `twist_mux` node that multiplexes command velocity from multiple sources:
 
-### Robot Description
-- `leremix_description/urdf/LeRemix.xacro` - Main robot URDF
-- `leremix_description/config/joint_limits.yaml` - Joint limits
+| Source | Topic | Priority | Description |
+|--------|-------|----------|-------------|
+| Teleop | `/cmd_vel_teleop` | 15 (highest) | Manual teleoperation override |
+| Xbox | `/cmd_vel_xbox` | 10 | Xbox controller input |
+| Nav | `/cmd_vel_nav` | 5 (lowest) | Navigation stack commands |
 
-### Controllers
-- `leremix_control/config/controllers.hw.yaml` - Hardware controllers
-- `leremix_control/config/controllers.sim.yaml` - Simulation controllers
+All sources are multiplexed to `/omnidirectional_controller/cmd_vel_unstamped` with a 0.5 second timeout.
 
-### Servo Manager
-- `leremix_servo_manager*/config/servo_manager.yaml` - Motor configuration
+## Web Dashboard
 
-### Sensors
-- `leremix_camera/config/realsense.yaml` - Camera configuration
-- `leremix_imu/config/imu.yaml` - IMU configuration
-
-## System Dependencies
-
-### Hardware Dependencies
-- Serial communication drivers
-- Camera drivers (RealSense SDK)
-- IMU libraries (Adafruit CircuitPython)
-- USB/Bluetooth drivers (Xbox controller)
-
-### Software Dependencies
-- All LeRemix packages
-- ROS2 Humble
-- Gazebo Classic
-- RViz2
-- ros2_control
-- Navigation stack (optional)
-
-## Troubleshooting
-
-### Launch Failures
-
-```bash
-# Check package dependencies
-rosdep check --from-paths . --ignore-src
-
-# Verify all packages built successfully
-colcon list --packages-select leremix_*
-
-# Check launch file syntax
-ros2 launch --show-args leremix_bringup robot.launch.py
+The launch file starts a rosboard instance for web-based monitoring. Access the dashboard at:
+```
+http://localhost:8888
 ```
 
-### Hardware Issues
-
-```bash
-# Check serial permissions
-ls -la /dev/ttyTHS1
-sudo usermod -a -G dialout $USER
-
-# Verify camera connection
-ros2 topic list | grep camera
-
-# Check motor communication
-ros2 topic echo /motor_manager/joint_states --once
-```
-
-### Simulation Issues
-
-```bash
-# Check Gazebo installation
-gazebo --version
-
-# Verify controller loading
-ros2 control list_controllers
-
-# Check robot spawning
-ros2 topic echo /joint_states --once
-```
-
-## Integration
-
-This package coordinates:
-- **leremix_description** - Robot model and visualization
-- **leremix_control** - Controller configuration
-- **leremix_servo_manager** - Motor control
-- **leremix_camera** - Perception system
-- **leremix_imu** - Orientation sensing
-- **leremix_teleop_xbox** - Manual control
-- **leremix_gazebo** - Simulation environment
-
-## Customization
-
-### Adding New Launch Configurations
-
-1. Create new launch file in `launch/` directory
-2. Define launch arguments and parameters
-3. Include necessary component launch files
-4. Test with different parameter combinations
-5. Document new arguments and usage
-
-### Modifying Existing Launches
-
-1. Edit appropriate launch file
-2. Update argument defaults if needed
-3. Test all parameter combinations
-4. Update documentation
-
-## Best Practices
-
-- Use descriptive launch file names
-- Provide sensible default parameters
-- Include comprehensive argument documentation
-- Test both hardware and simulation paths
-- Use conditional launching for optional components
-- Log important startup information
-
-## License
-
-Part of the LeRemix Robot project. See main repository for license information.
+Rosboard provides:
+- Topic visualization
+- TF tree viewer
+- Camera feeds
+- Service/action inspection
+- Parameter configuration

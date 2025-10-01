@@ -67,10 +67,3 @@ ros2 topic echo /imu/mag
 # View fused IMU data with orientation
 ros2 topic echo /imu/fused
 ```
-
-## Troubleshooting
-
-- Ensure I2C is enabled and ICM20948 is properly connected
-- Check I2C address if sensor is not detected
-- Verify Adafruit libraries are installed correctly
-- Run with `--ros-args --log-level debug` for detailed logging

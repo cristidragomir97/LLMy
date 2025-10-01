@@ -1,56 +1,49 @@
 #!/usr/bin/env python3
 
+import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
-import os
+from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
 
-
 def generate_launch_description():
-    # Get the path to the config file
-    pkg_share = get_package_share_directory('leremix_servo_manager')
-    config_file = os.path.join(pkg_share, 'config', 'servo_manager.yaml')
+    # Get the package directory
+    pkg_dir = get_package_share_directory('leremix_servo_manager_py')
     
-    # Declare launch arguments
+    # Path to config file
+    config_file = os.path.join(pkg_dir, 'config', 'servo_manager.yaml')
+    
+    # Launch arguments
     config_arg = DeclareLaunchArgument(
         'config_file',
         default_value=config_file,
-        description='Path to the servo manager config file'
+        description='Path to servo manager configuration file'
     )
     
-    port_arg = DeclareLaunchArgument(
-        'port',
-        default_value='/dev/ttyTHS1',
-        description='Serial port for motor communication'
+    brake_method_arg = DeclareLaunchArgument(
+        'brake_method',
+        default_value='torque_disable',
+        description='Braking method: torque_disable, velocity_ramp, or position_brake'
     )
     
-    baud_arg = DeclareLaunchArgument(
-        'baud',
-        default_value='1000000',
-        description='Baud rate for serial communication'
-    )
-
     # Servo manager node
     servo_manager_node = Node(
-        package='leremix_servo_manager',
+        package='leremix_servo_manager_py',
         executable='servo_manager_node',
-        name='servo_manager_node',
+        name='servo_manager_node_py',
         parameters=[
             LaunchConfiguration('config_file'),
-            {
-                'port': LaunchConfiguration('port'),
-                'baud': LaunchConfiguration('baud'),
-            }
+            {'brake_method': LaunchConfiguration('brake_method')}
         ],
         output='screen',
         emulate_tty=True,
+        respawn=True,
+        respawn_delay=2.0
     )
-
+    
     return LaunchDescription([
         config_arg,
-        port_arg,
-        baud_arg,
-        servo_manager_node,
+        brake_method_arg,
+        servo_manager_node
     ])

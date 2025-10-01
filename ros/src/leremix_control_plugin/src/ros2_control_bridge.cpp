@@ -1,4 +1,4 @@
-#include "leremix_control_plugin/esp32_system_topic.hpp"
+#include "leremix_control_plugin/ros2_control_bridge.hpp"
 
 #include <pluginlib/class_list_macros.hpp>
 #include <algorithm>
@@ -10,7 +10,7 @@ using hardware_interface::HW_IF_VELOCITY;
 
 namespace leremix_control_plugin {
 
-CallbackReturn Esp32SystemTopic::on_init(const hardware_interface::HardwareInfo & info)
+CallbackReturn ROS2ControlBridge::on_init(const hardware_interface::HardwareInfo & info)
 {
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
     return CallbackReturn::ERROR;
@@ -56,7 +56,7 @@ CallbackReturn Esp32SystemTopic::on_init(const hardware_interface::HardwareInfo 
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface> Esp32SystemTopic::export_state_interfaces()
+std::vector<hardware_interface::StateInterface> ROS2ControlBridge::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
   // Base joints: position & velocity
@@ -75,7 +75,7 @@ std::vector<hardware_interface::StateInterface> Esp32SystemTopic::export_state_i
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> Esp32SystemTopic::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> ROS2ControlBridge::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
   for (const auto & name : base_joints_) {
@@ -90,10 +90,10 @@ std::vector<hardware_interface::CommandInterface> Esp32SystemTopic::export_comma
   return command_interfaces;
 }
 
-CallbackReturn Esp32SystemTopic::on_configure(const rclcpp_lifecycle::State &)
+CallbackReturn ROS2ControlBridge::on_configure(const rclcpp_lifecycle::State &)
 {
   // Create our internal node and pubs/subs
-  node_ = std::make_shared<rclcpp::Node>("esp32_hw_bridge");
+  node_ = std::make_shared<rclcpp::Node>("ROSControlMotorBridge");
 
   // Publishers (best-effort for micro-ROS compatibility)
   base_pub_ = node_->create_publisher<std_msgs::msg::Float64MultiArray>(
@@ -107,23 +107,23 @@ CallbackReturn Esp32SystemTopic::on_configure(const rclcpp_lifecycle::State &)
   auto qos = rclcpp::QoS(rclcpp::KeepLast(5)).best_effort();
   state_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
     state_topic_, qos,
-    std::bind(&Esp32SystemTopic::state_callback, this, std::placeholders::_1));
+    std::bind(&ROS2ControlBridge::state_callback, this, std::placeholders::_1));
 
   exec_.add_node(node_);
 
-  RCLCPP_INFO(node_->get_logger(), "Configured Esp32SystemTopic. base_cmd_topic=%s arm_cmd_topic=%s head_cmd_topic=%s state_topic=%s",
+  RCLCPP_INFO(node_->get_logger(), "Configured MotorBridge. base_cmd_topic=%s arm_cmd_topic=%s head_cmd_topic=%s state_topic=%s",
               base_cmd_topic_.c_str(), arm_cmd_topic_.c_str(), head_cmd_topic_.c_str(), state_topic_.c_str());
 
   return CallbackReturn::SUCCESS;
 }
 
-CallbackReturn Esp32SystemTopic::on_activate(const rclcpp_lifecycle::State &)
+CallbackReturn ROS2ControlBridge::on_activate(const rclcpp_lifecycle::State &)
 {
   // Nothing special, topics already created
   return CallbackReturn::SUCCESS;
 }
 
-CallbackReturn Esp32SystemTopic::on_deactivate(const rclcpp_lifecycle::State &)
+CallbackReturn ROS2ControlBridge::on_deactivate(const rclcpp_lifecycle::State &)
 {
   // Shutdown node to stop callbacks
   exec_.remove_node(node_);
@@ -135,7 +135,7 @@ CallbackReturn Esp32SystemTopic::on_deactivate(const rclcpp_lifecycle::State &)
   return CallbackReturn::SUCCESS;
 }
 
-void Esp32SystemTopic::state_callback(const sensor_msgs::msg::JointState::SharedPtr msg)
+void ROS2ControlBridge::state_callback(const sensor_msgs::msg::JointState::SharedPtr msg)
 {
   std::scoped_lock<std::mutex> lk(state_mtx_);
 
@@ -152,14 +152,14 @@ void Esp32SystemTopic::state_callback(const sensor_msgs::msg::JointState::Shared
   }
 }
 
-return_type Esp32SystemTopic::read(const rclcpp::Time &, const rclcpp::Duration &)
+return_type ROS2ControlBridge::read(const rclcpp::Time &, const rclcpp::Duration &)
 {
   // Service any pending JointState messages without blocking controller timings
   exec_.spin_some();
   return return_type::OK;
 }
 
-return_type Esp32SystemTopic::write(const rclcpp::Time &, const rclcpp::Duration &)
+return_type ROS2ControlBridge::write(const rclcpp::Time &, const rclcpp::Duration &)
 {
   // Publish base velocities in the order of base_joints_
   {
@@ -196,4 +196,4 @@ return_type Esp32SystemTopic::write(const rclcpp::Time &, const rclcpp::Duration
 
 } // namespace leremix_control_plugin
 
-PLUGINLIB_EXPORT_CLASS(leremix_control_plugin::Esp32SystemTopic, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(leremix_control_plugin::ROS2ControlBridge, hardware_interface::SystemInterface)

@@ -1,188 +1,215 @@
 # leremix_teleop_xbox
 
-Xbox controller teleoperation for LeRemix robot, providing intuitive control of both the omnidirectional base and 6-DOF robotic arm with camera tilt.
+Xbox controller teleoperation for LeRemix robot, providing intuitive control of the omnidirectional base, 6-DOF robotic arm, and pan-tilt camera head.
 
 ## Features
 
-- Xbox controller support for mobile base control
-- Intuitive arm joint control using analog sticks and triggers
-- Camera tilt control via START/BACK buttons
-- Configurable movement scales and deadbands
-- Real-time joint position control with visual feedback
-- Safety features and joint limit handling
+- **Right stick base control** - Forward/backward and rotation
+- **Left stick arm control** - Joints 1 & 2 (base rotation and shoulder)
+- **Button-based arm control** - Joints 3-6 with single press and hold-to-repeat
+- **D-pad camera control** - Pan (left/right) and tilt (up/down)
+- **Smooth acceleration** - Gradual velocity changes for base movement
+- **Deadband filtering** - Prevents controller drift
+- **Joint limit enforcement** - Prevents invalid camera positions
 
 ## Control Mapping
 
-### Base Movement (Face Buttons)
-- **Y Button** - Forward movement
-- **A Button** - Backward movement  
-- **X Button** - Strafe left
-- **B Button** - Strafe right
-- **No button pressed** - Stop (explicit stop command)
+### 🏎️ Base Movement
+- **Right Stick Forward/Back** - Linear movement (forward/backward)
+- **Right Stick Left/Right** - Rotation (turn left/right)
 
-### Arm Control
+### 🦾 Arm Control
 
-#### Joints 1 & 2 (Base Rotation & Shoulder)
-- **Left Stick Button (LSB) + Left Stick** - Control joints 1 & 2
-- LSB must be pressed to activate left stick for arm control
-- X-axis controls joint 1, Y-axis controls joint 2
+**Joints 1 & 2 (Base Rotation & Shoulder):**
+- **Left Stick X-axis** - Joint 1 (base rotation)
+- **Left Stick Y-axis** - Joint 2 (shoulder)
 
-#### Joint 3 (Elbow)
-- **Right Trigger (RT)** - Analog control of joint 3
-- **Right Bumper (RB)** - Step increment for joint 3
+**Joint 3 (Elbow):**
+- **Y Button** - Increase joint 3 (+)
+- **A Button** - Decrease joint 3 (-)
 
-#### Joint 4 (Wrist 1)
-- **Left Trigger (LT)** - Analog control of joint 4  
-- **Left Bumper (LB)** - Step increment for joint 4
+**Joint 4 (Wrist 1):**
+- **B Button** - Increase joint 4 (+)
+- **X Button** - Decrease joint 4 (-)
 
-#### Joints 5 & 6 (Wrist 2 & 3)
-- **Right Stick Button (RSB) + Right Stick** - Control joints 5 & 6
-- RSB must be pressed to activate right stick for arm control
-- X-axis controls joint 5, Y-axis controls joint 6
+**Joint 5 (Wrist 2):**
+- **RB (Right Bumper)** - Increase joint 5 (+)
+- **LB (Left Bumper)** - Decrease joint 5 (-)
 
-#### Camera Tilt
-- **START Button** - Tilt camera up (+)
-- **BACK Button** - Tilt camera down (-)
+**Joint 6 (Wrist 3):**
+- **RT (Right Trigger)** - Increase joint 6 (+)
+- **LT (Left Trigger)** - Decrease joint 6 (-)
 
-### Test Mode
-- **START + BACK (both pressed)** - Applies small increment to all joints for testing
+### 📷 Camera Control
+
+- **D-pad Left** - Pan left (-)
+- **D-pad Right** - Pan right (+)
+- **D-pad Up** - Tilt up (+)
+- **D-pad Down** - Tilt down (-)
+
+**Note:** All buttons support both single press (small increment) and hold-to-repeat (continuous movement).
 
 ## Configuration
 
 ### Parameters
-- `cmd_vel_topic` - Base velocity command topic (default: `/omnidirectional_controller/cmd_vel_unstamped`)
-- `arm_cmd_topic` - Arm command topic (default: `/arm_controller/joint_trajectory`)
-- `linear_scale` - Forward/backward speed scaling (default: 0.6)
-- `lateral_scale` - Strafe speed scaling (default: 0.6)
-- `arm_increment` - Analog stick increment per update (default: 0.03)
-- `arm_button_step` - Button press increment (default: 0.1)
-- `arm_deadband` - Analog stick deadband threshold (default: 0.25)
-- `arm_rate` - Arm command publishing rate in Hz (default: 50.0)
 
-### Joint Order
-The arm commands are published as Float64MultiArray in this order:
-`['1', '2', '3', '4', '5', '6', 'camera_tilt']`
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `cmd_vel_topic` | `/cmd_vel_xbox` | Base velocity command topic |
+| `arm_cmd_topic` | `/arm_controller/commands` | Arm command topic |
+| `head_cmd_topic` | `/head_controller/commands` | Head command topic |
+| `linear_scale` | `0.2` | Forward/backward speed scaling |
+| `angular_scale` | `0.5` | Rotation speed scaling |
+| `arm_increment` | `0.1745` (10°) | Standard joint increment |
+| `arm_increment_fast` | `0.1396` (8°) | Fast joint increment (joints 1-4) |
+| `stick_deadband` | `0.1` | Analog stick deadband threshold |
+| `trigger_threshold` | `0.3` | Trigger press threshold |
+| `arm_rate` | `30.0` | Arm/head command rate (Hz) |
+| `base_rate` | `50.0` | Base command rate (Hz) |
+| `acceleration_limit` | `2.0` | Max acceleration for base (m/s²) |
+
+### Joint Limits
+
+Camera head has enforced joint limits:
+- **camera_pan**: -3.14 to 3.14 rad (full rotation)
+- **camera_tilt**: -1.57 to 0.86 rad (tilt range)
 
 ## Usage
 
 ### Hardware Setup
-1. Connect Xbox controller to computer via USB or wireless adapter
-2. Verify controller is detected: `ls /dev/input/js*`
+
+1. Connect Xbox controller via USB or wireless adapter
+2. Verify controller detection:
+```bash
+ls /dev/input/js*
+ros2 run joy joy_enumerate_devices
+```
 
 ### Launch Teleoperation
 
 ```bash
-# Start joy node for Xbox controller
-ros2 run joy joy_node
-
-# Launch teleop node
+# Launch with joy node included
 ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
 
-# Or run node directly with custom parameters
+# Or launch manually
+ros2 run joy joy_node &
+ros2 run leremix_teleop_xbox teleop_xbox.py
+```
+
+### Custom Parameters
+
+```bash
+# Faster base movement
 ros2 run leremix_teleop_xbox teleop_xbox.py --ros-args \
-  -p linear_scale:=0.8 \
-  -p arm_increment:=0.05
+  -p linear_scale:=0.4 \
+  -p angular_scale:=0.8
+
+# Larger arm increments
+ros2 run leremix_teleop_xbox teleop_xbox.py --ros-args \
+  -p arm_increment:=0.2618  # 15 degrees
 ```
 
-### Launch File Usage
-
-```python
-# In your launch file
-teleop_node = Node(
-    package='leremix_teleop_xbox',
-    executable='teleop_xbox.py',
-    parameters=[{
-        'linear_scale': 0.5,
-        'arm_increment': 0.02,
-        'arm_deadband': 0.3,
-    }]
-)
-```
-
-### Verify Operation
+### Monitoring
 
 ```bash
 # Monitor base commands
-ros2 topic echo /omnidirectional_controller/cmd_vel_unstamped
+ros2 topic echo /cmd_vel_xbox
 
 # Monitor arm commands
-ros2 topic echo /arm_controller/joint_trajectory
+ros2 topic echo /arm_controller/commands
 
-# Check joy messages
+# Monitor head commands
+ros2 topic echo /head_controller/commands
+
+# Check joystick input
 ros2 topic echo /joy
-
-# View current joint positions
-ros2 topic echo /joint_states
 ```
+
+## Integration
+
+This package publishes to topics that are multiplexed by the main bringup system:
+
+- **Base commands** → `/cmd_vel_xbox` → Multiplexed to `/omnidirectional_controller/cmd_vel_unstamped`
+- **Arm commands** → `/arm_controller/commands` → Processed by arm controller
+- **Head commands** → `/head_controller/commands` → Processed by head controller
+
+The `twist_mux` in `leremix_bringup` handles command prioritization, with teleop having priority 10 (medium).
 
 ## Safety Features
 
-- **Explicit Stop**: Publishes stop command when no movement buttons pressed
-- **Deadband**: Prevents accidental movement from controller drift
-- **Incremental Control**: Smooth, controlled joint movements
-- **Button Guards**: Stick buttons must be pressed for arm control
-- **Rate Limiting**: Controlled update frequency prevents overwhelming system
+- **Smooth acceleration** - Base velocity changes gradually to prevent jerky motion
+- **Deadband filtering** - Ignores small stick movements from drift
+- **Joint limits** - Camera joints clamped to safe ranges
+- **Rate limiting** - Commands published at controlled frequency
+- **Zero velocity on release** - Base stops when stick returns to center
 
 ## Troubleshooting
 
 ### Controller Not Detected
+
 ```bash
 # Check if controller is connected
 ls /dev/input/js*
 
-# Test controller input
+# Test joy node
 ros2 run joy joy_enumerate_devices
 ros2 topic echo /joy
+
+# Check permissions
+sudo chmod 666 /dev/input/js0
 ```
 
 ### Robot Not Responding
+
 ```bash
-# Verify topics match controller configuration
+# Verify topics
 ros2 topic list | grep -E "(cmd_vel|commands)"
 
-# Check if controllers are active
+# Check twist_mux status
+ros2 topic echo /omnidirectional_controller/cmd_vel_unstamped
+
+# Verify controllers are active
 ros2 control list_controllers
 
-# Monitor teleop node output
+# Enable debug logging
 ros2 run leremix_teleop_xbox teleop_xbox.py --ros-args --log-level debug
 ```
 
 ### Arm Moving Unexpectedly
-- Increase `arm_deadband` parameter to reduce sensitivity
-- Check controller calibration
-- Verify joint limits in robot configuration
+
+- Check stick calibration with `ros2 topic echo /joy`
+- Increase `stick_deadband` parameter
+- Verify arm controller is receiving commands
 
 ### Base Not Moving Smoothly
-- Adjust `linear_scale` and `lateral_scale` parameters
-- Check omnidirectional controller configuration
-- Verify wheel directions and scaling
+
+- Adjust `linear_scale` and `angular_scale`
+- Check `acceleration_limit` parameter
+- Verify omnidirectional controller configuration
 
 ## Dependencies
 
-- rclpy
-- sensor_msgs (Joy messages)
-- geometry_msgs (Twist messages)  
-- std_msgs (Float64MultiArray)
-- joy (ROS2 joystick driver)
+- `rclpy` - ROS2 Python client library
+- `sensor_msgs` - Joy messages
+- `geometry_msgs` - Twist messages
+- `std_msgs` - Float64MultiArray messages
+- `joy` - ROS2 joystick driver package
 
-## Integration
+## Technical Details
 
-This package works with:
-- **leremix_control** - Robot controller configuration
-- **leremix_gazebo** - Simulation environment
-- **Hardware controllers** - Real robot control via leremix_control_plugin
-- **Joy node** - Xbox controller driver
+### Command Publishing
 
-## Customization
+- **Base**: Published at 50Hz with smooth acceleration limiting
+- **Arm/Head**: Published at 30Hz with incremental position updates
+- **Joystick**: Processed on every Joy message (typically 100Hz)
 
-### Adding New Buttons
-1. Define button index in `__init__`
-2. Add button check in `on_joy` callback
-3. Implement desired action
-4. Update this README with new mapping
+### Coordinate Frames
 
-### Changing Control Scheme
-1. Modify button/axis mappings in `__init__`
-2. Update `on_joy` callback logic
-3. Adjust parameters as needed
-4. Test thoroughly before deployment
+- Base commands use robot frame (forward = +X, left = +Y, CCW = +Z)
+- Arm/head commands are joint angles in radians
+- Camera pan: positive = right, negative = left
+- Camera tilt: positive = up, negative = down
+
+## License
+
+Part of the LeRemix Robot project. See main repository for license information.

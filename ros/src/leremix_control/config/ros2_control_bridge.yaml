@@ -1,10 +1,10 @@
-# ros2_control hardware config that loads the MotorManager bridge plugin
+# ros2_control hardware config that loads the ROS2ControlBridge plugin
 ros2_control:
   ros__parameters:
     hardware:
-      plugin: leremix_control_plugin/Esp32SystemTopic
+      plugin: leremix_control_plugin/ROS2ControlBridge
 
-      # Topics to use for motor manager bridge
+      # Topics for communication with servo manager
       base_cmd_topic: /motor_manager/base_cmd
       arm_cmd_topic: /motor_manager/arm_cmd
       head_cmd_topic: /motor_manager/head_cmd

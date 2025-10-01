@@ -15,10 +15,10 @@
 
 namespace leremix_control_plugin {
 
-class Esp32SystemTopic : public hardware_interface::SystemInterface
+class ROS2ControlBridge : public hardware_interface::SystemInterface
 {
 public:
-  RCLCPP_SHARED_PTR_DEFINITIONS(Esp32SystemTopic)
+  RCLCPP_SHARED_PTR_DEFINITIONS(ROS2ControlBridge)
 
   // Lifecycle
   hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo & info) override;

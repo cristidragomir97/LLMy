@@ -111,10 +111,6 @@ ros2 run rviz2 rviz2
 ### Default World
 Uses TurtleBot3 house world for testing navigation and manipulation tasks.
 
-### Sticky Floor World
-- High friction surface for testing drive capabilities
-- Prevents wheel slippage during testing
-- Located: `worlds/sticky_floor.world`
 
 ## Troubleshooting
 
@@ -145,34 +141,3 @@ ros2 launch leremix_gazebo sim.launch.py
 - Disable GUI: `gui:=false`
 - Use simpler collision meshes
 - Reduce controller update rates
-
-## Dependencies
-
-- gazebo_ros
-- gazebo_ros2_control  
-- robot_state_publisher
-- xacro
-- leremix_description
-- leremix_control
-- turtlebot3_gazebo (for default world)
-
-## Integration
-
-This simulation works with:
-- **leremix_teleop_xbox** - Xbox controller teleoperation
-- **leremix_control** - Controller configurations
-- **Navigation stack** - SLAM and autonomous navigation
-- **MoveIt** - Arm motion planning
-- **RViz** - Visualization and monitoring
-
-## Customization
-
-### Adding Sensors
-1. Edit `gazebo_plugins.xacro`
-2. Add sensor plugin configuration
-3. Update robot URDF if needed
-
-### Custom Worlds  
-1. Create `.world` file in `worlds/`
-2. Update launch file world path
-3. Test with `gazebo worlds/your_world.world`

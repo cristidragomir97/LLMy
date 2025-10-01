@@ -24,7 +24,13 @@ def generate_launch_description():
         default_value='true',
         description='Enable Xbox controller (leremix_teleop_xbox)'
     )
-    
+
+    use_rplidar_arg = DeclareLaunchArgument(
+        'use_rplidar',
+        default_value='false',
+        description='Enable RPLidar C1'
+    )
+
     use_base_systems_arg = DeclareLaunchArgument(
         'use_base_systems',
         default_value='true',
@@ -53,6 +59,7 @@ def generate_launch_description():
     use_camera = LaunchConfiguration('use_camera')
     use_imu = LaunchConfiguration('use_imu')
     use_xbox = LaunchConfiguration('use_xbox')
+    use_rplidar = LaunchConfiguration('use_rplidar')
     use_base_systems = LaunchConfiguration('use_base_systems')
     use_control_stack = LaunchConfiguration('use_control_stack')
     servo_port = LaunchConfiguration('servo_port')
@@ -112,6 +119,15 @@ def generate_launch_description():
         condition=IfCondition(use_xbox)
     )
 
+    # Include RPLidar C1 launch file
+    rplidar_launch = IncludeLaunchDescription(
+        PathJoinSubstitution([
+            FindPackageShare('rplidar_ros'),
+            'launch',
+            'view_rplidar_c1_launch.py'
+        ]),
+        condition=IfCondition(use_rplidar)
+    )
 
     # cmd_vel mux node for command velocity multiplexing
     cmd_vel_mux = Node(
@@ -154,17 +170,19 @@ def generate_launch_description():
         use_camera_arg,
         use_imu_arg,
         use_xbox_arg,
+        use_rplidar_arg,
         use_base_systems_arg,
         use_control_stack_arg,
         servo_port_arg,
         servo_baud_arg,
-        
+
         # Launch includes and nodes
         base_systems_launch,
         control_stack_launch,
         camera_launch,
         imu_launch,
         xbox_launch,
+        rplidar_launch,
         cmd_vel_mux,
         rosboard,
     ])

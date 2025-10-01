@@ -1,54 +1,89 @@
 # leremix_control_plugin
 
-A `ros2_control` **SystemInterface** that bridges controller commands to topics and reads joint states from a topic.  
-Designed to work with the LeRemix servo manager system:
+A `ros2_control` **SystemInterface** hardware plugin that bridges ros2_control to the LeRemix servo manager via ROS2 topics.
 
-- Publishes base wheel velocities (rad/s) to `/motor_manager/base_cmd` as `std_msgs/Float64MultiArray`
-- Publishes arm joint targets (rad) to `/motor_manager/arm_cmd` as `std_msgs/Float64MultiArray`
-- Subscribes to `/motor_manager/joint_states` (`sensor_msgs/JointState`) for positions (and optional velocities)
+## Purpose
 
-## Build
+This plugin implements the hardware abstraction layer for ros2_control, allowing standard controllers to work with LeRemix hardware. It uses a topic-based interface rather than direct serial communication, which decouples the control stack from hardware details.
 
-```bash
-cd ~/ros2_ws/src
-unzip /path/to/leremix_control_plugin.zip -d .
-colcon build --packages-select leremix_control_plugin
-source ~/ros2_ws/install/setup.bash
+## Topic Interface
+
+### Published (Commands to Hardware)
+
+- **`/motor_manager/base_cmd`** - `std_msgs/Float64MultiArray`
+  - `[back_motor_rotation, left_motor_rotation, right_motor_rotation]` (rad/s)
+  - QoS: Best-effort, depth 1
+
+- **`/motor_manager/arm_cmd`** - `std_msgs/Float64MultiArray`
+  - `[joint_1, joint_2, joint_3, joint_4, joint_5, joint_6]` (radians)
+  - QoS: Best-effort, depth 1
+
+- **`/motor_manager/head_cmd`** - `std_msgs/Float64MultiArray`
+  - `[camera_pan, camera_tilt]` (radians)
+  - QoS: Best-effort, depth 1
+
+### Subscribed (Feedback from Hardware)
+
+- **`/motor_manager/joint_states`** - `sensor_msgs/JointState`
+  - All joint positions and velocities
+  - QoS: Reliable, depth 5
+
+## Hardware Interfaces Exported
+
+The plugin exports these command and state interfaces to ros2_control:
+
+**Base (velocity interfaces):**
+- `back_motor_rotation/velocity`
+- `left_motor_rotation/velocity`
+- `right_motor_rotation/velocity`
+
+**Arm (position interfaces):**
+- `1/position`, `2/position`, `3/position`, `4/position`, `5/position`, `6/position`
+
+**Head (position interfaces):**
+- `camera_pan/position`, `camera_tilt/position`
+
+## Configuration
+
+### Hardware Interface Config
+
+Configuration is in `leremix_control/config/ros2_control_bridge.yaml`:
+
+```yaml
+hardware_interface:
+  plugin: "leremix_control_plugin/ROS2ControlBridge"
+  base_joints: [back_motor_rotation, left_motor_rotation, right_motor_rotation]
+  arm_joints: ["1", "2", "3", "4", "5", "6"]
+  head_joints: [camera_pan, camera_tilt]
 ```
 
-## Run
+## Usage
 
-1) Start your micro-ROS Agent (on host):
+This plugin is loaded automatically by `leremix_control/control_stack.launch.py`. You don't typically interact with it directly.
+
+### Normal Usage
+
 ```bash
-# Example: rmw_microxrcedds agent
-micro-ros-agent udp4 --port 8888
+# Launch complete system (includes this plugin)
+ros2 launch leremix_control control_stack.launch.py
 ```
 
-2) Launch controller manager and spawn controllers:
+### Standalone Testing
+
 ```bash
+# 1. Start servo manager
+ros2 launch leremix_servo_manager servo_manager.launch.py
+
+# 2. Launch plugin (requires robot_description)
 ros2 launch leremix_control_plugin bringup.launch.py
 ```
 
-This loads:
-- `config/controllers.yaml` (your controller settings)
-- `config/ros2_control_esp32_bridge.yaml` (hardware plugin config)
+## Implementation Notes
 
-## Topic contracts
+### Lifecycle
 
-- `/motor_manager/base_cmd` — `std_msgs/Float64MultiArray`
-  - index 0: `back_motor_rotation` (rad/s)
-  - index 1: `left_motor_rotation` (rad/s)
-  - index 2: `right_motor_rotation` (rad/s)
-
-- `/motor_manager/arm_cmd` — `std_msgs/Float64MultiArray`
-  - indices follow: `["1","2","3","4","5","6","camera_tilt"]` in that order (radians)
-
-- `/motor_manager/joint_states` — `sensor_msgs/JointState`
-  - `name[]` must contain any/all of the joints above
-  - fill `position[]` (radians). For base wheels, fill `velocity[]` if available.
-
-## Notes
-
-- QoS: publishers use **best-effort** depth 1 (low latency). Subscriber uses **reliable** depth 5; adjust to best-effort if your link drops.
-- The plugin runs inside `controller_manager` and spins a tiny executor in `read()` to keep state responsive without blocking.
-
+1. **`on_init()`** - Read configuration, register joint interfaces
+2. **`on_configure()`** - Create publishers and subscribers
+3. **`on_activate()`** - Ready for control
+4. **`read()`** - Update state interfaces from `/motor_manager/joint_states` (called at update rate)
+5. **`write()`** - Publish commands from command interfaces (called at update rate)

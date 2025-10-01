@@ -12,9 +12,9 @@ def generate_launch_description():
         'controllers.hw.yaml'
     ])
     hw_cfg = PathJoinSubstitution([
-        FindPackageShare('leremix_control_plugin'),
+        FindPackageShare('leremix_control'),
         'config',
-        'ros2_control_esp32_bridge.yaml'
+        'ros2_control_bridge.yaml'
     ])
 
     # Robot description

@@ -1,43 +1,106 @@
-
 # LeRemix
+<p>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://docs.ros.org/en/humble/"><img src="https://img.shields.io/badge/ROS2-Humble-blue.svg" alt="ROS2 Humble"></a>
+  <a href="http://gazebosim.org/"><img src="https://img.shields.io/badge/Gazebo-Classic-orange.svg" alt="Gazebo"></a>
+</p>
 
-<div style="display: flex; align-items: center; gap: 20px; margin: 20px 0;">
-  <div style="flex: 1;">
-    <p><strong>🚀 Affordable Mobile Manipulator - Bringing Robotics to Everyone! 🎯</strong></p>
+<p align="center">
+  <img src="img/v2.jpg" alt="LeRemix Robot" width="600"/>
+</p>
 
-    <p><strong>LeRemix</strong> is a fully 3D-printed mobile manipulator built for <strong>AI experimentation</strong>, <strong>research</strong>, and <strong>education</strong>. Standing on the shoulders of <a href="https://github.com/huggingface/lerobot">LeRobot</a> and <a href="https://github.com/SIGRobotics-UIUC">LeKiwi</a>, it combines affordability with professional-grade ROS2 integration.</p>
 
-    <div align="center">
-      <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-      <a href="https://docs.ros.org/en/humble/"><img src="https://img.shields.io/badge/ROS2-Humble-blue.svg" alt="ROS2 Humble"></a>
-      <a href="http://gazebosim.org/"><img src="https://img.shields.io/badge/Gazebo-Classic-orange.svg" alt="Gazebo"></a>
-      <a href="https://github.com/cristidragomir97/leremix"><img src="https://img.shields.io/badge/Built%20with-❤️-red.svg" alt="Built with ❤️"></a>
-    </div>
-  </div>
+**LeRemix** is a fully 3D-printed mobile manipulator designed for **AI experimentation**, **research**, and **education**. Building upon [LeRobot](https://github.com/huggingface/lerobot) and [LeKiwi](https://github.com/SIGRobotics-UIUC), it introduces hardware improvements and comprehensive ROS2 integration.
 
-  <div style="flex: 1;">
-    <img src="img/v2.jpg" alt="LeRemix Robot" width="100%" style="max-width: 400px; border-radius: 8px;"/>
-  </div>
-</div>
-
----
-
-* 🔧 **Fully 3D Printable** - [ORP Grid-based design]() with complete CAD files
-* 🎮 **Simulation Ready** - Full Gazebo integration for safe development
-* 🤖 **ROS2 Native** - Complete ros2_control with MoveIt2 & Nav2 compatibility
-* 📷 **RGB-D Vision** - Built-in depth perception for advanced AI workflows
+* 🔧 **Fully 3D Printable** - ORP Grid-based modular design with complete CAD files
+* 🤖 **ROS2 Native** - Complete ros2_control integration with MoveIt2 & Nav2 support
+* 🎮 **Simulation Ready** - Digital-twin Gazebo simulation with virtual sensors and controllers
+* 📷 **RGB-D Vision** - Integrated depth perception for advanced AI workflows
 * ⚡ **145W Power** - 4-5 hours runtime with USB-C charging
 * 💰 **Affordable** - Starting at ~$280 for the base platform
 
+---
+
+## ⚙️ Hardware 
+The LeRemix platform combines a **3-wheel omnidirectional base** for holonomic motion with a **6-DOF SO-ARM100 robotic arm** for manipulation tasks. A **pan-tilt elevated camera mount** provides flexible perception capabilities, allowing the robot to survey its environment while performing manipulation operations.
+
+### Actuators
+
+**11x Feetech STS3215 Servos (12V, 30KG torque):**
+- 3x Base wheels (omnidirectional drive)
+- 6x Arm joints (SO-ARM100)
+- 2x Camera head (pan & tilt)
+
+**Control Options:**
+- [FE-URT-1](https://www.feetechrc.com/FE-URT1-C001.html)
+- [Waveshare Serial Bus Servo Driver](https://www.waveshare.com/bus-servo-adapter-a.htm)
+
+### Power System
+
+- **145W USB-C power bank** with USB-PD trigger modules
+- **Hot-swappable charging** - operate while charging
+- **4-5 hour runtime** on single charge
+- **Nearly solderless** - simplified assembly
+
+### Sensors & Perception
+
+- **RGB-D Camera** - RealSense D435i, ZED 2i, or Orbbec Gemini 2
+- **IMU (ICM-20948)** - 9-axis sensor for odometry and SLAM
+- **LiDAR (Optional)** - RPLidar C1
+- **Wrist Camera** - 640x480 USB camera for manipulation tasks
+- **Universal 1/4" mount** - Compatible with various camera systems
+
+### Mechanical Design
+- **[ORP Grid-based structure](https://github.com/kkris/openrobotparts)** - Modular, expandable design
+- **3D printable STL files** - Available in [`/parts`](/parts/) directory
+- **Fusion 360 source** - Editable CAD files for customization
+- **Expansion ready** - Grid layout supports additional sensors and actuators
+
+### System Diagram
+
+```mermaid
+graph TB
+
+    subgraph PowerDelivery["Power Delivery"]
+      Battery["145W USB-C Power Bank"]
+      Battery --> USBPD1["USB-PD Trigger 1<br/>12V"]
+      Battery --> USBPD2["USB-PD Trigger 2<br/>12V"]
+    end
+
+    USBPD1 --> SBC["Raspberry Pi 5 / Jetson Orin Nano"]
+    USBPD2 --> MotorDriver["Serial Motor Controller<br/>FE-URT-1 / Waveshare"]
 
 
+    subgraph Actuators["Actuators"]
+      MotorDriver -->|Daisy Chain| M1["Servo Motors x11<br/>STS3215"]
+    end
+  
+
+    MotorDriver <-->|UART| SBC
+
+    subgraph Sensors["Sensors"]
+      IMU["IMU<br/>ICM-20948"]
+      Camera["Head Camera<br/>RGB-D"]
+      Wrist["Wrist Camera<br/>640x480 USB"]
+      LiDAR["LiDAR<br/>RPLidar C1"]
+    end
+
+    IMU <-->|I2C| SBC
+    Camera -->|USB| SBC
+    Wrist -->|USB| SBC
+    LiDAR -.->|USB| SBC
+
+```
+
+### Pricing
+**📋 [Complete BOM & Sourcing Guide](docs/bom.md)**
 | Configuration | US Price | EU Price | What's Included |
 |---------------|----------|----------|-----------------|
 | **Base Platform** | **$280** | **€307** | Servos, wheels, controller, IMU, battery |
 | **+ RGB-D Camera** | **$514-779** | **€537-756** | + Orbbec Gemini 2/ZED 2i |
 | **+ LIDAR** | **$603-868** | **€626-845** | + RPLidar C1/YDLidar options |
 
-**📋 [Complete BOM & Sourcing Guide](docs/bom.md)**
+
 
 ---
 
@@ -68,16 +131,14 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
 **🎮 Xbox Controller Mapping:**
 - **🏎️ Base Movement:** Right stick (forward/back + rotate left/right)
 - **🦾 Arm Control:**
-  - **Joint 1 & 2:** Left stick (X/Y axes)
+  - **Joints 1 & 2:** Left stick (X/Y axes)
   - **Joint 3:** Y button (+) / A button (-)
   - **Joint 4:** B button (+) / X button (-)
   - **Joint 5:** RB button (+) / LB button (-)
   - **Joint 6:** RT trigger (+) / LT trigger (-)
 - **📷 Camera Control:**
   - **Pan:** D-pad left/right
-  - **Tilt:** START button (+) / BACK button (-)
-
-## 📚 Documentation
+  - **Tilt:** D-pad up/down
 
 For detailed setup instructions, hardware configuration, and troubleshooting, see:
 
@@ -87,7 +148,16 @@ For detailed setup instructions, hardware configuration, and troubleshooting, se
 
 ## 🏗️ Architecture
 
-LeRemix follows a modular ROS2 architecture that separates concerns between simulation, hardware interfaces, control, and user interaction. The system uses standard ROS2 patterns like `ros2_control` for hardware abstraction and topic-based communication for sensor data.
+LeRemix follows a modular ROS2 architecture that separates concerns between simulation, hardware interfaces, control, and user interaction. 
+
+- **Hardware Abstraction**: The `ros2_control` framework provides a clean interface between high-level controllers (MoveIt2, Nav2) and low-level hardware, allowing the same code to run in both simulation and on real hardware.
+
+- **Modular Sensors**: Each sensor system (cameras, IMU, LIDAR) is encapsulated in its own ROS2 package, publishing standardized messages that any application can consume. This makes it easy to swap sensors or add new ones without modifying application code.
+
+- **Layered Control**: The control stack is separated into layers - from the servo manager handling individual motor commands, through the ros2_control plugin managing the hardware interface, up to high-level motion planning with MoveIt2 and navigation with Nav2.
+
+- **Simulation-First Development**: Gazebo integration allows safe development and testing before deploying to hardware. The same launch files and controllers work in both environments, reducing the simulation-to-reality gap.
+
 
 ```mermaid
 graph TB
@@ -143,21 +213,6 @@ graph TB
     LeRemixServoManager --> Arm
     LeRemixServoManager --> Head
     
-    style CameraNode fill:#ffecb3
-    style LidarNode fill:#ffecb3
-    style ImuNode fill:#ffecb3
-
-    style LeRemixControl fill:#ffecb3
-    style LeRemixControlPlugin fill:#ffecb3
-    style LeRemixServoManager fill:#ffecb3
-
-    style Apps fill:#f3e5f5
-    style API fill:#e8f4fd
-    style Control fill:#e8f5e8
-
-    style Base fill:#f3e5f5
-    style Arm fill:#f3e5f5
-    style Head fill:#f3e5f5
 ```
 
 --- 

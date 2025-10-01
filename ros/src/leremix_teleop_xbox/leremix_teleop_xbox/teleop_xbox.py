@@ -161,27 +161,28 @@ class XboxTeleop(Node):
         if events.get('lt_press', False):
             self.add_to_arm_joint("6", -inc, "LT press")
 
-        # Camera controls: START/BACK for tilt (single press for small increment, long press for continuous)
-        if events.get('start_press', False):
-            self.add_to_head_joint("camera_tilt", inc, "START press")
-        elif events.get('start_long_press_active', False):
-            self.add_to_head_joint("camera_tilt", inc, "START long press")
-            
-        if events.get('back_press', False):
-            self.add_to_head_joint("camera_tilt", -inc, "BACK press")
-        elif events.get('back_long_press_active', False):
-            self.add_to_head_joint("camera_tilt", -inc, "BACK long press")
-        
-        # D-pad for camera pan: left = negative, right = positive (single press for small increment, long press for continuous)
+        # D-pad for camera control
+        # D-pad left/right for camera pan
         if events.get('dpad_left_press', False):
             self.add_to_head_joint("camera_pan", -inc, "D-pad left press")
         elif events.get('dpad_left_long_press_active', False):
             self.add_to_head_joint("camera_pan", -inc, "D-pad left long press")
-            
+
         if events.get('dpad_right_press', False):
             self.add_to_head_joint("camera_pan", inc, "D-pad right press")
         elif events.get('dpad_right_long_press_active', False):
             self.add_to_head_joint("camera_pan", inc, "D-pad right long press")
+
+        # D-pad up/down for camera tilt
+        if events.get('dpad_up_press', False):
+            self.add_to_head_joint("camera_tilt", inc, "D-pad up press")
+        elif events.get('dpad_up_long_press_active', False):
+            self.add_to_head_joint("camera_tilt", inc, "D-pad up long press")
+
+        if events.get('dpad_down_press', False):
+            self.add_to_head_joint("camera_tilt", -inc, "D-pad down press")
+        elif events.get('dpad_down_long_press_active', False):
+            self.add_to_head_joint("camera_tilt", -inc, "D-pad down long press")
 
     def publish_arm(self):
         msg = Float64MultiArray()
