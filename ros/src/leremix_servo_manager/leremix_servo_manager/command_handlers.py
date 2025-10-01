@@ -59,26 +59,36 @@ class CommandHandlers:
         """Handle arm motor commands"""
         if not self.config.arm_enable:
             return
-            
+
         if len(msg.data) != len(self.config.arm_ids):
             self.node.get_logger().warn(f"Arm command size mismatch: expected {len(self.config.arm_ids)}, got {len(msg.data)}")
             return
-            
+
         # Check if commands have changed
-        if (len(self.last_arm_commands) == len(msg.data) and 
+        if (len(self.last_arm_commands) == len(msg.data) and
             all(abs(a - b) < 1e-6 for a, b in zip(msg.data, self.last_arm_commands))):
             return
-            
+
         self.last_arm_commands = list(msg.data)
-        
+
+        # Check if calibration limits are available
+        use_limits = (self.config.arm_min_limits and self.config.arm_max_limits and
+                      len(self.config.arm_min_limits) == len(self.config.arm_ids))
+
         for i, motor_id in enumerate(self.config.arm_ids):
             try:
                 # Convert from ROS radians to servo ticks
                 angle_rad = msg.data[i]
                 pos_ticks = self._radians_to_ticks(angle_rad)
-                
+
+                # Apply calibrated limits if available
+                if use_limits:
+                    min_limit = self.config.arm_min_limits[i]
+                    max_limit = self.config.arm_max_limits[i]
+                    pos_ticks = max(min_limit, min(max_limit, pos_ticks))
+
                 self.motor_manager.send_position_command(motor_id, pos_ticks, 200, 500)
-                
+
             except Exception as e:
                 self.node.get_logger().error(f"Failed to send arm command to motor {motor_id}: {e}")
     
@@ -86,26 +96,36 @@ class CommandHandlers:
         """Handle head motor commands"""
         if not self.config.head_enable:
             return
-            
+
         if len(msg.data) != len(self.config.head_ids):
             self.node.get_logger().warn(f"Head command size mismatch: expected {len(self.config.head_ids)}, got {len(msg.data)}")
             return
-            
+
         # Check if commands have changed
-        if (len(self.last_head_commands) == len(msg.data) and 
+        if (len(self.last_head_commands) == len(msg.data) and
             all(abs(a - b) < 1e-6 for a, b in zip(msg.data, self.last_head_commands))):
             return
-            
+
         self.last_head_commands = list(msg.data)
-        
+
+        # Check if calibration limits are available
+        use_limits = (self.config.head_min_limits and self.config.head_max_limits and
+                      len(self.config.head_min_limits) == len(self.config.head_ids))
+
         for i, motor_id in enumerate(self.config.head_ids):
             try:
                 # Convert from ROS radians to servo ticks
                 angle_rad = msg.data[i]
                 pos_ticks = self._radians_to_ticks(angle_rad)
-                
+
+                # Apply calibrated limits if available
+                if use_limits:
+                    min_limit = self.config.head_min_limits[i]
+                    max_limit = self.config.head_max_limits[i]
+                    pos_ticks = max(min_limit, min(max_limit, pos_ticks))
+
                 self.motor_manager.send_position_command(motor_id, pos_ticks, 100, 800)
-                
+
             except Exception as e:
                 self.node.get_logger().error(f"Failed to send head command to motor {motor_id}: {e}")
     

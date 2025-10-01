@@ -24,6 +24,8 @@
 ## ⚙️ Hardware 
 The LeRemix platform combines a **3-wheel omnidirectional base** for holonomic motion with a **6-DOF SO-ARM100 robotic arm** for manipulation tasks. A **pan-tilt elevated camera mount** provides flexible perception capabilities, allowing the robot to survey its environment while performing manipulation operations.
 
+LeRemix is designed to be easy to assamble, easy to get started with and easy to expand. 
+
 ### Actuators
 
 **11x Feetech STS3215 Servos (12V, 30KG torque):**
@@ -51,10 +53,10 @@ The LeRemix platform combines a **3-wheel omnidirectional base** for holonomic m
 - **Universal 1/4" mount** - Compatible with various camera systems
 
 ### Mechanical Design
-- **[ORP Grid-based structure](https://github.com/kkris/openrobotparts)** - Modular, expandable design
+- **[ORP Grid-based structure](https://openroboticplatform.com/designrules)** - Modular, expandable design
 - **3D printable STL files** - Available in [`/parts`](/parts/) directory
 - **Fusion 360 source** - Editable CAD files for customization
-- **Expansion ready** - Grid layout supports additional sensors and actuators
+- **Expansion ready** - 20x20mm Grid layout supports additional sensors and actuators
 
 ### System Diagram
 
