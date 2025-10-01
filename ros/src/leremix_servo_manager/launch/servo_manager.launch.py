@@ -9,7 +9,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     # Get the package directory
-    pkg_dir = get_package_share_directory('leremix_servo_manager_py')
+    pkg_dir = get_package_share_directory('leremix_servo_manager')
     
     # Path to config file
     config_file = os.path.join(pkg_dir, 'config', 'servo_manager.yaml')
@@ -29,9 +29,9 @@ def generate_launch_description():
     
     # Servo manager node
     servo_manager_node = Node(
-        package='leremix_servo_manager_py',
+        package='leremix_servo_manager',
         executable='servo_manager_node',
-        name='servo_manager_node_py',
+        name='servo_manager_node',
         parameters=[
             LaunchConfiguration('config_file'),
             {'brake_method': LaunchConfiguration('brake_method')}

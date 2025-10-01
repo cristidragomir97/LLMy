@@ -78,7 +78,7 @@ class ArmCalibrator:
         """Put servo in free-moving mode (torque disabled)"""
         try:
             self.servo.SetMode(servo_id, 0)  # Position mode
-            self.servo.UnloadServo(servo_id)  # Disable torque - allows free movement
+            self.servo.StopServo(servo_id)  # Disable torque - allows free movement
             return True
         except Exception as e:
             print(f"❌ Failed to enable free mode for servo {servo_id}: {e}")
@@ -96,7 +96,7 @@ class ArmCalibrator:
     def lock_servo(self, servo_id):
         """Lock servo at current position"""
         try:
-            self.servo.LoadServo(servo_id)  # Enable torque
+            self.servo.StartServo(servo_id)  # Enable torque
             return True
         except Exception as e:
             print(f"❌ Failed to lock servo {servo_id}: {e}")
@@ -204,7 +204,7 @@ class ArmCalibrator:
             try:
                 zero_pos = self.calibration['arm_zero_positions'][i]
                 self.servo.SetMode(servo_id, 0)
-                self.servo.LoadServo(servo_id)
+                self.servo.StartServo(servo_id)
                 self.servo.MoveTo(servo_id, zero_pos, 1000, 200)
                 print(f"   {self.joint_names[i]}: Moving to {zero_pos}")
             except Exception as e:

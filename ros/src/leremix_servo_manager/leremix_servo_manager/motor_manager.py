@@ -106,7 +106,9 @@ class MotorManager:
             
             try:
                 self.motor_manager.SetMode(motor_id, 1)  # Velocity mode
+           
                 self.motor_manager.StartServo(motor_id)
+                self.motor_manager.Rotate(motor_id, 0)
                 
                 self.velocity_mode_initialized.add(motor_id)
                 self.running_motors[motor_id] = 0
