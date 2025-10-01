@@ -1,11 +1,11 @@
 # leremix_control_plugin
 
 A `ros2_control` **SystemInterface** that bridges controller commands to topics and reads joint states from a topic.  
-Designed for an ESP32 running **micro-ROS**:
+Designed to work with the LeRemix servo manager system:
 
-- Publishes base wheel velocities (rad/s) to `/esp32/base_cmd` as `std_msgs/Float64MultiArray`
-- Publishes arm joint targets (rad) to `/esp32/arm_cmd` as `std_msgs/Float64MultiArray`
-- Subscribes to `/esp32/joint_states` (`sensor_msgs/JointState`) for positions (and optional velocities)
+- Publishes base wheel velocities (rad/s) to `/motor_manager/base_cmd` as `std_msgs/Float64MultiArray`
+- Publishes arm joint targets (rad) to `/motor_manager/arm_cmd` as `std_msgs/Float64MultiArray`
+- Subscribes to `/motor_manager/joint_states` (`sensor_msgs/JointState`) for positions (and optional velocities)
 
 ## Build
 
@@ -35,15 +35,15 @@ This loads:
 
 ## Topic contracts
 
-- `/esp32/base_cmd` — `std_msgs/Float64MultiArray`
+- `/motor_manager/base_cmd` — `std_msgs/Float64MultiArray`
   - index 0: `back_motor_rotation` (rad/s)
   - index 1: `left_motor_rotation` (rad/s)
   - index 2: `right_motor_rotation` (rad/s)
 
-- `/esp32/arm_cmd` — `std_msgs/Float64MultiArray`
+- `/motor_manager/arm_cmd` — `std_msgs/Float64MultiArray`
   - indices follow: `["1","2","3","4","5","6","camera_tilt"]` in that order (radians)
 
-- `/esp32/joint_states` — `sensor_msgs/JointState`
+- `/motor_manager/joint_states` — `sensor_msgs/JointState`
   - `name[]` must contain any/all of the joints above
   - fill `position[]` (radians). For base wheels, fill `velocity[]` if available.
 

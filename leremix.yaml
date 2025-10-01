@@ -9,29 +9,22 @@ hosts:
     user: user
     arch: arm64
 
-
 components:
-  - name: leremix_camera
-
-  - name: leremix_teleop_xbox
-
-  - name: leremix_imu
-
   - name: leremix_control
-    folder: ros/src/leremix_control
+    source:
+    - ros_ws/leremix_control
+    - ros_ws/leremix_control_plugin
+    - ros_ws/leremix_servo_manager
     runs_on: orin
     apt_packages: []
     repositories:
       - url: https://github.com/mateusmenezes95/omnidirectional_controllers
         version: humble
         folder: omnidirectional_controllers
-      - url: https://github.com/micro-ROS/micro_ros_setup
-        version: humble
-        folder: micro_ros_agent
-    postinstall:
-      - "ros2 run micro_ros_setup create_agent_ws.sh"
-      - "ros2 run micro_ros_setup build_agent.sh"
-    entrypoint: ros2 run micro_ros_agent micro_ros_agent serial
-    launch_args: "--dev /dev/ttyUSB0 -v6"
+    entrypoint: 
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
+    optimisations: 
+      - shm: 512m
+      - ipc: host
+      - pinned_cores: [0, 1]

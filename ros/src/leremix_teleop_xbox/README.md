@@ -51,7 +51,7 @@ Xbox controller teleoperation for LeRemix robot, providing intuitive control of 
 
 ### Parameters
 - `cmd_vel_topic` - Base velocity command topic (default: `/omnidirectional_controller/cmd_vel_unstamped`)
-- `arm_cmd_topic` - Arm command topic (default: `/arm_group_position_controller/commands`)
+- `arm_cmd_topic` - Arm command topic (default: `/arm_controller/joint_trajectory`)
 - `linear_scale` - Forward/backward speed scaling (default: 0.6)
 - `lateral_scale` - Strafe speed scaling (default: 0.6)
 - `arm_increment` - Analog stick increment per update (default: 0.03)
@@ -106,7 +106,7 @@ teleop_node = Node(
 ros2 topic echo /omnidirectional_controller/cmd_vel_unstamped
 
 # Monitor arm commands
-ros2 topic echo /arm_group_position_controller/commands
+ros2 topic echo /arm_controller/joint_trajectory
 
 # Check joy messages
 ros2 topic echo /joy
