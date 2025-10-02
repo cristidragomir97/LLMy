@@ -114,20 +114,20 @@ def generate_launch_description():
                 'rs_launch.py'
             ])
         ),
-        launch_arguments={
-            'camera_namespace': 'head_camera', 
-            'camera_name': camera_name,
-            'device_type': device_type,
-            'enable_depth': 'true',
-            'enable_color': 'true',
-            'enable_infra1': 'false',
-            'enable_infra2': 'false',
-            'depth_module.profile': '640x480x30',
-            'rgb_camera.profile': '640x480x30',
-            'align_depth.enable': 'true',
-            'pointcloud.enable': 'false',  # Disable to save bandwidth
-            'enable_sync': 'true',
-        }.items()
+        launch_arguments=[
+            ('camera_namespace', 'head_camera'), 
+            ('camera_name', camera_name),
+            ('device_type', device_type),
+            ('enable_depth', 'true'),
+            ('enable_color', 'true'),
+            ('enable_infra1', 'false'),
+            ('enable_infra2', 'false'),
+            ('depth_module.profile', '640x480x30'),
+            ('rgb_camera.profile', '640x480x30'),
+            ('align_depth.enable', 'true'),
+            ('pointcloud.enable', 'false'),  # Disable to save bandwidth
+            ('enable_sync', 'true'),
+        ]
     )
 
     # Compressed image transport nodes
@@ -136,11 +136,10 @@ def generate_launch_description():
         package='image_transport',
         executable='republish',
         name='compressed_color_republisher',
-        arguments=[
-            'raw', 'compressed',
-            '--ros-args',
-            '--remap', 'in:=head_camera/head_camera/color/image_raw',
-            '--remap', 'out:=head_camera/head_camera/color/image_compressed',
+        arguments=['raw', 'compressed'],
+        remappings=[
+            ('in', 'head_camera/head_camera/color/image_raw'),
+            ('out', 'head_camera/head_camera/color/image_compressed'),
         ],
         condition=IfCondition(enable_compressed)
     )
@@ -190,11 +189,10 @@ def generate_launch_description():
         package='image_transport',
         executable='republish',
         name='compressed_wrist_republisher',
-        arguments=[
-            'raw', 'compressed',
-            '--ros-args',
-            '--remap', 'in:=wrist_camera/image_raw',
-            '--remap', 'out:=wrist_camera/image_compressed',
+        arguments=['raw', 'compressed'],
+        remappings=[
+            ('in', 'wrist_camera/image_raw'),
+            ('out', 'wrist_camera/image_compressed'),
         ],
         condition=IfCondition(enable_wrist_camera)
     )

@@ -2,8 +2,12 @@ repositories:
   omnidirectional_controllers:
     type: git
     url: https://github.com/mateusmenezes95/omnidirectional_controllers
-    version: main
+    version: humble
   rplidar_ros:
     type: git
     url: https://github.com/Slamtec/rplidar_ros
     version: ros2
+  rosboard:
+    type: git
+    url: https://github.com/dheera/rosboard
+    version: main

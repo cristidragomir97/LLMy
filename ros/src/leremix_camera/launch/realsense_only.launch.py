@@ -33,19 +33,19 @@ def generate_launch_description():
                 'rs_launch.py'
             ])
         ),
-        launch_arguments={
-            'camera_name': camera_name,
-            'device_type': device_type,
-            'enable_depth': 'true',
-            'enable_color': 'true',
-            'enable_infra1': 'false',
-            'enable_infra2': 'false',
-            'depth_module.profile': '640x480x30',
-            'rgb_camera.profile': '640x480x30',
-            'align_depth.enable': 'true',
-            'pointcloud.enable': 'false',
-            'enable_sync': 'true',
-        }.items()
+        launch_arguments=[
+            ('camera_name', camera_name),
+            ('device_type', device_type),
+            ('enable_depth', 'true'),
+            ('enable_color', 'true'),
+            ('enable_infra1', 'false'),
+            ('enable_infra2', 'false'),
+            ('depth_module.profile', '640x480x30'),
+            ('rgb_camera.profile', '640x480x30'),
+            ('align_depth.enable', 'true'),
+            ('pointcloud.enable', 'false'),
+            ('enable_sync', 'true'),
+        ]
     )
 
     return LaunchDescription([

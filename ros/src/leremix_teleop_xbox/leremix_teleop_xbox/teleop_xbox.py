@@ -11,7 +11,7 @@ class XboxTeleop(Node):
         super().__init__('leremix_teleop_xbox')
 
         # Topics / rates
-        self.declare_parameter('cmd_vel_topic', '/cmd_vel_xbox')
+        self.declare_parameter('cmd_vel_topic', '/omnidirectional_controller/cmd_vel_unstamped')
         self.declare_parameter('arm_cmd_topic', '/arm_controller/commands')
         self.declare_parameter('head_cmd_topic', '/head_controller/commands')
         self.declare_parameter('linear_scale', 0.2)

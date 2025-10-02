@@ -25,11 +25,10 @@ def generate_launch_description():
         description='Enable Xbox controller (leremix_teleop_xbox)'
     )
 
-
-    use_base_systems_arg = DeclareLaunchArgument(
-        'use_base_systems',
+    use_servo_manager_arg = DeclareLaunchArgument(
+        'use_servo_manager',
         default_value='true',
-        description='Enable base systems (servo manager)'
+        description='Enable servo manager'
     )
     
     use_control_stack_arg = DeclareLaunchArgument(
@@ -37,36 +36,22 @@ def generate_launch_description():
         default_value='true',
         description='Enable control stack (controllers, robot state publisher)'
     )
-    
-    servo_port_arg = DeclareLaunchArgument(
-        'servo_port',
-        default_value='/dev/ttyTHS1',
-        description='Serial port for servo manager'
-    )
-    
-    servo_baud_arg = DeclareLaunchArgument(
-        'servo_baud',
-        default_value='1000000',
-        description='Baudrate for servo manager'
-    )
 
     # Launch configurations
     use_camera = LaunchConfiguration('use_camera')
     use_imu = LaunchConfiguration('use_imu')
     use_xbox = LaunchConfiguration('use_xbox')
-    use_base_systems = LaunchConfiguration('use_base_systems')
+    use_servo_manager = LaunchConfiguration('use_servo_manager')
     use_control_stack = LaunchConfiguration('use_control_stack')
-    servo_port = LaunchConfiguration('servo_port')
-    servo_baud = LaunchConfiguration('servo_baud')
 
-    # Include base systems (servo manager)
-    base_systems_launch = IncludeLaunchDescription(
+    # Include servo manager launch
+    servo_manager_launch = IncludeLaunchDescription(
         PathJoinSubstitution([
-            FindPackageShare('leremix_control'),
+            FindPackageShare('leremix_servo_manager'),
             'launch',
-            'base_systems.launch.py'
+            'servo_manager.launch.py'
         ]),
-        condition=IfCondition(use_base_systems)
+        condition=IfCondition(use_servo_manager)
     )
 
     # Include control stack (robot_state_publisher, controller_manager, spawners)
@@ -80,14 +65,14 @@ def generate_launch_description():
     )
     
     # Include leremix_camera launch file
-    #camera_launch = IncludeLaunchDescription(
-    #    PathJoinSubstitution([
-    #        FindPackageShare('leremix_camera'),
-    #        'launch',
-    #        'camera.launch.py'
-    #    ]),
-    #    condition=IfCondition(use_camera)
-    #)
+    camera_launch = IncludeLaunchDescription(
+        PathJoinSubstitution([
+            FindPackageShare('leremix_camera'),
+            'launch',
+            'camera.launch.py'
+        ]),
+        condition=IfCondition(use_camera)
+    )
 
     # Include leremix_imu launch file
     imu_launch = IncludeLaunchDescription(
@@ -109,23 +94,36 @@ def generate_launch_description():
         condition=IfCondition(use_xbox)
     )
 
-
-
+    # cmd_vel mux node for command velocity multiplexing
+    cmd_vel_mux = Node(
+        package='twist_mux',
+        executable='twist_mux',
+        parameters=[
+            PathJoinSubstitution([
+                FindPackageShare('leremix_bringup'),
+                'config',
+                'twist_mux.yaml'
+            ])
+        ],
+        remappings=[
+            ('cmd_vel_out', '/omnidirectional_controller/cmd_vel_unstamped')
+        ],
+        output='screen'
+    )
 
     return LaunchDescription([
         # Launch arguments
         use_camera_arg,
         use_imu_arg,
         use_xbox_arg,
-        use_base_systems_arg,
+        use_servo_manager_arg,
         use_control_stack_arg,
-        servo_port_arg,
-        servo_baud_arg,
 
         # Launch includes and nodes
-        base_systems_launch,
+        servo_manager_launch,
         control_stack_launch,
         #camera_launch,
         imu_launch,
         xbox_launch,
+        cmd_vel_mux,  # Temporarily commented out
     ])

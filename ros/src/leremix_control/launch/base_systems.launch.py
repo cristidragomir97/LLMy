@@ -34,11 +34,7 @@ def generate_launch_description():
             FindPackageShare('leremix_servo_manager'),
             'launch',
             'servo_manager.launch.py'
-        ]),
-        launch_arguments={
-            'port': servo_port,
-            'baud': servo_baud,
-        }.items()
+        ])
     )
 
     return LaunchDescription([

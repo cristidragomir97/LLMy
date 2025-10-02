@@ -41,10 +41,10 @@ def generate_launch_description():
                 "gzserver.launch.py"
             ])
         ),
-        launch_arguments={
-            "pause": pause,
-            "verbose": "true"
-        }.items(),
+        launch_arguments=[
+            ("pause", pause),
+            ("verbose", "true")
+        ],
     )
 
     gzclient = IncludeLaunchDescription(
