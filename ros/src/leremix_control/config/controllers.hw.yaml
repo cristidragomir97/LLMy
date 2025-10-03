@@ -62,8 +62,8 @@ omnidirectional_controller:
     use_stamped_vel: false
     # Velocity scaling to reduce speed to 3.0 rad/s (50% of 6.0 rad/s)
     linear_velocity_scale: 0.5
-    angular_velocity_scale: 0.5
+    angular_velocity_scale: 1.0
     # Acceleration limits for smoother motion
-    max_linear_acceleration: 1.0   # m/s²
-    max_angular_acceleration: 2.0  # rad/s²
-    acceleration_time: 0.5         # seconds to reach max velocity
+    #max_linear_acceleration: 1.0   # m/s²
+    #max_angular_acceleration: 2.0  # rad/s²
+    #acceleration_time: 0.5       

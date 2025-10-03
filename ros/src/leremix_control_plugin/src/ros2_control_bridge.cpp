@@ -2,6 +2,9 @@
 
 #include <pluginlib/class_list_macros.hpp>
 #include <algorithm>
+#include <limits>
+#include <chrono>
+#include <thread>
 
 using hardware_interface::CallbackReturn;
 using hardware_interface::return_type;
@@ -47,7 +50,8 @@ CallbackReturn ROS2ControlBridge::on_init(const hardware_interface::HardwareInfo
       } else {
         arm_joints_.push_back(j.name);
       }
-      cmd_pos_[j.name] = 0.0;
+      cmd_pos_[j.name] = std::numeric_limits<double>::quiet_NaN();  // Use NaN to indicate no command received
+      cmd_pos_received_[j.name] = false;  // Track that no command has been received yet
       pos_state_[j.name] = 0.0;
       // vel_state_ optional for position joints; leave default 0
     }
@@ -119,7 +123,7 @@ CallbackReturn ROS2ControlBridge::on_configure(const rclcpp_lifecycle::State &)
 
 CallbackReturn ROS2ControlBridge::on_activate(const rclcpp_lifecycle::State &)
 {
-  // Nothing special, topics already created
+  RCLCPP_INFO(node_->get_logger(), "ROS2 Control Bridge activated - will wait for meaningful joint states before accepting commands");
   return CallbackReturn::SUCCESS;
 }
 
@@ -140,15 +144,31 @@ void ROS2ControlBridge::state_callback(const sensor_msgs::msg::JointState::Share
   std::scoped_lock<std::mutex> lk(state_mtx_);
 
   const size_t n = msg->name.size();
+  bool has_meaningful_position = false;
+  
   for (size_t i = 0; i < n; ++i) {
     const auto & name = msg->name[i];
 
     if (pos_state_.count(name)) {
-      if (i < msg->position.size()) pos_state_[name] = msg->position[i];
+      if (i < msg->position.size()) {
+        pos_state_[name] = msg->position[i];
+        // Check if this is a meaningful (non-zero) position for arm/head joints
+        if ((std::find(arm_joints_.begin(), arm_joints_.end(), name) != arm_joints_.end() ||
+             std::find(head_joints_.begin(), head_joints_.end(), name) != head_joints_.end()) &&
+            std::abs(msg->position[i]) > 0.005) {  // More than 0.005 radians (~0.3 degrees)
+          has_meaningful_position = true;
+        }
+      }
     }
     if (vel_state_.count(name)) {
       if (i < msg->velocity.size()) vel_state_[name] = msg->velocity[i];
     }
+  }
+  
+  // Mark that we've received meaningful joint states
+  if (has_meaningful_position && !received_meaningful_joint_states_) {
+    received_meaningful_joint_states_ = true;
+    RCLCPP_INFO(node_->get_logger(), "Received meaningful joint states - ready to accept controller commands");
   }
 }
 
@@ -161,7 +181,40 @@ return_type ROS2ControlBridge::read(const rclcpp::Time &, const rclcpp::Duration
 
 return_type ROS2ControlBridge::write(const rclcpp::Time &, const rclcpp::Duration &)
 {
-  // Publish base velocities in the order of base_joints_
+  // Check if we've received meaningful joint states yet
+  if (!received_meaningful_joint_states_) {
+    // Until we get meaningful joint states, override any controller commands with current positions
+    {
+      std::scoped_lock<std::mutex> lk(state_mtx_);
+      for (const auto & j : arm_joints_) {
+        if (pos_state_.count(j)) {
+          cmd_pos_[j] = pos_state_[j];  // Keep current position
+        }
+      }
+      for (const auto & j : head_joints_) {
+        if (pos_state_.count(j)) {
+          cmd_pos_[j] = pos_state_[j];  // Keep current position
+        }
+      }
+    }
+    
+    RCLCPP_INFO_THROTTLE(node_->get_logger(), *node_->get_clock(), 2000,
+                         "Waiting for meaningful joint states - holding current positions");
+  } else {
+    // After receiving meaningful joint states, process commands normally
+    for (const auto & j : arm_joints_) {
+      if (!cmd_pos_received_[j]) {
+        cmd_pos_received_[j] = true;
+      }
+    }
+    for (const auto & j : head_joints_) {
+      if (!cmd_pos_received_[j]) {
+        cmd_pos_received_[j] = true;
+      }
+    }
+  }
+
+  // Publish base velocities in the order of base_joints_ (always publish - locomotion not affected by joint state waiting)
   {
     std_msgs::msg::Float64MultiArray msg;
     msg.data.reserve(base_joints_.size());
@@ -171,24 +224,40 @@ return_type ROS2ControlBridge::write(const rclcpp::Time &, const rclcpp::Duratio
     base_pub_->publish(msg);
   }
 
-  // Publish arm positions in the order of arm_joints_
+  // Publish arm positions in the order of arm_joints_ - only if valid commands received
   {
     std_msgs::msg::Float64MultiArray msg;
     msg.data.reserve(arm_joints_.size());
+    bool has_valid_cmd = false;
     for (const auto & j : arm_joints_) {
-      msg.data.push_back(cmd_pos_[j]);
+      if (cmd_pos_received_[j] && !std::isnan(cmd_pos_[j])) {
+        msg.data.push_back(cmd_pos_[j]);
+        has_valid_cmd = true;
+      } else {
+        msg.data.push_back(0.0);  // Placeholder, but message won't be published without valid commands
+      }
     }
-    arm_pub_->publish(msg);
+    if (has_valid_cmd) {
+      arm_pub_->publish(msg);
+    }
   }
 
-  // Publish head positions in the order of head_joints_
+  // Publish head positions in the order of head_joints_ - only if valid commands received
   {
     std_msgs::msg::Float64MultiArray msg;
     msg.data.reserve(head_joints_.size());
+    bool has_valid_cmd = false;
     for (const auto & j : head_joints_) {
-      msg.data.push_back(cmd_pos_[j]);
+      if (cmd_pos_received_[j] && !std::isnan(cmd_pos_[j])) {
+        msg.data.push_back(cmd_pos_[j]);
+        has_valid_cmd = true;
+      } else {
+        msg.data.push_back(0.0);  // Placeholder, but message won't be published without valid commands
+      }
     }
-    head_pub_->publish(msg);
+    if (has_valid_cmd) {
+      head_pub_->publish(msg);
+    }
   }
 
   return return_type::OK;

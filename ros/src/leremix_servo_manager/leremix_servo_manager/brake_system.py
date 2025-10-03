@@ -75,7 +75,7 @@ class BrakeSystem:
         self.node.get_logger().debug(f"Applying position brake to motor {motor_id}")
         current_pos = self.motor_manager.motor_manager.ReadPosition(motor_id)
         if current_pos is not None:
-            self.motor_manager.motor_manager.MoveTo(motor_id, current_pos, 3000, self.brake_acceleration)
+            self.motor_manager.motor_manager.MoveTo(motor_id, current_pos, 255, min(255, self.brake_acceleration))
     
     def emergency_stop_all(self, motor_ids: list):
         """Emergency stop all specified motors"""

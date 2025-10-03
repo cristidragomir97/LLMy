@@ -149,10 +149,15 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py device:=/dev/input/js1
 ```
 
 **Controller mapping:**
-- **Right stick:** Base movement (forward/back + strafe left/right)
-- **Left stick:** Arm joints 1 & 2
-- **Buttons:** Arm joints 3-6 (Y/A, B/X, RB/LB, RT/LT)
-- **D-pad:** Camera pan/tilt (left/right, START/BACK)
+- **Right stick:** Base movement (forward/back + rotation)
+- **Left stick X:** Base strafe (left/right)
+- **RB/LB:** Arm joint 1 (+/-)
+- **RT/LT:** Arm joint 2 (+/-)
+- **Y/A:** Arm joint 3 (+/-)
+- **B/X:** Arm joint 4 (+/-)
+- **Start/Back:** Arm joint 5 (+/-)
+- **Stick clicks:** Arm joint 6 (+/-)
+- **D-pad:** Camera pan/tilt (up/down for pan, left/right for tilt)
 
 **Key topics:**
 - `/cmd_vel` - Base velocity output

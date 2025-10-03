@@ -4,6 +4,7 @@ Motor Manager for LeRemix Robot
 Handles low-level motor communication and control using ST3215 library
 """
 
+import math
 import time
 from st3215 import ST3215
 from rclpy.node import Node
@@ -71,7 +72,7 @@ class MotorManager:
                     self.motor_manager.Rotate(motor_id, 500)  # Slow spin
                     time.sleep(1.0)
                     self.motor_manager.Rotate(motor_id, 0)
-                    self.motor_manager.StopServo(motor_id)
+                    # Don't stop servo - it will be reinitialized later
                     self.node.get_logger().info(f"  Motor {motor_id}: Velocity test ✅")
                 
                 # Test 2: Small position move for arm/head motors
@@ -106,9 +107,7 @@ class MotorManager:
             
             try:
                 self.motor_manager.SetMode(motor_id, 1)  # Velocity mode
-           
                 self.motor_manager.StartServo(motor_id)
-                self.motor_manager.Rotate(motor_id, 0)
                 
                 self.velocity_mode_initialized.add(motor_id)
                 self.running_motors[motor_id] = 0
@@ -117,75 +116,120 @@ class MotorManager:
                 self.node.get_logger().warn(f"Failed to initialize locomotion motor {motor_id}: {e}")
     
     def initialize_arm_motors(self, arm_ids: list, arm_accel: list, ticks_per_rev: int):
-        """Initialize arm motors for position mode"""
+        """Initialize arm motors for position mode - reads current positions and sets holding torque"""
         self.node.get_logger().info("Setting arm motors to position mode...")
-        arm_home_positions = [0.0, 0.0, -1.5, 1.5, 0.0, 1.0]  # radians
+        self.node.get_logger().info("🛡️  SAFETY: Reading current arm positions and enabling torque holding")
+        
+        # Store current positions for safety - no movements during initialization
+        self.arm_current_positions = {}
         
         for i, motor_id in enumerate(arm_ids):
             accel = arm_accel[i] if i < len(arm_accel) else 20
             
             try:
+                # Set mode and acceleration but don't start servo yet
                 self.motor_manager.SetMode(motor_id, 0)
                 self.motor_manager.SetAcceleration(motor_id, accel)
-                self.motor_manager.StartServo(motor_id)
                 
-                if i < len(arm_home_positions):
-                    angle_rad = arm_home_positions[i]
+                # Read current position instead of moving to home
+                current_pos_ticks = self.motor_manager.ReadPosition(motor_id)
+                if current_pos_ticks is not None:
+                    # Convert to radians and degrees for logging
                     servo_center = 2048
-                    pos_ticks = int(servo_center + (angle_rad / (2.0 * 3.14159)) * ticks_per_rev)
-                    pos_ticks = max(0, min(4095, pos_ticks))
+                    current_angle_rad = (current_pos_ticks - servo_center) / ticks_per_rev * 2.0 * math.pi
+                    current_angle_deg = current_angle_rad * 180.0 / math.pi
                     
-                    self.motor_manager.MoveTo(motor_id, pos_ticks, 1000, 300)
-                    self.node.get_logger().info(f"Arm motor {motor_id} to home ({angle_rad:.2f} rad)")
+                    # Store current position
+                    self.arm_current_positions[motor_id] = current_pos_ticks
+                    
+                    # Start servo and immediately command it to hold current position
+                    self.motor_manager.StartServo(motor_id)
+                    time.sleep(0.05)  # Brief delay to ensure servo is started
+                    self.motor_manager.MoveTo(motor_id, current_pos_ticks, 100, accel)
+                    
+                    self.node.get_logger().info(f"Arm motor {motor_id} holding at: {current_angle_deg:.1f}° ({current_angle_rad:.3f} rad, {current_pos_ticks} ticks)")
+                else:
+                    self.node.get_logger().warn(f"Could not read current position for arm motor {motor_id}")
+                    
+                time.sleep(0.1)  # Small delay to prevent bus congestion
                     
             except Exception as e:
                 self.node.get_logger().warn(f"Failed to initialize arm motor {motor_id}: {e}")
+        
+        self.node.get_logger().info("✅ Arm motors initialized with torque holding at current positions")
     
     def initialize_head_motors(self, head_ids: list, head_accel: list, ticks_per_rev: int):
-        """Initialize head motors for position mode"""
+        """Initialize head motors for position mode - reads current positions and sets holding torque"""
         self.node.get_logger().info("Setting head motors to position mode...")
-        head_home_positions = [0.0, 0.0]  # radians
+        self.node.get_logger().info("🛡️  SAFETY: Reading current head positions and enabling torque holding")
+        
+        # Store current positions for safety - no movements during initialization
+        self.head_current_positions = {}
         
         for i, motor_id in enumerate(head_ids):
             accel = head_accel[i] if i < len(head_accel) else 30
             
             try:
+                # Set mode and acceleration but don't start servo yet
                 self.motor_manager.SetMode(motor_id, 0)
                 self.motor_manager.SetAcceleration(motor_id, accel)
-                self.motor_manager.StartServo(motor_id)
                 
-                if i < len(head_home_positions):
-                    angle_rad = head_home_positions[i]
+                # Read current position instead of moving to home
+                current_pos_ticks = self.motor_manager.ReadPosition(motor_id)
+                if current_pos_ticks is not None:
+                    # Convert to radians and degrees for logging
                     servo_center = 2048
-                    pos_ticks = int(servo_center + (angle_rad / (2.0 * 3.14159)) * ticks_per_rev)
-                    pos_ticks = max(0, min(4095, pos_ticks))
+                    current_angle_rad = (current_pos_ticks - servo_center) / ticks_per_rev * 2.0 * math.pi
+                    current_angle_deg = current_angle_rad * 180.0 / math.pi
                     
-                    self.motor_manager.MoveTo(motor_id, pos_ticks, 500, 400)
-                    self.node.get_logger().info(f"Head motor {motor_id} to home ({angle_rad:.2f} rad)")
+                    # Store current position
+                    self.head_current_positions[motor_id] = current_pos_ticks
+                    
+                    # Start servo and immediately command it to hold current position
+                    self.motor_manager.StartServo(motor_id)
+                    time.sleep(0.05)  # Brief delay to ensure servo is started
+                    self.motor_manager.MoveTo(motor_id, current_pos_ticks, 100, accel)
+                    
+                    self.node.get_logger().info(f"Head motor {motor_id} holding at: {current_angle_deg:.1f}° ({current_angle_rad:.3f} rad, {current_pos_ticks} ticks)")
+                else:
+                    self.node.get_logger().warn(f"Could not read current position for head motor {motor_id}")
+                    
+                time.sleep(0.1)  # Small delay to prevent bus congestion
                     
             except Exception as e:
                 self.node.get_logger().warn(f"Failed to initialize head motor {motor_id}: {e}")
+        
+        self.node.get_logger().info("✅ Head motors initialized with torque holding at current positions")
     
     def send_velocity_command(self, motor_id: int, speed_raw: int):
         """Send velocity command to a motor"""
-        if speed_raw == 0:
-            # Zero velocity: set zero velocity, then stop motor
-            self.motor_manager.Rotate(motor_id, 0)
-            time.sleep(0.01)
-            self.motor_manager.StopServo(motor_id)
-            
-            # Remove from running motors
-            if motor_id in self.running_motors:
-                del self.running_motors[motor_id]
-        else:
-            # Non-zero motor speed: set velocity (motor should already be started)
-            # Check if motor needs to be restarted
-            if motor_id not in self.running_motors:
-                self.motor_manager.StartServo(motor_id)
-            
-            # Set the speed
-            self.running_motors[motor_id] = speed_raw
-            self.motor_manager.Rotate(motor_id, speed_raw)
+        self.node.get_logger().info(f"send_velocity_command: motor_id={motor_id}, speed_raw={speed_raw}")
+        
+        try:
+            if speed_raw == 0:
+                # Zero velocity: set zero velocity, then stop motor
+                self.node.get_logger().info(f"  Stopping motor {motor_id}")
+                self.motor_manager.Rotate(motor_id, 0)
+                time.sleep(0.01)
+                self.motor_manager.StopServo(motor_id)
+                
+                # Remove from running motors
+                if motor_id in self.running_motors:
+                    del self.running_motors[motor_id]
+            else:
+                # Non-zero motor speed: set velocity (motor should already be started)
+                # Check if motor needs to be restarted
+                if motor_id not in self.running_motors:
+                    self.node.get_logger().info(f"  Starting motor {motor_id}")
+                    self.motor_manager.StartServo(motor_id)
+                
+                # Set the speed
+                self.running_motors[motor_id] = speed_raw
+                self.node.get_logger().info(f"  Setting motor {motor_id} speed to {speed_raw}")
+                self.motor_manager.Rotate(motor_id, speed_raw)
+                
+        except Exception as e:
+            self.node.get_logger().error(f"Exception in send_velocity_command for motor {motor_id}: {e}")
     
     def send_position_command(self, motor_id: int, pos_ticks: int, speed: int, accel: int):
         """Send position command to a motor"""

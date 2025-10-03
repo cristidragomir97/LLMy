@@ -102,6 +102,146 @@ class ArmCalibrator:
             print(f"❌ Failed to lock servo {servo_id}: {e}")
             return False
 
+    def live_position_monitor(self):
+        """Live position monitoring mode with ability to set current positions as zero"""
+        import os
+        import sys
+        import termios
+        import tty
+        import select
+        import math
+        
+        print("\n" + "="*70)
+        print("  LIVE POSITION MONITOR")
+        print("="*70)
+        print("This mode shows live arm positions and allows setting them as zero.")
+        print("Press ENTER to set current positions as ZERO, or 'q' to quit.")
+        print("="*70)
+
+        # Enable free mode for all arm servos
+        print("\n🔓 Enabling free movement mode for all arm joints...")
+        for servo_id in self.calibration['arm_ids']:
+            self.enable_free_mode(servo_id)
+
+        # Store terminal settings
+        old_settings = termios.tcgetattr(sys.stdin)
+        
+        try:
+            tty.setraw(sys.stdin.fileno())
+            
+            while True:
+                # Clear screen and move to top
+                os.system('clear')
+                
+                print("=== LIVE ARM POSITION MONITOR ===")
+                print("Current Arm Positions:")
+                print("-" * 60)
+                
+                # Read and display current positions
+                current_positions = []
+                all_read_success = True
+                
+                for i, servo_id in enumerate(self.calibration['arm_ids']):
+                    pos = self.read_position(servo_id)
+                    if pos is not None:
+                        current_positions.append(pos)
+                        # Convert to degrees and radians for display
+                        servo_center = 2048
+                        angle_rad = (pos - servo_center) / self.calibration['ticks_per_rev'] * 2.0 * math.pi
+                        angle_deg = math.degrees(angle_rad)
+                        
+                        print(f"{self.joint_names[i]:25s} (ID {servo_id}): {pos:4d} ticks ({angle_rad:+7.3f} rad, {angle_deg:+7.1f}°)")
+                    else:
+                        current_positions.append(None)
+                        all_read_success = False
+                        print(f"{self.joint_names[i]:25s} (ID {servo_id}): ❌ Read failed!")
+                
+                print("-" * 60)
+                if all_read_success:
+                    print("Press ENTER to set these positions as ZERO")
+                else:
+                    print("❌ Cannot set zero - some servos failed to read")
+                print("Press 'q' to quit")
+                print("-" * 60)
+                
+                # Check for keyboard input (non-blocking)
+                if select.select([sys.stdin], [], [], 0.1) == ([sys.stdin], [], []):
+                    key = sys.stdin.read(1)
+                    
+                    if key.lower() == 'q':
+                        break
+                    elif (key == '\r' or key == '\n') and all_read_success:
+                        # Set current positions as zero using ST3215 DefineMiddle function
+                        print("\n" + "="*60)
+                        print("SETTING CURRENT POSITIONS AS ZERO!")
+                        print("="*60)
+                        
+                        success_count = 0
+                        for i, (servo_id, pos) in enumerate(zip(self.calibration['arm_ids'], current_positions)):
+                            servo_center = 2048
+                            angle_rad = (pos - servo_center) / self.calibration['ticks_per_rev'] * 2.0 * math.pi
+                            angle_deg = math.degrees(angle_rad)
+                            
+                            print(f"\nProcessing {self.joint_names[i]} (ID {servo_id}):")
+                            print(f"  Current position: {pos:4d} ticks ({angle_rad:+7.3f} rad, {angle_deg:+7.1f}°)")
+                            
+                            try:
+                                # Step 1: Unlock EEPROM for writing
+                                print(f"  🔓 Unlocking EEPROM for servo {servo_id}...")
+                                self.servo.UnLockEprom(servo_id)
+                                time.sleep(0.1)
+                                
+                                # Step 2: Define current position as middle/zero
+                                print(f"  📐 Setting current position as zero for servo {servo_id}...")
+                                self.servo.DefineMiddle(servo_id)
+                                time.sleep(0.1)
+                                
+                                # Step 3: Lock EEPROM to save changes
+                                print(f"  🔒 Locking EEPROM for servo {servo_id}...")
+                                self.servo.LockEprom(servo_id)
+                                time.sleep(0.1)
+                                
+                                print(f"  ✅ Successfully set zero position for {self.joint_names[i]}")
+                                success_count += 1
+                                
+                            except Exception as e:
+                                print(f"  ❌ Failed to set zero position for {self.joint_names[i]}: {e}")
+                                # Try to lock EEPROM even if DefineMiddle failed
+                                try:
+                                    self.servo.LockEprom(servo_id)
+                                except:
+                                    pass
+                        
+                        print(f"\n{'='*60}")
+                        if success_count == len(self.calibration['arm_ids']):
+                            print(f"✅ SUCCESS: All {success_count} servos have been calibrated!")
+                            print("Current positions are now set as ZERO positions in servo memory.")
+                        else:
+                            print(f"⚠️  PARTIAL SUCCESS: {success_count}/{len(self.calibration['arm_ids'])} servos calibrated")
+                            print("Some servos may need manual retry.")
+                        
+                        print("\nIMPORTANT: Changes are saved to servo EEPROM permanently.")
+                        print("You may need to restart your system to see the changes in ROS.")
+                        
+                        print("\nPress any key to continue monitoring, or 'q' to quit...")
+                        while True:
+                            if select.select([sys.stdin], [], [], 0.1) == ([sys.stdin], [], []):
+                                key = sys.stdin.read(1)
+                                if key.lower() == 'q':
+                                    return True
+                                else:
+                                    break
+                
+                time.sleep(0.1)  # Small delay to prevent excessive CPU usage
+                
+        except KeyboardInterrupt:
+            pass
+        finally:
+            # Restore terminal settings
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+            
+        return True
+
     def calibrate_zero_position(self):
         """Calibrate zero position with arm fully erect"""
         print("\n" + "="*70)
@@ -120,26 +260,61 @@ class ArmCalibrator:
 
         input("\n1️⃣  Manually position the arm as described above, then press ENTER...")
 
-        # Read and save zero positions
-        print("\n📊 Reading zero positions...")
+        # Set current positions as zero using ST3215 DefineMiddle function
+        print("\n📊 Setting current positions as zero in servo memory...")
         self.calibration['arm_zero_positions'] = []
+        success_count = 0
 
         for i, servo_id in enumerate(self.calibration['arm_ids']):
+            print(f"\nProcessing {self.joint_names[i]} (ID {servo_id}):")
+            
+            # Read current position first
             pos = self.read_position(servo_id)
-            if pos is not None:
-                self.calibration['arm_zero_positions'].append(pos)
-                print(f"   {self.joint_names[i]} (ID {servo_id}): {pos} ticks")
-            else:
-                print(f"   {self.joint_names[i]} (ID {servo_id}): ❌ Read failed!")
-                return False
+            if pos is None:
+                print(f"   ❌ Failed to read position from servo {servo_id}")
+                continue
+                
+            self.calibration['arm_zero_positions'].append(pos)
+            print(f"   Current position: {pos} ticks")
+            
+            try:
+                # Step 1: Unlock EEPROM for writing
+                print(f"   🔓 Unlocking EEPROM...")
+                self.servo.UnLockEprom(servo_id)
+                time.sleep(0.1)
+                
+                # Step 2: Define current position as middle/zero
+                print(f"   📐 Setting as zero position...")
+                self.servo.DefineMiddle(servo_id)
+                time.sleep(0.1)
+                
+                # Step 3: Lock EEPROM to save changes
+                print(f"   🔒 Locking EEPROM...")
+                self.servo.LockEprom(servo_id)
+                time.sleep(0.1)
+                
+                # Step 4: Enable torque at new zero position
+                self.lock_servo(servo_id)
+                
+                print(f"   ✅ Successfully calibrated {self.joint_names[i]}")
+                success_count += 1
+                
+            except Exception as e:
+                print(f"   ❌ Failed to calibrate {self.joint_names[i]}: {e}")
+                # Try to lock EEPROM even if DefineMiddle failed
+                try:
+                    self.servo.LockEprom(servo_id)
+                    self.lock_servo(servo_id)
+                except:
+                    pass
 
-        # Lock servos at zero position
-        print("\n🔒 Locking servos at zero position...")
-        for servo_id in self.calibration['arm_ids']:
-            self.lock_servo(servo_id)
-
-        print("\n✅ Zero position calibration complete!")
-        return True
+        if success_count == len(self.calibration['arm_ids']):
+            print(f"\n✅ Zero position calibration complete! All {success_count} servos calibrated.")
+            print("Changes saved to servo EEPROM permanently.")
+            return True
+        else:
+            print(f"\n⚠️  Partial calibration: {success_count}/{len(self.calibration['arm_ids'])} servos successful")
+            return False
 
     def calibrate_joint_limits(self):
         """Calibrate min/max limits for each joint"""
@@ -339,6 +514,9 @@ This tool calibrates the arm's zero position and joint limits.
 IMPORTANT: Stop all ROS2 nodes before running this script!
 
 Examples:
+  # Live position monitoring (shows current positions, set as zero with ENTER)
+  python3 calibrate_arm.py --live
+
   # Basic calibration (will prompt for save location)
   python3 calibrate_arm.py
 
@@ -346,7 +524,7 @@ Examples:
   python3 calibrate_arm.py --config ~/leremix_ws/ros/src/leremix_servo_manager/config/servo_manager.yaml
 
   # Use custom serial port
-  python3 calibrate_arm.py --port /dev/ttyACM0
+  python3 calibrate_arm.py --port /dev/ttyACM0 --live
         """
     )
 
@@ -368,6 +546,12 @@ Examples:
         help='Path to servo_manager.yaml config file to update'
     )
 
+    parser.add_argument(
+        '--live',
+        action='store_true',
+        help='Run in live position monitoring mode (shows current positions and allows setting as zero)'
+    )
+
     args = parser.parse_args()
 
     # Create calibrator
@@ -377,12 +561,25 @@ Examples:
     if not calibrator.connect():
         sys.exit(1)
 
-    # Run calibration
+    # Run calibration or live monitor
     try:
-        if calibrator.run_calibration():
-            sys.exit(0)
+        if args.live:
+            # Run live position monitoring mode
+            print("\n🔴 LIVE MONITORING MODE")
+            print("This mode shows real-time arm positions and allows setting them as zero.")
+            print("Make sure no ROS nodes are running!")
+            input("Press ENTER to start live monitoring...")
+            
+            if calibrator.live_position_monitor():
+                sys.exit(0)
+            else:
+                sys.exit(1)
         else:
-            sys.exit(1)
+            # Run full calibration process
+            if calibrator.run_calibration():
+                sys.exit(0)
+            else:
+                sys.exit(1)
     except KeyboardInterrupt:
         print("\n\n👋 Calibration cancelled by user")
         sys.exit(0)

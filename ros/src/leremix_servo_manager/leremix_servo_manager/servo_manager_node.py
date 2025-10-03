@@ -13,6 +13,7 @@ from .config import ServoManagerConfig
 from .motor_manager import MotorManager
 from .brake_system import BrakeSystem
 from .command_handlers import CommandHandlers
+
 from .telemetry import TelemetrySystem
 
 class ServoManagerNode(Node):
@@ -43,6 +44,10 @@ class ServoManagerNode(Node):
                                                 self.config.arm_ids, self.config.head_ids, 
                                                 self.config.loc_enable)
         
+        # Add delay between test sequences and initialization to prevent bus congestion
+        import time
+        time.sleep(0.5)
+        
         self._initialize_motors()
         
         # Initialize brake system
@@ -56,6 +61,14 @@ class ServoManagerNode(Node):
         self.telemetry = TelemetrySystem(self, self.motor_manager, self.config)
         
         self._setup_ros_communication()
+        
+        # Publish initial joint states immediately to inform ros2_control of current positions
+        self.get_logger().info("Publishing initial joint states for ros2_control awareness...")
+        self.telemetry.publish_telemetry()
+        import time
+        time.sleep(0.1)  # Brief delay to ensure message is published
+        self.telemetry.publish_telemetry()  # Publish twice to ensure ros2_control receives it
+        
         self._log_startup_summary()
     
     def _initialize_motors(self):

@@ -32,7 +32,9 @@ class TelemetrySystem:
             pos, speed = self.motor_manager.read_motor_state(motor_id)
             
             if pos is not None and speed is not None:
-                msg.name.append(f"motor_{motor_id}")
+                # Map motor IDs to ros2_control joint names
+                joint_name = self._motor_id_to_joint_name(motor_id)
+                msg.name.append(joint_name)
                 
                 # Convert servo ticks to radians
                 pos_rad = self._ticks_to_radians(pos)
@@ -54,6 +56,26 @@ class TelemetrySystem:
         """Convert motor speed to rad/s"""
         max_rad_per_sec = 10.0
         return speed / 1023.0 * max_rad_per_sec
+    
+    def _motor_id_to_joint_name(self, motor_id: int) -> str:
+        """Map motor ID to ros2_control joint name"""
+        if motor_id in self.config.loc_ids:
+            # Base motors: map to wheel names based on position in array
+            idx = self.config.loc_ids.index(motor_id)
+            wheel_names = ["wheel1_rotation", "wheel2_rotation", "wheel3_rotation"]
+            return wheel_names[idx] if idx < len(wheel_names) else f"wheel{idx+1}_rotation"
+        elif motor_id in self.config.arm_ids:
+            # Arm motors: map motor IDs [4,5,6,7,8,9] to joint names ["1","2","3","4","5","6"]
+            idx = self.config.arm_ids.index(motor_id)
+            return str(idx + 1)
+        elif motor_id in self.config.head_ids:
+            # Head motors: map motor IDs [10,11] to joint names ["camera_pan", "camera_tilt"]
+            idx = self.config.head_ids.index(motor_id)
+            head_names = ["camera_pan", "camera_tilt"]
+            return head_names[idx] if idx < len(head_names) else f"head_joint_{idx}"
+        else:
+            # Fallback for unknown motors
+            return f"motor_{motor_id}"
     
     def get_motor_summary(self) -> dict:
         """Get summary of motor states for diagnostics"""

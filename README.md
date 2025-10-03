@@ -131,16 +131,17 @@ In a new terminal - start Xbox controller teleoperation
 ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
 ```
 **🎮 Xbox Controller Mapping:**
-- **🏎️ Base Movement:** Right stick (forward/back + rotate left/right)
+- **🏎️ Base Movement:** Right stick (forward/back + rotate), Left stick X (strafe left/right)
 - **🦾 Arm Control:**
-  - **Joints 1 & 2:** Left stick (X/Y axes)
+  - **Joint 1:** RB button (+) / LB button (-)
+  - **Joint 2:** RT trigger (+) / LT trigger (-)
   - **Joint 3:** Y button (+) / A button (-)
   - **Joint 4:** B button (+) / X button (-)
-  - **Joint 5:** RB button (+) / LB button (-)
-  - **Joint 6:** RT trigger (+) / LT trigger (-)
+  - **Joint 5:** Start button (+) / Back button (-)
+  - **Joint 6:** Right stick click (+) / Left stick click (-)
 - **📷 Camera Control:**
-  - **Pan:** D-pad left/right
-  - **Tilt:** D-pad up/down
+  - **Pan:** D-pad up/down
+  - **Tilt:** D-pad left/right
 
 For detailed setup instructions, hardware configuration, and troubleshooting, see:
 

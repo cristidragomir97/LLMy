@@ -5,9 +5,9 @@ Xbox controller teleoperation for LeRemix robot, providing intuitive control of 
 ## Features
 
 - **Right stick base control** - Forward/backward and rotation
-- **Left stick arm control** - Joints 1 & 2 (base rotation and shoulder)
+- **Button-based arm control** - All 6 joints controlled via buttons and triggers
 - **Button-based arm control** - Joints 3-6 with single press and hold-to-repeat
-- **D-pad camera control** - Pan (left/right) and tilt (up/down)
+- **D-pad camera control** - Pan (up/down) and tilt (left/right)
 - **Smooth acceleration** - Gradual velocity changes for base movement
 - **Deadband filtering** - Prevents controller drift
 - **Joint limit enforcement** - Prevents invalid camera positions
@@ -17,12 +17,17 @@ Xbox controller teleoperation for LeRemix robot, providing intuitive control of 
 ### 🏎️ Base Movement
 - **Right Stick Forward/Back** - Linear movement (forward/backward)
 - **Right Stick Left/Right** - Rotation (turn left/right)
+- **Left Stick Left/Right** - Lateral movement (strafe left/right)
 
 ### 🦾 Arm Control
 
-**Joints 1 & 2 (Base Rotation & Shoulder):**
-- **Left Stick X-axis** - Joint 1 (base rotation)
-- **Left Stick Y-axis** - Joint 2 (shoulder)
+**Joint 1 (Base Rotation):**
+- **RB (Right Bumper)** - Increase joint 1 (+)
+- **LB (Left Bumper)** - Decrease joint 1 (-)
+
+**Joint 2 (Shoulder):**
+- **RT (Right Trigger)** - Increase joint 2 (+)
+- **LT (Left Trigger)** - Decrease joint 2 (-)
 
 **Joint 3 (Elbow):**
 - **Y Button** - Increase joint 3 (+)
@@ -33,19 +38,19 @@ Xbox controller teleoperation for LeRemix robot, providing intuitive control of 
 - **X Button** - Decrease joint 4 (-)
 
 **Joint 5 (Wrist 2):**
-- **RB (Right Bumper)** - Increase joint 5 (+)
-- **LB (Left Bumper)** - Decrease joint 5 (-)
+- **Start Button** - Increase joint 5 (+)
+- **Back Button** - Decrease joint 5 (-)
 
 **Joint 6 (Wrist 3):**
-- **RT (Right Trigger)** - Increase joint 6 (+)
-- **LT (Left Trigger)** - Decrease joint 6 (-)
+- **Right Stick Click** - Increase joint 6 (+)
+- **Left Stick Click** - Decrease joint 6 (-)
 
 ### 📷 Camera Control
 
-- **D-pad Left** - Pan left (-)
-- **D-pad Right** - Pan right (+)
-- **D-pad Up** - Tilt up (+)
-- **D-pad Down** - Tilt down (-)
+- **D-pad Left** - Tilt down (-)
+- **D-pad Right** - Tilt up (+)
+- **D-pad Up** - Pan right (+)
+- **D-pad Down** - Pan left (-)
 
 **Note:** All buttons support both single press (small increment) and hold-to-repeat (continuous movement).
 

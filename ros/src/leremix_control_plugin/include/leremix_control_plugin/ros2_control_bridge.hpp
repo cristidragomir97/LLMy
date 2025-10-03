@@ -54,6 +54,12 @@ private:
   std::unordered_map<std::string, double> pos_state_; // all joints (rad)
   std::unordered_map<std::string, double> vel_state_; // base joints (rad/s), arm optional
 
+  // Track whether valid commands have been received to prevent initial 0.0 commands
+  std::unordered_map<std::string, bool> cmd_pos_received_;  // for arm+head joints
+  
+  // Track if we've received meaningful (non-zero) joint states
+  bool received_meaningful_joint_states_{false};
+
   // ROS
   std::shared_ptr<rclcpp::Node> node_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr base_pub_;

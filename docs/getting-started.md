@@ -99,13 +99,15 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
 
 **Controller Mapping:**
 - **Right Stick:** Drive base (forward/back + rotation)
-- **Left Stick:** Arm joints 1 & 2
+- **Left Stick X:** Base strafe (left/right)
+- **RB/LB Buttons:** Arm joint 1 (+/-)
+- **RT/LT Triggers:** Arm joint 2 (+/-)
 - **Y/A Buttons:** Arm joint 3 (+/-)
 - **B/X Buttons:** Arm joint 4 (+/-)
-- **RB/LB Buttons:** Arm joint 5 (+/-)
-- **RT/LT Triggers:** Arm joint 6 (+/-)
-- **D-Pad Left/Right:** Camera pan
-- **D-Pad Up/Down:** Camera tilt
+- **Start/Back Buttons:** Arm joint 5 (+/-)
+- **Stick Clicks:** Arm joint 6 (+/-)
+- **D-Pad Left/Right:** Camera tilt
+- **D-Pad Up/Down:** Camera pan
 
 ### Verify Controllers are Running
 

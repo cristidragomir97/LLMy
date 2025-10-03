@@ -4,15 +4,15 @@ servo_manager_node_py:
     baud: 1000000
 
     loc_enable: true    # Enable/disable locomotion motors
-    arm_enable: false   # Enable/disable arm motors
-    head_enable: false  # Enable/disable head motors
+    arm_enable: true   # Enable/disable arm motors
+    head_enable: true  # Enable/disable head motors
 
     loc_ids:  [1, 2, 3]
     arm_ids:  [4, 5, 6, 7, 8, 9]
     head_ids: [10, 11]
 
     ticks_per_rev: 4096
-    telemetry_rate: 30.0  # Reduced from 50Hz to reduce bus load
+    telemetry_rate: 50.0  # Reduced from 50Hz to reduce bus load
 
     # Acceleration parameters (0-255, lower = smoother acceleration)
     loc_accel:  [15, 15, 15]  # Locomotion motors - reduced acceleration for smoother movement
@@ -20,14 +20,14 @@ servo_manager_node_py:
     head_accel: [15, 15]  # Head motors - moderate acceleration
 
     # Speed scaling factors (0.0 to 1.0, lower = slower)
-    loc_speed_scale: 0.5  # Further reduced locomotion speed (10% of max)
-    arm_speed_scale: 1.0  # Normal arm speed
+    loc_speed_scale: 1.0  # Further reduced locomotion speed (10% of max)
+    arm_speed_scale: 0.5  # Normal arm speed
     head_speed_scale: 1.0  # Normal head speed
 
     # IMPROVED BRAKING CONFIGURATION
     # Options: "torque_disable", "velocity_ramp", "position_brake"
     brake_method: "torque_disable"  # Gentlest method to prevent power spikes
-    velocity_ramp_time: 0.5  # Time to ramp velocity to zero (seconds)
+    velocity_ramp_time: 0.1  # Time to ramp velocity to zero (seconds)
     brake_acceleration: 100  # Acceleration for position braking method
 
     # CALIBRATION DATA (populated by scripts/calibrate_arm.py)
