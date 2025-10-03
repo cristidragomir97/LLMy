@@ -1,38 +1,65 @@
 # leremix_bringup
 
-The LeRemix Bringup package provides a single, modular launch file that coordinates all LeRemix subsystems to bring up the complete robot. It provides flexible configuration through launch arguments to enable/disable specific components as needed.
+The LeRemix Bringup package provides modular launch files that coordinate all LeRemix subsystems to bring up the complete robot. The system is organized into three main subsystems for flexible deployment and debugging.
 
-- **Command Velocity Multiplexing**: Integrates twist_mux for multiple control sources
-- **Web Dashboard**: Includes rosboard for browser-based monitoring
+## Modular Architecture
+
+The bringup system is organized into three main categories:
+
+### 1. **Sensors** (`sensors.launch.py`)
+- **Cameras**: RealSense RGB-D head camera and USB wrist camera
+- **IMU**: Orientation and motion sensing
+- **RPLidar**: 2D laser scanner (optional)
+
+### 2. **Motion** (`motion.launch.py`) 
+- **Servo Manager**: Low-level motor control via serial communication
+- **ROS2 Control Stack**: Robot state publisher, controller manager, and spawners
+- **Teleop**: Xbox controller interface
+- **Command Velocity Multiplexing**: twist_mux for multiple control sources
+
+### 3. **Communication** (`communication.launch.py`)
+- **Rosbridge Server**: WebSocket interface for web applications
+- **Rosboard**: Web-based dashboard for monitoring and visualization
+- **Image Compression**: Bandwidth optimization for camera feeds
+- **Depth-to-Scan**: Convert depth images to laser scan format
 
 ## Launch Files
 
-### `bringup_robot.launch.py`
+### `bringup_robot.launch.py` (Main Launcher)
 
-The main launch file that brings up all LeRemix subsystems:
-
-**Components:**
-- **Base Systems** (`leremix_control/base_systems.launch.py`): Servo manager for motor control
-- **Control Stack** (`leremix_control/control_stack.launch.py`): Robot state publisher, controller manager, and controller spawners
-- **Camera** (`leremix_camera/camera.launch.py`): RGB-D camera system
-- **IMU** (`leremix_imu/imu.launch.py`): Orientation sensor
-- **Xbox Teleoperation** (`leremix_teleop_xbox/teleop_xbox.launch.py`): Manual control interface
-- **RPLidar** (`rplidar_ros/view_rplidar_c1_launch.py`): 2D laser scanner (optional)
-- **Command Velocity Mux**: Multiplexes control commands from different sources (xbox, nav, teleop)
-- **Rosboard**: Web-based dashboard for monitoring and visualization
-
-## Launch Arguments
+Coordinates all three subsystems with high-level enable/disable flags.
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `use_camera` | `true` | Enable camera system |
+| `use_sensors` | `true` | Enable all sensor systems |
+| `use_motion` | `true` | Enable motion and control systems |
+| `use_communication` | `true` | Enable communication and web interfaces |
+
+### `sensors.launch.py`
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `use_camera` | `true` | Enable camera system (RealSense + wrist cam) |
 | `use_imu` | `true` | Enable IMU sensor |
-| `use_xbox` | `true` | Enable Xbox controller teleoperation |
 | `use_rplidar` | `false` | Enable RPLidar C1 |
+
+### `motion.launch.py`
+
+| Argument | Default | Description |
+|----------|---------|-------------|
 | `use_base_systems` | `true` | Enable servo manager (motor control) |
 | `use_control_stack` | `true` | Enable robot state publisher and controllers |
+| `use_xbox` | `true` | Enable Xbox controller teleoperation |
 | `servo_port` | `/dev/ttyTHS1` | Serial port for servo communication |
 | `servo_baud` | `1000000` | Baudrate for servo communication |
+
+### `communication.launch.py`
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `use_rosbridge` | `true` | Enable rosbridge server for web interfaces |
+| `use_rosboard` | `true` | Enable rosboard web dashboard |
+| `use_image_compression` | `true` | Enable image compression and depth-to-scan |
 
 ## Usage Examples
 
@@ -43,60 +70,82 @@ The main launch file that brings up all LeRemix subsystems:
 ros2 launch leremix_bringup bringup_robot.launch.py
 ```
 
+### Modular System Startup
+
+```bash
+# Launch only sensors (cameras, IMU, optional LiDAR)
+ros2 launch leremix_bringup sensors.launch.py
+
+# Launch only motion systems (servos, control, teleop)
+ros2 launch leremix_bringup motion.launch.py
+
+# Launch only communication (web interfaces, compression)
+ros2 launch leremix_bringup communication.launch.py
+```
+
 ### Custom Configurations
 
 ```bash
-# Launch without camera (faster startup)
-ros2 launch leremix_bringup bringup_robot.launch.py use_camera:=false
+# Launch without communication systems
+ros2 launch leremix_bringup bringup_robot.launch.py use_communication:=false
 
-# Launch with RPLidar C1
-ros2 launch leremix_bringup bringup_robot.launch.py use_rplidar:=true
+# Launch with RPLidar enabled
+ros2 launch leremix_bringup sensors.launch.py use_rplidar:=true
 
-# Launch without Xbox controller
-ros2 launch leremix_bringup bringup_robot.launch.py use_xbox:=false
+# Launch motion without Xbox controller
+ros2 launch leremix_bringup motion.launch.py use_xbox:=false
+
+# Launch sensors without cameras (IMU only)
+ros2 launch leremix_bringup sensors.launch.py use_camera:=false
 
 # Launch with custom serial port
-ros2 launch leremix_bringup bringup_robot.launch.py servo_port:=/dev/ttyUSB0
-
-# Minimal setup (only control stack, no sensors or teleop)
-ros2 launch leremix_bringup bringup_robot.launch.py use_camera:=false use_imu:=false use_xbox:=false
-
-# Full sensor suite (camera, IMU, and LiDAR)
-ros2 launch leremix_bringup bringup_robot.launch.py use_rplidar:=true
+ros2 launch leremix_bringup motion.launch.py servo_port:=/dev/ttyUSB0
 ```
 
 ### Development Scenarios
 
 ```bash
-# Sensors only (no motor control)
-ros2 launch leremix_bringup bringup_robot.launch.py use_base_systems:=false use_control_stack:=false
+# Sensors + Communication (no motion for safety)
+ros2 launch leremix_bringup bringup_robot.launch.py use_motion:=false
 
-# Control only (no sensors)
-ros2 launch leremix_bringup bringup_robot.launch.py use_camera:=false use_imu:=false
+# Motion only (for control testing)
+ros2 launch leremix_bringup motion.launch.py
+
+# Full sensor suite with LiDAR
+ros2 launch leremix_bringup sensors.launch.py use_rplidar:=true
+
+# Communication with image compression disabled
+ros2 launch leremix_bringup communication.launch.py use_image_compression:=false
 ```
 
 ## Command Velocity Multiplexing
 
-The launch file includes a `twist_mux` node that multiplexes command velocity from multiple sources:
+The motion launch file includes a `twist_mux` node that multiplexes command velocity from multiple sources:
 
 | Source | Topic | Priority | Description |
 |--------|-------|----------|-------------|
-| Teleop | `/cmd_vel_teleop` | 15 (highest) | Manual teleoperation override |
-| Xbox | `/cmd_vel_xbox` | 10 | Xbox controller input |
+| Xbox | `/cmd_vel_xbox` | 15 (highest) | Xbox controller input |
+| Teleop | `/cmd_vel_teleop` | 10 | Manual teleoperation interface |
 | Nav | `/cmd_vel_nav` | 5 (lowest) | Navigation stack commands |
 
 All sources are multiplexed to `/omnidirectional_controller/cmd_vel_unstamped` with a 0.5 second timeout.
 
-## Web Dashboard
+## Web Interfaces
 
-The launch file starts a rosboard instance for web-based monitoring. Access the dashboard at:
-```
-http://localhost:8888
-```
+### Rosboard Dashboard
+Access the web dashboard at: `http://localhost:8888`
 
-Rosboard provides:
-- Topic visualization
+Features:
+- Topic visualization and monitoring
 - TF tree viewer
-- Camera feeds
+- Live camera feeds
 - Service/action inspection
 - Parameter configuration
+
+### Rosbridge WebSocket
+WebSocket server available at: `ws://localhost:9090`
+
+Enables:
+- Web application integration
+- Remote monitoring and control
+- Real-time data streaming

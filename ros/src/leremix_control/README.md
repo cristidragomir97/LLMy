@@ -92,6 +92,67 @@ ros2 launch leremix_control control_stack.launch.py
 
 **Note:** Controllers are spawned with delays to ensure proper initialization sequence.
 
+## Motion System Initialization
+
+The LeRemix motion system follows a carefully orchestrated initialization sequence to ensure proper hardware setup and safe operation:
+
+### Initialization Sequence
+
+1. **Servo Manager Startup** (0-3 seconds)
+   - Establishes serial communication with ST3215 servo motors
+   - Reads current servo positions and states
+   - Publishes initial joint positions to `/motor_manager/joint_states`
+   - Performs servo health checks and error detection
+
+2. **Hardware Interface Activation** (3-5 seconds)
+   - ros2_control hardware plugin initializes
+   - Subscribes to `/motor_manager/joint_states` for state feedback
+   - Establishes command topic publishers (`/motor_manager/base_cmd`, `/arm_cmd`, `/head_cmd`)
+   - Synchronizes ros2_control state interfaces with actual hardware positions
+
+3. **Controller Manager Initialization** (5 seconds)
+   - Loads controller configurations from YAML files
+   - Validates joint interfaces and controller compatibility
+   - Prepares controller spawning sequence
+
+4. **Sequential Controller Spawning**
+   - **Joint State Broadcaster** (5s delay): Publishes unified joint states for visualization
+   - **Omnidirectional Controller** (7s delay): Enables base movement control
+   - **Arm Controller** (9s delay): Activates 6-DOF arm trajectory control
+   - **Head Controller** (11s delay): Enables pan-tilt camera control
+
+### Initialization Safety Features
+
+- **Position Continuity**: Hardware interface ensures smooth transition from servo positions to controller commands
+- **Brake Management**: Servos maintain position during initialization until controllers are active
+- **Error Handling**: Failed servo connections or controller spawning errors are logged and reported
+- **Startup Monitoring**: Each phase includes status feedback for debugging initialization issues
+
+### Expected Startup Behavior
+
+During normal startup, you should observe:
+
+```bash
+[INFO] [servo_manager_node]: 🚀 Launching as Normal ROS Node
+[INFO] [servo_manager_node]: Serial connection established on /dev/ttyTHS1
+[INFO] [servo_manager_node]: Found 9 servos, reading initial positions...
+[INFO] [robot_state_publisher]: Robot state publisher started
+[INFO] [controller_manager]: Loading controller configurations...
+[INFO] [spawner-joint_state_broadcaster]: Controller spawned successfully
+[INFO] [spawner-omnidirectional_controller]: Controller spawned successfully
+[INFO] [spawner-arm_controller]: Controller spawned successfully  
+[INFO] [spawner-head_controller]: Controller spawned successfully
+```
+
+### Troubleshooting Initialization
+
+Common initialization issues and solutions:
+
+- **Servo Connection Failures**: Check serial port permissions and cable connections
+- **Controller Spawn Timeouts**: Verify hardware interface is receiving joint states
+- **Position Discontinuities**: Ensure servos are not in error state before startup
+- **Missing Joint States**: Confirm servo manager is publishing to `/motor_manager/joint_states`
+
 ## Controllers
 
 ### Omnidirectional Controller

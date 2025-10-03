@@ -53,13 +53,13 @@ def generate_launch_description():
     
     declare_enable_compressed = DeclareLaunchArgument(
         'enable_compressed',
-        default_value='true',
+        default_value='false',
         description='Enable compressed image transport'
     )
     
     declare_enable_laser_scan = DeclareLaunchArgument(
         'enable_laser_scan',
-        default_value='true',
+        default_value='false',
         description='Enable depth to laser scan conversion'
     )
     
@@ -115,7 +115,7 @@ def generate_launch_description():
             ])
         ),
         launch_arguments=[
-            ('camera_namespace', 'head_camera'), 
+            ('camera_namespace', 'head_camera'),
             ('camera_name', camera_name),
             ('device_type', device_type),
             ('enable_depth', 'true'),
@@ -130,40 +130,6 @@ def generate_launch_description():
         ]
     )
 
-    # Compressed image transport nodes
-    # Color image compression
-    compressed_color_node = Node(
-        package='image_transport',
-        executable='republish',
-        name='compressed_color_republisher',
-        arguments=['raw', 'compressed'],
-        remappings=[
-            ('in', 'head_camera/head_camera/color/image_raw'),
-            ('out', 'head_camera/head_camera/color/image_compressed'),
-        ],
-        condition=IfCondition(enable_compressed)
-    )
-    
-
-    # Depth image to laser scan conversion
-    depthimage_to_laserscan_node = Node(
-        package='depthimage_to_laserscan',
-        executable='depthimage_to_laserscan_node',
-        name='depthimage_to_laserscan',
-        parameters=[{
-            'scan_height': 10,
-            'scan_time': 0.020,  # 30Hz
-            'range_min': laser_scan_range_min,
-            'range_max': laser_scan_range_max,
-            'output_frame_id': 'lidar',
-        }],
-        remappings=[
-            ('depth', 'head_camera/head_camera/depth/image_rect_raw'),
-            ('depth_camera_info', 'head_camera/head_camera/depth/camera_info'),
-            ('scan', '/scan'),
-        ],
-        condition=IfCondition(enable_laser_scan)
-    )
 
     # Wrist camera using usb_cam
     wrist_camera_node = Node(
@@ -176,7 +142,7 @@ def generate_launch_description():
             'camera_frame_id': 'wrist_camera_frame',
             'image_width': 640,
             'image_height': 480,
-            'pixel_format': 'raw_mjpeg',
+            'pixel_format': 'mjpeg2rgb',
             'framerate': 30.0,
             'camera_name': 'wrist_camera',
             'io_method': 'mmap',
@@ -184,18 +150,6 @@ def generate_launch_description():
         condition=IfCondition(enable_wrist_camera)
     )
 
-    # Compressed image transport for wrist camera
-    compressed_wrist_node = Node(
-        package='image_transport',
-        executable='republish',
-        name='compressed_wrist_republisher',
-        arguments=['raw', 'compressed'],
-        remappings=[
-            ('in', 'wrist_camera/image_raw'),
-            ('out', 'wrist_camera/image_compressed'),
-        ],
-        condition=IfCondition(enable_wrist_camera)
-    )
 
     return LaunchDescription([
         # Launch arguments
@@ -215,8 +169,5 @@ def generate_launch_description():
         
         # Nodes
         realsense_launch,
-        compressed_color_node,
-        depthimage_to_laserscan_node,
         wrist_camera_node,
-        compressed_wrist_node,
     ])

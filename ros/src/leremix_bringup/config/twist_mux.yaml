@@ -4,7 +4,7 @@ twist_mux:
       xbox:
         topic: cmd_vel_xbox
         timeout: 0.5
-        priority: 10
+        priority: 15
       nav:
         topic: cmd_vel_nav
         timeout: 0.5
@@ -12,4 +12,4 @@ twist_mux:
       teleop:
         topic: cmd_vel_teleop
         timeout: 0.5
-        priority: 15
+        priority: 10

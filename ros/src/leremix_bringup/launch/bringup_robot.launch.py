@@ -1,131 +1,79 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     # Declare launch arguments
-    use_camera_arg = DeclareLaunchArgument(
-        'use_camera',
+    use_sensors_arg = DeclareLaunchArgument(
+        'use_sensors',
         default_value='true',
-        description='Enable camera (leremix_camera)'
+        description='Enable sensors (cameras, IMU, RPLidar)'
     )
     
-    use_imu_arg = DeclareLaunchArgument(
-        'use_imu',
+    use_motion_arg = DeclareLaunchArgument(
+        'use_motion',
         default_value='true',
-        description='Enable IMU (leremix_imu)'
+        description='Enable motion systems (servos, ros2_control, teleop)'
     )
     
-    use_xbox_arg = DeclareLaunchArgument(
-        'use_xbox',
+    use_communication_arg = DeclareLaunchArgument(
+        'use_communication',
         default_value='true',
-        description='Enable Xbox controller (leremix_teleop_xbox)'
-    )
-
-
-    use_base_systems_arg = DeclareLaunchArgument(
-        'use_base_systems',
-        default_value='true',
-        description='Enable base systems (servo manager)'
-    )
-    
-    use_control_stack_arg = DeclareLaunchArgument(
-        'use_control_stack',
-        default_value='true',
-        description='Enable control stack (controllers, robot state publisher)'
-    )
-    
-    servo_port_arg = DeclareLaunchArgument(
-        'servo_port',
-        default_value='/dev/ttyTHS1',
-        description='Serial port for servo manager'
-    )
-    
-    servo_baud_arg = DeclareLaunchArgument(
-        'servo_baud',
-        default_value='1000000',
-        description='Baudrate for servo manager'
+        description='Enable communication (rosbridge, rosboard, image compression)'
     )
 
     # Launch configurations
-    use_camera = LaunchConfiguration('use_camera')
-    use_imu = LaunchConfiguration('use_imu')
-    use_xbox = LaunchConfiguration('use_xbox')
-    use_base_systems = LaunchConfiguration('use_base_systems')
-    use_control_stack = LaunchConfiguration('use_control_stack')
-    servo_port = LaunchConfiguration('servo_port')
-    servo_baud = LaunchConfiguration('servo_baud')
+    use_sensors = LaunchConfiguration('use_sensors')
+    use_motion = LaunchConfiguration('use_motion')
+    use_communication = LaunchConfiguration('use_communication')
 
-    # Include base systems (servo manager)
-    base_systems_launch = IncludeLaunchDescription(
-        PathJoinSubstitution([
-            FindPackageShare('leremix_control'),
-            'launch',
-            'base_systems.launch.py'
-        ]),
-        condition=IfCondition(use_base_systems)
+    # Include sensors launch file
+    sensors_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([
+                FindPackageShare('leremix_bringup'),
+                'launch',
+                'sensors.launch.py'
+            ])
+        ),
+        condition=IfCondition(use_sensors)
     )
 
-    # Include control stack (robot_state_publisher, controller_manager, spawners)
-    control_stack_launch = IncludeLaunchDescription(
-        PathJoinSubstitution([
-            FindPackageShare('leremix_control'),
-            'launch',
-            'control_stack.launch.py'
-        ]),
-        condition=IfCondition(use_control_stack)
-    )
-    
-    # Include leremix_camera launch file
-    #camera_launch = IncludeLaunchDescription(
-    #    PathJoinSubstitution([
-    #        FindPackageShare('leremix_camera'),
-    #        'launch',
-    #        'camera.launch.py'
-    #    ]),
-    #    condition=IfCondition(use_camera)
-    #)
-
-    # Include leremix_imu launch file
-    imu_launch = IncludeLaunchDescription(
-        PathJoinSubstitution([
-            FindPackageShare('leremix_imu'),
-            'launch',
-            'imu.launch.py'
-        ]),
-        condition=IfCondition(use_imu)
+    # Include motion launch file
+    motion_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([
+                FindPackageShare('leremix_bringup'),
+                'launch',
+                'motion.launch.py'
+            ])
+        ),
+        condition=IfCondition(use_motion)
     )
 
-    # Include leremix_teleop_xbox launch file
-    xbox_launch = IncludeLaunchDescription(
-        PathJoinSubstitution([
-            FindPackageShare('leremix_teleop_xbox'),
-            'launch',
-            'teleop_xbox.launch.py'
-        ]),
-        condition=IfCondition(use_xbox)
+    # Include communication launch file
+    communication_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([
+                FindPackageShare('leremix_bringup'),
+                'launch',
+                'communication.launch.py'
+            ])
+        ),
+        condition=IfCondition(use_communication)
     )
-
-
-
 
     return LaunchDescription([
         # Launch arguments
-        use_camera_arg,
-        use_imu_arg,
-        use_xbox_arg,
-        use_base_systems_arg,
-        use_control_stack_arg,
-        servo_port_arg,
-        servo_baud_arg,
+        use_sensors_arg,
+        use_motion_arg,
+        use_communication_arg,
 
-        # Launch includes and nodes
-        base_systems_launch,
-        control_stack_launch,
-        #camera_launch,
-        imu_launch,
-        xbox_launch,
+        # Launch includes
+        sensors_launch,
+        motion_launch,
+        communication_launch,
     ])

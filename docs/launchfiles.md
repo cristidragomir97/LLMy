@@ -5,33 +5,46 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 ## Main System Launch Files
 
 ### leremix_bringup/launch/bringup_robot.launch.py
-**Description**: Main launch file for the physical robot with all subsystems.
+**Description**: Main modular launch file that coordinates all three subsystems (sensors, motion, communication).
 
 **Parameters**:
-- `use_camera` (bool, default: `true`) - Enable camera (leremix_camera)
-- `use_imu` (bool, default: `true`) - Enable IMU (leremix_imu) 
-- `use_xbox` (bool, default: `true`) - Enable Xbox controller (leremix_teleop_xbox)
-- `use_base_systems` (bool, default: `true`) - Enable base systems (servo manager)
-- `use_control_stack` (bool, default: `true`) - Enable control stack (controllers, robot state publisher)
-- `servo_port` (string, default: `/dev/ttyTHS1`) - Serial port for servo manager
-- `servo_baud` (string, default: `1000000`) - Baudrate for servo manager
+- `use_sensors` (bool, default: `true`) - Enable all sensor systems
+- `use_motion` (bool, default: `true`) - Enable motion and control systems  
+- `use_communication` (bool, default: `true`) - Enable communication and web interfaces
 
-**Includes**: base_systems.launch.py, control_stack.launch.py, camera.launch.py, imu.launch.py, teleop_xbox.launch.py
+**Includes**: sensors.launch.py, motion.launch.py, communication.launch.py
 
-**Nodes**: twist_mux (cmd_vel multiplexing), rosboard (web dashboard)
-
-### leremix_bringup/launch/bringup_desktop.launch.py
-**Description**: Launch file for desktop/development environment with micro-ROS agent.
+### leremix_bringup/launch/sensors.launch.py
+**Description**: Sensor subsystem launch file (cameras, IMU, RPLidar).
 
 **Parameters**:
-- `use_xbox` (bool, default: `false`) - Enable Xbox controller (leremix_teleop_xbox)
-- `microros_transport` (string, default: `serial`) - Transport for micro-ROS agent
-- `microros_device` (string, default: `/dev/ttyUSB0`) - Device for micro-ROS agent
-- `microros_baudrate` (string, default: `115200`) - Baudrate for micro-ROS agent
+- `use_camera` (bool, default: `true`) - Enable camera system (RealSense + wrist cam)
+- `use_imu` (bool, default: `true`) - Enable IMU sensor
+- `use_rplidar` (bool, default: `false`) - Enable RPLidar C1
 
-**Includes**: teleop_xbox.launch.py
+**Includes**: camera.launch.py, imu.launch.py, rplidar_c1_launch.py
 
-**Nodes**: robot_state_publisher, controller_manager, spawner nodes (delayed), micro_ros_agent, rosboard
+### leremix_bringup/launch/motion.launch.py
+**Description**: Motion subsystem launch file (servos, ros2_control, teleop).
+
+**Parameters**:
+- `use_base_systems` (bool, default: `true`) - Enable servo manager (motor control)
+- `use_control_stack` (bool, default: `true`) - Enable robot state publisher and controllers
+- `use_xbox` (bool, default: `true`) - Enable Xbox controller teleoperation
+- `servo_port` (string, default: `/dev/ttyTHS1`) - Serial port for servo communication
+- `servo_baud` (string, default: `1000000`) - Baudrate for servo communication
+
+**Includes**: servo_manager.launch.py, control_stack.launch.py, teleop_xbox.launch.py
+
+### leremix_bringup/launch/communication.launch.py
+**Description**: Communication subsystem launch file (rosbridge, rosboard, image compression).
+
+**Parameters**:
+- `use_rosbridge` (bool, default: `true`) - Enable rosbridge server for web interfaces
+- `use_rosboard` (bool, default: `true`) - Enable rosboard web dashboard
+- `use_image_compression` (bool, default: `true`) - Enable image compression and depth-to-scan
+
+**Nodes**: rosbridge_websocket, rosboard_node, image compression nodes, depthimage_to_laserscan
 
 ## Control System Launch Files
 
@@ -52,22 +65,6 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Nodes**: robot_state_publisher, controller_manager, controller spawners (joint_state_broadcaster, omnidirectional_controller, arm_controller, head_controller)
 
-### leremix_control/launch/robot_bringup.launch.py
-**Description**: Hardware interface launch with micro-ROS agent.
-
-**Parameters**:
-- `microros_transport` (string, default: `serial`) - Transport for micro-ROS agent
-- `microros_device` (string, default: `/dev/ttyUSB0`) - Device for micro-ROS agent
-- `microros_baudrate` (string, default: `2000000`) - Baudrate for micro-ROS agent
-
-**Nodes**: robot_state_publisher, controller_manager, controller spawners (delayed), micro_ros_agent
-
-### leremix_control_plugin/launch/bringup.launch.py
-**Description**: Simple control plugin bringup without robot description.
-
-**Parameters**: None
-
-**Nodes**: controller_manager, controller spawners (joint_state_broadcaster, omnidirectional_controller, arm_controller)
 
 ## Camera System Launch Files
 
@@ -79,8 +76,8 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 - `wrist_camera_device` (string, default: `/dev/video0`) - Wrist camera device path
 - `enable_wrist_camera` (bool, default: `true`) - Enable wrist camera
 - `device_type` (string, default: `''`) - RealSense device type (e.g., d435i, d455, l515)
-- `enable_compressed` (bool, default: `true`) - Enable compressed image transport
-- `enable_laser_scan` (bool, default: `true`) - Enable depth to laser scan conversion
+- `enable_compressed` (bool, default: `false`) - Enable compressed image transport
+- `enable_laser_scan` (bool, default: `false`) - Enable depth to laser scan conversion
 - `laser_scan_min_height` (float, default: `-0.5`) - Minimum height for laser scan slice
 - `laser_scan_max_height` (float, default: `0.5`) - Maximum height for laser scan slice
 - `laser_scan_angle_min` (float, default: `-1.57`) - Minimum angle for laser scan (-90 degrees)
@@ -91,7 +88,9 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Includes**: realsense2_camera/launch/rs_launch.py
 
-**Nodes**: compressed image transport, depthimage_to_laserscan, wrist camera (usb_cam)
+**Nodes**: wrist camera (usb_cam), RealSense camera
+
+**Note**: Image compression and depth-to-scan are now handled by communication.launch.py
 
 ### leremix_camera/launch/realsense_only.launch.py
 **Description**: Minimal RealSense camera setup.
@@ -152,15 +151,15 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Nodes**: servo_manager_node
 
-### leremix_servo_manager/launch/ping_test.launch.py
-**Description**: Motor ping test utility.
+### leremix_servo_manager/launch/test_brake_methods.launch.py
+**Description**: Servo brake testing utility.
 
-**Parameters**:
-- `config_file` (string, default: package config file) - Path to the servo manager config file  
-- `port` (string, default: `/dev/ttyUSB0`) - Serial port for motor communication
+**Parameters**: 
+- `config_file` (string, default: package config file) - Path to the servo manager config file
+- `port` (string, default: `/dev/ttyUSB0`) - Serial port for motor communication  
 - `baud` (string, default: `2000000`) - Baud rate for serial communication
 
-**Nodes**: ping_test (motor_ping_test)
+**Nodes**: test_brake_methods
 
 ## Usage Examples
 
