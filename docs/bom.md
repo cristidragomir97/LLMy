@@ -39,9 +39,8 @@ All software is built on the **Intel RealSense SDK** and ROS driver, but other d
 | Option | Power Draw | Performance | Best For |
 |--------|------------|-------------|----------|
 | 🥧 **Raspberry Pi 5** | ~15W | Basic | Learning, simple tasks |
-| 🚀 **Nvidia Orin Nano** | ~15W | High AI | AI/ML inference |
-| 🚀 **Nvidia Orin NX** | ~25W | Very High AI | Advanced AI workloads |
-| 💪 **Intel NUC 11/12** | ~30-45W | High CPU | General compute, ROS2 |
+| 🚀 **Nvidia Orin Nano** | ~25W | 67 TOPS of AI performace  | AI/ML inference |
+| 💪 **Intel NUC** | ~30-45W | Better, Desktop Class CPU| General compute, ROS2 |
 | 🔧 **Custom Mini-PC** | <65W | Variable | Specific requirements |
 
 > 💡 **Power Note:** Any device requiring ≤65W and compatible with 20V USB-C PD will work.
