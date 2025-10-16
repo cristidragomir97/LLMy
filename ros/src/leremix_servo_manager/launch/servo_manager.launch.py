@@ -26,7 +26,19 @@ def generate_launch_description():
         default_value='torque_disable',
         description='Braking method: torque_disable, velocity_ramp, or position_brake'
     )
-    
+
+    servo_port_arg = DeclareLaunchArgument(
+        'servo_port',
+        default_value='/dev/ttyTHS1',
+        description='Serial port for servo manager'
+    )
+
+    servo_baud_arg = DeclareLaunchArgument(
+        'servo_baud',
+        default_value='1000000',
+        description='Baudrate for servo manager'
+    )
+
     # Servo manager node
     servo_manager_node = Node(
         package='leremix_servo_manager',
@@ -34,7 +46,11 @@ def generate_launch_description():
         name='servo_manager_node',
         parameters=[
             LaunchConfiguration('config_file'),
-            {'brake_method': LaunchConfiguration('brake_method')}
+            {
+                'brake_method': LaunchConfiguration('brake_method'),
+                'port': LaunchConfiguration('servo_port'),
+                'baud': LaunchConfiguration('servo_baud')
+            }
         ],
         output='screen',
         emulate_tty=True,
@@ -45,5 +61,7 @@ def generate_launch_description():
     return LaunchDescription([
         config_arg,
         brake_method_arg,
+        servo_port_arg,
+        servo_baud_arg,
         servo_manager_node
     ])

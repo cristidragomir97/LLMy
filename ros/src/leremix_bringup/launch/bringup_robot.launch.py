@@ -46,7 +46,7 @@ def generate_launch_description():
     motion_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([
-                FindPackageShare('leremix_bringup'),
+                FindPackageShare('leremix_control'),
                 'launch',
                 'motion.launch.py'
             ])

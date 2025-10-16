@@ -19,6 +19,7 @@
   
   <!-- Depth to laser scan -->
   <exec_depend>depthimage_to_laserscan</exec_depend>
+  <exec_depend>usb_cam</exec_depend>
   
   <!-- Core ROS2 dependencies -->
   <exec_depend>rclcpp</exec_depend>

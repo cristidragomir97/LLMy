@@ -33,8 +33,7 @@ class ServoManagerNode(Node):
         # Connect to motor bus
         self.get_logger().info("Attempting to connect to FEETECH servo bus...")
         if not self.motor_manager.connect():
-            rclpy.shutdown()
-            return
+            raise RuntimeError("Failed to connect to FEETECH servo bus")
         
         # Test connectivity and initialize motors
         enabled_ids = self.config.get_enabled_motor_ids()
@@ -143,15 +142,17 @@ class ServoManagerNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ServoManagerNode()
-    
+
     try:
+        node = ServoManagerNode()
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
+    except Exception as e:
+        print(f"Error during servo manager initialization: {e}")
     finally:
-        node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 if __name__ == '__main__':
     main()

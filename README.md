@@ -15,7 +15,7 @@
 * 🔧 **Fully 3D Printable** - ORP Grid-based modular design with complete CAD files
 * 🤖 **ROS2 Native** - Complete ros2_control integration with MoveIt2 & Nav2 support
 * 🎮 **Simulation Ready** - Digital-twin Gazebo simulation with virtual sensors and controllers
-* 📷 **RGB-D Vision** - Integrated depth perception for advanced AI workflows
+* 📷 **RGB-D Vision** - Depth sensing gives you the distance and physical parameters of the objects you detect using neural nets.
 * ⚡ **145W Power** - 4-5 hours runtime with USB-C charging
 * 💰 **Affordable** - Starting at ~$280 for the base platform
 

@@ -77,7 +77,7 @@ ros2 launch leremix_bringup bringup_robot.launch.py
 ros2 launch leremix_bringup sensors.launch.py
 
 # Launch only motion systems (servos, control, teleop)
-ros2 launch leremix_bringup motion.launch.py
+ros2 launch leremix_control motion.launch.py
 
 # Launch only communication (web interfaces, compression)
 ros2 launch leremix_bringup communication.launch.py
@@ -93,13 +93,13 @@ ros2 launch leremix_bringup bringup_robot.launch.py use_communication:=false
 ros2 launch leremix_bringup sensors.launch.py use_rplidar:=true
 
 # Launch motion without Xbox controller
-ros2 launch leremix_bringup motion.launch.py use_xbox:=false
+ros2 launch leremix_control motion.launch.py use_xbox:=false
 
 # Launch sensors without cameras (IMU only)
 ros2 launch leremix_bringup sensors.launch.py use_camera:=false
 
 # Launch with custom serial port
-ros2 launch leremix_bringup motion.launch.py servo_port:=/dev/ttyUSB0
+ros2 launch leremix_control motion.launch.py servo_port:=/dev/ttyUSB0
 ```
 
 ### Development Scenarios
@@ -109,7 +109,7 @@ ros2 launch leremix_bringup motion.launch.py servo_port:=/dev/ttyUSB0
 ros2 launch leremix_bringup bringup_robot.launch.py use_motion:=false
 
 # Motion only (for control testing)
-ros2 launch leremix_bringup motion.launch.py
+ros2 launch leremix_control motion.launch.py
 
 # Full sensor suite with LiDAR
 ros2 launch leremix_bringup sensors.launch.py use_rplidar:=true

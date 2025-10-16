@@ -20,15 +20,9 @@ def generate_launch_description():
         description='Enable control stack (controllers, robot state publisher)'
     )
 
-    use_xbox_arg = DeclareLaunchArgument(
-        'use_xbox',
-        default_value='true',
-        description='Enable Xbox controller (leremix_teleop_xbox)'
-    )
-    
     servo_port_arg = DeclareLaunchArgument(
         'servo_port',
-        default_value='/dev/ttyTHS1',
+        default_value='/dev/ttyACM0',
         description='Serial port for servo manager'
     )
     
@@ -41,7 +35,6 @@ def generate_launch_description():
     # Launch configurations
     use_base_systems = LaunchConfiguration('use_base_systems')
     use_control_stack = LaunchConfiguration('use_control_stack')
-    use_xbox = LaunchConfiguration('use_xbox')
     servo_port = LaunchConfiguration('servo_port')
     servo_baud = LaunchConfiguration('servo_baud')
 
@@ -54,6 +47,10 @@ def generate_launch_description():
                 'servo_manager.launch.py'
             ])
         ),
+        launch_arguments={
+            'servo_port': servo_port,
+            'servo_baud': servo_baud
+        }.items(),
         condition=IfCondition(use_base_systems)
     )
 
@@ -69,29 +66,14 @@ def generate_launch_description():
         condition=IfCondition(use_control_stack)
     )
 
-    # Include leremix_teleop_xbox launch file
-    xbox_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution([
-                FindPackageShare('leremix_teleop_xbox'),
-                'launch',
-                'teleop_xbox.launch.py'
-            ])
-        ),
-        condition=IfCondition(use_xbox)
-    )
-
-
     return LaunchDescription([
         # Launch arguments
         use_base_systems_arg,
         use_control_stack_arg,
-        use_xbox_arg,
         servo_port_arg,
         servo_baud_arg,
 
         # Launch includes and nodes
         servo_manager_launch,
         control_stack_launch,
-        xbox_launch,
     ])

@@ -13,6 +13,39 @@ ros/log/
 ros/src/*/
 !ros/src/leremix_*/
 
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.cproject
+.settings/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+*.cover
+
+# Environment files
+.env
+.env.local
+*.env
+
 # Windows Zone Identifier files
 **/*:Zone.Identifier
 
