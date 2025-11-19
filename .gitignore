@@ -49,3 +49,6 @@ build/
 # Windows Zone Identifier files
 **/*:Zone.Identifier
 
+# pixi environments
+.pixi/*
+!.pixi/config.toml
