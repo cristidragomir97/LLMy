@@ -39,29 +39,34 @@ class CommandHandlers:
             
         self.last_base_commands = list(msg.data)
         
-        # MAPPING: Hardware interface sends commands in order of wheel names ["wheel1_rotation", "wheel2_rotation", "wheel3_rotation"]
-        # which maps to motor IDs [1,2,3] in config order
-        
+        # MAPPING: Hardware interface sends commands in order of base_joints_ from URDF
+        # URDF order is ["wheel3_rotation", "wheel1_rotation", "wheel2_rotation"]
+        # which maps to motor IDs [3, 1, 2]
+
         # Log the received command for debugging
-        wheel_names = ["wheel1_rotation", "wheel2_rotation", "wheel3_rotation"]
+        wheel_names = ["wheel3_rotation", "wheel1_rotation", "wheel2_rotation"]  # Must match URDF order
+        motor_id_map = [3, 1, 2]  # Motor IDs corresponding to URDF wheel order
         self.node.get_logger().info(f"Base command received: {[f'{wheel_names[i]}={msg.data[i]:.3f}' for i in range(len(msg.data))]}")
         
-        for i, motor_id in enumerate(self.config.loc_ids):
+        for i in range(len(msg.data)):
+            motor_id = motor_id_map[i]  # Use correct motor ID for this wheel position
             velocity = msg.data[i]
-            
+
             try:
-                # Convert velocity to motor speed
+                # Convert velocity (rad/s) to motor speed (steps/s)
+                # Formula: steps/s = rad/s × (ticks_per_rev / 2π)
+                # Where 1 revolution = ticks_per_rev steps = 2π radians
                 rad_per_sec = velocity * self.config.loc_speed_scale
-                max_rad_per_sec = 10.0
-                speed_float = rad_per_sec / max_rad_per_sec * 3400.0
-                speed_raw = int(max(-3400, min(3400, speed_float)))
-                
+                steps_per_radian = self.config.ticks_per_rev / (2.0 * math.pi)
+                speed_float = rad_per_sec * steps_per_radian
+                speed_raw = int(max(-3400, min(3400, speed_float)))  # ST3215 max speed: 3400 steps/s
+
                 # Log the motor command for debugging
                 self.node.get_logger().info(f"  Motor {motor_id} ({wheel_names[i]}): velocity={velocity:.3f} → speed_raw={speed_raw}")
-                
+
                 # Send command to motor
                 self.motor_manager.send_velocity_command(motor_id, speed_raw)
-                    
+
             except Exception as e:
                 self.node.get_logger().error(f"Failed to send velocity command to motor {motor_id}: {e}")
     

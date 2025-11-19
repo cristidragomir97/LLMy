@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from sensor_msgs.msg import Joy, JointState
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, TwistStamped
 from std_msgs.msg import Float64MultiArray
 from .joystick_driver import JoystickDriver
 
@@ -11,7 +12,7 @@ class XboxTeleop(Node):
         super().__init__('leremix_teleop_xbox')
 
         # Topics / rates
-        self.declare_parameter('cmd_vel_topic', '/omnidirectional_controller/cmd_vel_unstamped')
+        self.declare_parameter('cmd_vel_topic', '/omnidirectional_controller/cmd_vel')
         self.declare_parameter('arm_cmd_topic', '/arm_controller/commands')
         self.declare_parameter('head_cmd_topic', '/head_controller/commands')
         self.declare_parameter('linear_scale', 0.75)
@@ -52,7 +53,13 @@ class XboxTeleop(Node):
         self.acceleration_limit = float(self.get_parameter('acceleration_limit').value)
 
         # Publishers/subscriber
-        self.pub_twist = self.create_publisher(Twist, self.cmd_vel_topic, 10)
+        # Use BEST_EFFORT QoS to match controller expectations
+        cmd_vel_qos = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=10
+        )
+        self.pub_twist = self.create_publisher(TwistStamped, self.cmd_vel_topic, cmd_vel_qos)
         self.pub_arm   = self.create_publisher(Float64MultiArray, self.arm_cmd_topic, 10)
         self.pub_head  = self.create_publisher(Float64MultiArray, self.head_cmd_topic, 10)
         self.sub       = self.create_subscription(Joy, 'joy', self.on_joy, 10)
@@ -296,10 +303,12 @@ class XboxTeleop(Node):
         self.current_vel_lateral += vel_diff_lateral
         
         # Publish smoothed twist
-        tw = Twist()
-        tw.linear.x = self.current_vel_linear  # Forward/backward
-        tw.linear.y = self.current_vel_lateral  # Left/right strafe
-        tw.angular.z = self.current_vel_angular  # Rotation
+        tw = TwistStamped()
+        tw.header.stamp = self.get_clock().now().to_msg()
+        tw.header.frame_id = 'base_link'
+        tw.twist.linear.x = self.current_vel_linear  # Forward/backward
+        tw.twist.linear.y = self.current_vel_lateral  # Left/right strafe
+        tw.twist.angular.z = self.current_vel_angular  # Rotation
         self.pub_twist.publish(tw)
 
 def main():

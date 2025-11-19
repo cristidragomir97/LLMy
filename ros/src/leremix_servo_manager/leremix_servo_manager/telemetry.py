@@ -49,13 +49,19 @@ class TelemetrySystem:
     
     def _ticks_to_radians(self, pos_ticks: int) -> float:
         """Convert servo ticks to radians"""
+        import math
         servo_center = 2048
-        return (pos_ticks - servo_center) / self.config.ticks_per_rev * 2.0 * 3.14159
+        return (pos_ticks - servo_center) / self.config.ticks_per_rev * 2.0 * math.pi
     
     def _speed_to_rad_per_sec(self, speed: int) -> float:
-        """Convert motor speed to rad/s"""
-        max_rad_per_sec = 10.0
-        return speed / 1023.0 * max_rad_per_sec
+        """Convert motor speed (steps/s) to rad/s
+
+        Formula: rad/s = steps/s / (ticks_per_rev / 2π)
+        Where 1 revolution = ticks_per_rev steps = 2π radians
+        """
+        import math
+        steps_per_radian = self.config.ticks_per_rev / (2.0 * math.pi)
+        return speed / steps_per_radian
     
     def _motor_id_to_joint_name(self, motor_id: int) -> str:
         """Map motor ID to ros2_control joint name"""

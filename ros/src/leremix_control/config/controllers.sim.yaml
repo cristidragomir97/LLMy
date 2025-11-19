@@ -52,7 +52,7 @@ omnidirectional_controller:
     wheel_radius: 0.05
     gamma: 60.0 # angle between body fixed y axis and the normal of wheel3
 
-    publish_rate: 50.0
+    publish_rate: 50 
     odom_frame_id: odom
     base_frame_id: base_link
     pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]

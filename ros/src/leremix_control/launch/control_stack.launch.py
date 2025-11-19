@@ -32,7 +32,10 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': robot_description_content}]
+        parameters=[
+            {'robot_description': robot_description_content},
+            {'use_sim_time': False}
+        ]
     )
 
     # ros2_control node (controller_manager) - will use robot_description topic
@@ -40,7 +43,12 @@ def generate_launch_description():
         package='controller_manager',
         executable='ros2_control_node',
         output='screen',
-        parameters=[{'robot_description': robot_description_content}, controllers_cfg, hw_cfg]
+        parameters=[
+            {'robot_description': robot_description_content},
+            {'use_sim_time': False},
+            controllers_cfg,
+            hw_cfg
+        ]
     )
 
     # Controller spawners - delayed to wait for controller_manager

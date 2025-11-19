@@ -7,6 +7,18 @@
 <link name="base_link">
 </link>
 
+
+    <!-- BASE_FOOTPRINT LINK -->
+
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="base_footprint">
+    </link>
+
 <!-- Fixed joint to actual base -->
 <joint name="robot_base_joint" type="fixed">
   <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -23,14 +35,14 @@
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -44,14 +56,14 @@
   <visual>
     <origin xyz="-0.050662 0.004002 -0.083133" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_rotation_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_rotation_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.050662 0.004002 -0.083133" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_rotation_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_rotation_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -65,14 +77,14 @@
   <visual>
     <origin xyz="-0.083462 -0.006248 -0.117733" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_rotation_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_rotation_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.083462 -0.006248 -0.117733" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_rotation_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_rotation_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -86,14 +98,14 @@
   <visual>
     <origin xyz="-0.124312 0.016752 -0.140933" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_rotation_link_cover_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_rotation_link_cover_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.124312 0.016752 -0.140933" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_rotation_link_cover_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_rotation_link_cover_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -107,14 +119,14 @@
   <visual>
     <origin xyz="-0.124312 -0.022548 -0.137133" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_shoulder_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_shoulder_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.124312 -0.022548 -0.137133" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_shoulder_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_shoulder_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -128,14 +140,14 @@
   <visual>
     <origin xyz="-0.114062 0.012052 -0.169933" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_shoulder_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_shoulder_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.114062 0.012052 -0.169933" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_shoulder_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_shoulder_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -149,14 +161,14 @@
   <visual>
     <origin xyz="-0.016471 -0.024048 -0.138814" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_elbow_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_elbow_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.016471 -0.024048 -0.138814" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_elbow_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_elbow_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -170,14 +182,14 @@
   <visual>
     <origin xyz="0.001919 0.010552 -0.167844" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_elbow_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_elbow_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.001919 0.010552 -0.167844" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_elbow_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_elbow_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -191,14 +203,14 @@
   <visual>
     <origin xyz="-0.089679 -0.025548 -0.217624" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_wrist_tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_wrist_tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.089679 -0.025548 -0.217624" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_wrist_tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_wrist_tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -212,14 +224,14 @@
   <visual>
     <origin xyz="-0.124014 0.009052 -0.216213" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_wrist_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_wrist_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.124014 0.009052 -0.216213" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_wrist_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_wrist_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -233,14 +245,14 @@
   <visual>
     <origin xyz="-0.161703 0.017952 -0.170568" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_wrist_roll_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_wrist_roll_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.161703 0.017952 -0.170568" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_wrist_roll_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_wrist_roll_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -254,14 +266,14 @@
   <visual>
     <origin xyz="-0.15417 -0.011048 -0.163073" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_gripper_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_gripper_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.15417 -0.011048 -0.163073" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_gripper_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_gripper_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -275,14 +287,14 @@
   <visual>
     <origin xyz="-0.173846 0.00275 -0.159436" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_gripper_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_gripper_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.173846 0.00275 -0.159436" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_gripper_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_gripper_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -296,14 +308,14 @@
   <visual>
     <origin xyz="-0.150306 -0.03177 -0.134291" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_jaw_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_jaw_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.150306 -0.03177 -0.134291" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_jaw_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_jaw_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -317,14 +329,14 @@
   <visual>
     <origin xyz="-0.028994 0.073033 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.028994 0.073033 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -338,14 +350,14 @@
   <visual>
     <origin xyz="-0.034659 0.063359 -0.021333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.034659 0.063359 -0.021333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -359,14 +371,14 @@
   <visual>
     <origin xyz="-0.060348 0.087326 -0.013051" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.060348 0.087326 -0.013051" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -380,14 +392,14 @@
   <visual>
     <origin xyz="0.093686 0.013751 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.093686 0.013751 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -401,14 +413,14 @@
   <visual>
     <origin xyz="-0.038994 -0.102851 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.038994 -0.102851 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -422,14 +434,14 @@
   <visual>
     <origin xyz="0.068141 -0.016505 -0.045832" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.068141 -0.016505 -0.045832" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -443,14 +455,14 @@
   <visual>
     <origin xyz="-0.063935 0.09354 -0.013051" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.063935 0.09354 -0.013051" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -464,14 +476,14 @@
   <visual>
     <origin xyz="0.101741 -0.006255 -0.013032" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.101741 -0.006255 -0.013032" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -485,14 +497,14 @@
   <visual>
     <origin xyz="0.108916 -0.006255 -0.013032" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_wheel_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.108916 -0.006255 -0.013032" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/back_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/back_wheel_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -506,14 +518,14 @@
   <visual>
     <origin xyz="-0.034669 -0.07585 -0.045832" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.034669 -0.07585 -0.045832" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -527,14 +539,14 @@
   <visual>
     <origin xyz="-0.060298 -0.099852 -0.013014" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.060298 -0.099852 -0.013014" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_wheel_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -548,14 +560,14 @@
   <visual>
     <origin xyz="-0.063885 -0.106065 -0.013014" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.063885 -0.106065 -0.013014" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -569,14 +581,14 @@
   <visual>
     <origin xyz="0.015686 0.039888 -0.067333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/orin_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/orin_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.015686 0.039888 -0.067333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/orin_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/orin_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -590,14 +602,14 @@
   <visual>
     <origin xyz="0.093686 0.033751 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/orin_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/orin_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.093686 0.033751 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/orin_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/orin_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -611,14 +623,14 @@
   <visual>
     <origin xyz="-0.026314 -0.006249 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/usb_pd_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/usb_pd_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.026314 -0.006249 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/usb_pd_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/usb_pd_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -632,14 +644,14 @@
   <visual>
     <origin xyz="-0.096314 -0.046248 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.096314 -0.046248 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/arm_base_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/arm_base_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -653,14 +665,14 @@
   <visual>
     <origin xyz="0.001286 -0.016409 -0.061333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/imu_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/imu_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.001286 -0.016409 -0.061333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/imu_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/imu_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -674,14 +686,14 @@
   <visual>
     <origin xyz="-0.006314 -0.026249 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/imu_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/imu_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.006314 -0.026249 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/imu_mount_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/imu_mount_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -695,14 +707,14 @@
   <visual>
     <origin xyz="0.093686 0.073751 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_1__1__1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_1__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.093686 0.073751 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_1__1__1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_1__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -716,14 +728,14 @@
   <visual>
     <origin xyz="0.033686 -0.046249 -0.105833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/just_the_tower_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/just_the_tower_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.033686 -0.046249 -0.105833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/just_the_tower_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/just_the_tower_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -737,14 +749,14 @@
   <visual>
     <origin xyz="0.098686 -0.039606 -0.278398" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/support_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/support_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.098686 -0.039606 -0.278398" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/support_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/support_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -758,14 +770,14 @@
   <visual>
     <origin xyz="0.008147 -0.030006 -0.410381" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/head_camera_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/head_camera_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.008147 -0.030006 -0.410381" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/head_camera_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/head_camera_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -779,14 +791,14 @@
   <visual>
     <origin xyz="0.033686 0.093751 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.033686 0.093751 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -800,14 +812,14 @@
   <visual>
     <origin xyz="0.033686 -0.106249 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_2_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_2_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.033686 -0.106249 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_2_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_2_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -821,14 +833,14 @@
   <visual>
     <origin xyz="0.093686 -0.086249 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_1__1___1__1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_1__1___1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.093686 -0.086249 -0.055333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_1__1___1__1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_1__1___1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -842,14 +854,14 @@
   <visual>
     <origin xyz="0.093686 0.073751 -0.100833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/last_floor_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/last_floor_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.093686 0.073751 -0.100833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/last_floor_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/last_floor_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -863,14 +875,14 @@
   <visual>
     <origin xyz="0.053686 -0.106249 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_3_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_3_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.053686 -0.106249 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_3_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_3_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -884,14 +896,14 @@
   <visual>
     <origin xyz="0.053686 0.093751 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_4_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_4_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.053686 0.093751 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/hex_4_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/hex_4_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -905,14 +917,14 @@
   <visual>
     <origin xyz="0.053686 -0.106249 -0.050333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/upper_floor_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/upper_floor_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.053686 -0.106249 -0.050333" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/upper_floor_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/upper_floor_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -926,14 +938,14 @@
   <visual>
     <origin xyz="0.052786 -0.007506 -0.331739" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/pan_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/pan_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.052786 -0.007506 -0.331739" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/pan_link_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/pan_link_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -947,14 +959,14 @@
   <visual>
     <origin xyz="0.011936 -0.023806 -0.352139" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.011936 -0.023806 -0.352139" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/tilt_servo_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -968,14 +980,14 @@
   <visual>
     <origin xyz="0.032436 -0.023806 -0.352139" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/tilt_link_cover_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/tilt_link_cover_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.032436 -0.023806 -0.352139" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/tilt_link_cover_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/tilt_link_cover_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -989,14 +1001,14 @@
   <visual>
     <origin xyz="0.048392 0.377033 -0.350253" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/realsense_support_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/realsense_support_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.048392 0.377033 -0.350253" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/realsense_support_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/realsense_support_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -1010,14 +1022,14 @@
   <visual>
     <origin xyz="0.081786 -0.017756 -0.328939" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/pan_servo__1__1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/pan_servo__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="0.081786 -0.017756 -0.328939" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/pan_servo__1__1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/pan_servo__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -1031,14 +1043,14 @@
   <visual>
     <origin xyz="-0.148732 0.023478 -0.144033" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/wrist_camera_mod_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/wrist_camera_mod_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.148732 0.023478 -0.144033" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/wrist_camera_mod_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/wrist_camera_mod_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -1052,14 +1064,14 @@
   <visual>
     <origin xyz="-0.203344 -0.022435 -0.206178" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/wrist_camera_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/wrist_camera_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.203344 -0.022435 -0.206178" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/wrist_camera_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/wrist_camera_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -1073,14 +1085,14 @@
   <visual>
     <origin xyz="-0.067139 -0.027748 -0.005833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.067139 -0.027748 -0.005833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -1094,14 +1106,14 @@
   <visual>
     <origin xyz="-0.086314 0.033751 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/suport_lidar_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/suport_lidar_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
     <origin xyz="-0.086314 0.033751 -0.002833" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="file://$(find leremix_description)/meshes/suport_lidar_v1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://leremix_description/meshes/suport_lidar_v1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -1467,7 +1479,7 @@
 </link>
 
 <joint name="lidar_frame_joint" type="fixed">
-  <origin xyz="0.025 -0.0278 0.020" rpy="0 0 0"/>  <!-- Moved left by 27.8mm -->
+  <origin xyz="0.025 -0.0278 0.020" rpy="0 0 3.14159265359"/>  <!-- Rotated 180° (π rad) to flip scan direction from clockwise to counter-clockwise -->
   <parent link="lidar_1"/>
   <child link="lidar_frame"/>
 </joint>

@@ -17,11 +17,14 @@ def generate_launch_description():
 
         Node(package='leremix_teleop_xbox', executable='teleop_xbox', name='teleop_xbox',
              parameters=[{
-                 'cmd_vel_topic': '/omnidirectional_controller/cmd_vel_unstamped',
+                 'cmd_vel_topic': '/omnidirectional_controller/cmd_vel',
                  'arm_cmd_topic': '/arm_controller/commands',
                  'head_cmd_topic': '/head_controller/commands',
                  'arm_increment': 0.0175,  # 1.0 degree
                  'arm_rate': 10.0,
+                 'linear_scale': 1.5,  # Increased from 0.75 for faster movement
+                 'angular_scale': 2.0,  # Increased from 1.0 for faster rotation
+                 'acceleration_limit': 20.0,  # Increased from 5.0 for more responsive control
              }],
              output='screen'),
     ])
