@@ -1,13 +1,40 @@
 [workspace]
-channels = ["robostack-jazzy", "conda-forge"]
+channels = ["https://prefix.dev/robostack-jazzy", "conda-forge"]
 name = "LeRemix"
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 version = "0.1.0"
 
 [tasks]
 
 [dependencies]
-ros-jazzy-desktop = ">=0.11.0,<0.12"
+ros-jazzy-desktop-full = ">=0.11.0,<0.12"
+ros-jazzy-ros-gz-sim = ">=1.0.16,<2"
+ros-jazzy-ros-gz-bridge = ">=1.0.16,<2"
+ros-jazzy-ros-gz-image = ">=1.0.16,<2"
+ros-jazzy-ros-gz = ">=1.0.16,<2"
+ros-jazzy-controller-manager = ">=4.33.0,<5"
+ros-jazzy-controller-manager-msgs = ">=4.33.0,<5"
+ros-jazzy-ros2-control = ">=4.33.0,<5"
+ros-jazzy-ros2-controllers = ">=4.28.0,<5"
+ros-jazzy-joint-state-broadcaster = ">=4.28.0,<5"
+ros-jazzy-position-controllers = ">=4.28.0,<5"
+ros-jazzy-hardware-interface = ">=4.33.0,<5"
 ros-jazzy-robot-state-publisher = ">=3.3.3,<4"
-ros-jazzy-controller-manager = ">=4.37.0,<5"
-ros-jazzy-controller-manager-msgs = ">=4.37.0,<5"
+ros-jazzy-rclcpp = ">=28.1.10,<29"
+ros-jazzy-rclcpp-lifecycle = ">=28.1.10,<29"
+ros-jazzy-rclpy = ">=7.1.4,<8"
+ros-jazzy-pluginlib = ">=5.4.2,<6"
+ros-jazzy-xacro = ">=2.0.13,<3"
+ros-jazzy-launch = ">=3.4.5,<4"
+ros-jazzy-launch-ros = ">=0.26.8,<0.27"
+ros-jazzy-sensor-msgs = ">=5.3.6,<6"
+ros-jazzy-geometry-msgs = ">=5.3.6,<6"
+ros-jazzy-std-msgs = ">=5.3.6,<6"
+ros-jazzy-nav-msgs = ">=5.3.6,<6"
+ros-jazzy-image-transport = ">=5.1.7,<6"
+ros-jazzy-compressed-image-transport = ">=4.0.5,<5"
+ros-jazzy-depthimage-to-laserscan = ">=2.5.1,<3"
+ros-jazzy-tf2-ros = ">=0.36.12,<0.37"
+ros-jazzy-slam-toolbox = ">=2.8.3,<3"
+colcon-common-extensions = ">=0.3.0,<0.4"
+
