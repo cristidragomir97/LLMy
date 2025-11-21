@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="jenolan_section01">
+        <static>true</static>
+        <link name="base_link">
+            <collision name="collision">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <mesh>
+                        <uri>meshes/jenolan_section01.dae</uri>
+                        <scale>1.0 1.0 1.0</scale>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name="Jenolan_Section01_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/jenolan_section01.dae</uri>
+                        <submesh>
+                            <name>Jenolan_Section01</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Jenolan Section 01/tip/files/materials/textures/Jenolan_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Jenolan Section 01/tip/files/materials/textures/Jenolan_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Jenolan Section 01/tip/files/materials/textures/Jenolan_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Jenolan_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+        </link>
+    </model>
+</sdf>

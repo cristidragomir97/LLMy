@@ -29,7 +29,7 @@
 <link name="robot_base">
   <inertial>
     <origin xyz="5.866413998148801e-05 0.0062819967824381704 0.001416599330144379" rpy="0 0 0"/>
-    <mass value="3.24"/>  <!-- base(440g) + battery(800g) -->
+    <mass value="6.0"/>  <!-- increased for simulation stability -->
     <inertia ixx="0.012" iyy="0.015" izz="0.020" ixy="-3.5e-06" iyz="0.0" ixz="0.0"/>
   </inertial>
   <visual>
@@ -460,9 +460,9 @@
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
-    <origin xyz="-0.063935 0.09354 -0.013051" rpy="0 0 0"/>
+    <origin xyz="0.008 -0.013 0" rpy="0 1.5708 2.0944"/>
     <geometry>
-      <mesh filename="package://leremix_description/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <cylinder radius="0.05" length="0.025"/>
     </geometry>
   </collision>
 </link>
@@ -502,9 +502,9 @@
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
-    <origin xyz="0.108916 -0.006255 -0.013032" rpy="0 0 0"/>
+    <origin xyz="-0.015 0 0" rpy="0 1.5708 0"/>
     <geometry>
-      <mesh filename="package://leremix_description/meshes/back_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <cylinder radius="0.05" length="0.025"/>
     </geometry>
   </collision>
 </link>
@@ -565,9 +565,9 @@
     <material name="Gazebo/DarkGrey"/>
   </visual>
   <collision>
-    <origin xyz="-0.063885 -0.106065 -0.013014" rpy="0 0 0"/>
+    <origin xyz="0.008 0.013 0" rpy="0 1.5708 -2.0944"/>
     <geometry>
-      <mesh filename="package://leremix_description/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
+      <cylinder radius="0.05" length="0.025"/>
     </geometry>
   </collision>
 </link>
@@ -1231,6 +1231,7 @@
   <parent link="right_servo_1"/>
   <child link="right_wheel_mount_1"/>
   <axis xyz="-0.5 0.866025 -0.0"/>
+  <dynamics damping="0.01" friction="0.005"/>
 </joint>
 
 <joint name="Rigid 79" type="fixed">
@@ -1262,6 +1263,7 @@
   <parent link="back_servo_1"/>
   <child link="back_wheel_mount_1"/>
   <axis xyz="-1.0 -0.0 -0.0"/>
+  <dynamics damping="0.01" friction="0.005"/>
 </joint>
 
 <joint name="Rigid 85" type="fixed">
@@ -1281,6 +1283,7 @@
   <parent link="left_servo_1"/>
   <child link="left_wheel_mount_1"/>
   <axis xyz="-0.5 -0.866025 -0.0"/>
+  <dynamics damping="0.01" friction="0.005"/>
 </joint>
 
 <joint name="Rigid 88" type="fixed">

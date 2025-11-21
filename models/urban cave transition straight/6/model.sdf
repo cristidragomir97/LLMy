@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="urban cave transition straight">
+        <static>true</static>
+        <link name="base_link">
+            <collision name="collision">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <mesh>
+                        <uri>meshes/urbancave.dae</uri>
+                        <scale>1.0 1.0 1.0</scale>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name="FloorConcrete_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/urbancave.dae</uri>
+                        <submesh>
+                            <name>FloorConcrete</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/urban platform/tip/files/materials/textures/FloorConcrete_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/urban platform/tip/files/materials/textures/FloorConcrete_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/urban platform/tip/files/materials/textures/FloorConcrete_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/FloorConcrete_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="CaveWall_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/urbancave.dae</uri>
+                        <submesh>
+                            <name>CaveWall</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/cave straight type a/tip/files/materials/textures/CaveWall_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/cave straight type a/tip/files/materials/textures/CaveWall_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/cave straight type a/tip/files/materials/textures/CaveWall_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/CaveWall_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="BrickWall_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/urbancave.dae</uri>
+                        <submesh>
+                            <name>BrickWall</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/urban platform/tip/files/materials/textures/BrickWall_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/urban platform/tip/files/materials/textures/BrickWall_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/urban platform/tip/files/materials/textures/BrickWall_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/BrickWall_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+        </link>
+    </model>
+</sdf>

@@ -1,0 +1,447 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="urban platform">
+        <static>true</static>
+        <link name="base_link">
+            <collision name="collision">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <scale>1.0 1.0 1.0</scale>
+                    </mesh>
+                </geometry>
+                <surface>
+                    <contact>
+                        <collide_bitmask>0x10</collide_bitmask>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name="BrickWall_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>BrickWall</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/BrickWall_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/BrickWall_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/BrickWall_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/BrickWall_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="UrbanTrim_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>UrbanTrim</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Trim_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Trim_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Trim_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Trim_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="TileFloorWorn_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>TileFloorWorn</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/TileFloorWorn_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/TileFloorWorn_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/BrickWall_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/TileFloorWorn_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="ConcreteTiles_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>ConcreteTiles</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/ConcreteTiles_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/ConcreteTiles_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/ConcreteTiles_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/ConcreteTiles_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="Concrete_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>Concrete</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Concrete_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Concrete_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Concrete_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Concrete_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="PaintGreen_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>PaintGreen</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/PaintGreen_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Paint_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/PaintGreen_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/PaintGreen_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="Floor_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>Floor</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Floor_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Floor_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Floor_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Floor_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="LightFixture_01_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>LightFixture_01</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/TubeLight_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/TubeLight_Normal.jpg</normal_map>
+                            <metalness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/TubeLight_Metalness.jpg</metalness_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/TubeLight_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/TubeLight_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="MetalBrushed_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>MetalBrushed</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/MetalBrushed_Albedo.jpg</albedo_map>
+                            <metalness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/MetalBrushed_Metalness.jpg</metalness_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/MetalBrushed_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/MetalBrushed_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="Rail_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>Rail</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Rail_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Rail_Normal.jpg</normal_map>
+                            <metalness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Rail_Metalness.jpg</metalness_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Rail_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Rail_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="Shaft_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>Shaft</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Shaft_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Shaft_Normal.jpg</normal_map>
+                            <metalness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Shaft_Metalness.jpg</metalness_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Shaft_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Shaft_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="ThirdRail_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>ThirdRail</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/ThirdRail_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/ThirdRail_Normal.jpg</normal_map>
+                            <metalness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/ThirdRail_Metalness.jpg</metalness_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/ThirdRail_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/ThirdRail_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="Wall_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>Wall</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Wall_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Wall_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Wall_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Wall_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+            <visual name="Concrete_Tunnel_visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/platform.dae</uri>
+                        <submesh>
+                            <name>Concrete_Tunnel</name>
+                            <center>false</center>
+                        </submesh>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>1.0 1.0 1.0</diffuse>
+                    <specular>1.0 1.0 1.0</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Concrete_Tunnel_Albedo.jpg</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Concrete_Tunnel_Normal.jpg</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Urban Platform/tip/files/materials/textures/Concrete_Tunnel_Roughness.jpg</roughness_map>
+                        </metal>
+                    </pbr>
+                    <!-- fallback to script if no PBR support-->
+                    <script>
+                        <uri>materials/scripts/</uri>
+                        <uri>materials/textures/</uri>
+                        <name>UrbanTile/Concrete_Tunnel_Diffuse</name>
+                    </script>
+                </material>
+            </visual>
+        </link>
+        <!--Uncomment <link> to preview detector region-->
+        <!--<link name='body2'>
+        <visual name="v1">
+          <pose>0 7 5 0 0 0</pose>
+          <transparency>0.2</transparency>
+          <geometry>
+            <box>
+              <size>40 6 10</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0.0 1.0 0.0 1</diffuse>
+          </material>
+        </visual>
+        <cast_shadows>false</cast_shadows>
+      </link>-->
+        <plugin filename="libignition-gazebo-performer-detector-system.so" name="ignition::gazebo::systems::PerformerDetector">
+            <topic>/subt_performer_detector</topic>
+            <pose>0 7 5 0 0 0</pose>
+            <geometry>
+                <box>
+                    <size>40 6 10</size>
+                </box>
+            </geometry>
+            <header_data>
+                <key>type</key>
+                <value>decision</value>
+            </header_data>
+        </plugin>
+    </model>
+</sdf>

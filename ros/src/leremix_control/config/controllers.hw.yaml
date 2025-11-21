@@ -43,13 +43,14 @@ head_controller:
 omnidirectional_controller:
   ros__parameters:
     # Required parameters
-    wheel_offset: 2.094395  # 120 degrees (30° + 90° correction) - position of wheel3 from +X axis
+    wheel_offset: 0.523  # 1 (30°
     wheel_names:
-     - wheel3_rotation  # MUST match hardware interface order in LeRemix.hardware.xacro
+     - wheel2_rotation  # MUST match hardware interface order in LeRemix.hardware.xacro
      - wheel1_rotation
-     - wheel2_rotation
+     - wheel3_rotation
     robot_radius: 0.10537  # Distance from robot center to wheels
     wheel_radius: 0.05   # Wheel size
+
 
     # Optional parameters
     tf_frame_prefix_enable: true

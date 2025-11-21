@@ -1,0 +1,65 @@
+ros_distro: jazzy
+ros_domain_id: 0
+registry: nx128.lan:5000/robocore
+image_prefix: leremix_sim
+
+hosts:
+  - name: gr00t
+    ip: localhost
+    user: cdr 
+    arch: amd64
+    manager: true
+    mount_root: /home/temp/robocore
+
+common_packages:
+  - name: leremix_description
+    source: 
+      - ros/src/leremix_description
+
+components:
+  - name: simulation
+    nvidia: true
+    gui: true
+    volumes:
+      - gz_fuel_cache:/root/.gz/fuel
+    source: 
+      - ros/src/leremix_control
+      - ros/src/leremix_gazebo
+    repositories:
+      - url: https://github.com/husarion/husarion_gz_worlds
+        version: main
+        folder: husarion_gz_worlds
+    runs_on: gr00t
+    entrypoint: ros2 launch leremix_gazebo sim.launch.py
+
+  - name: xbox
+    runs_on: gr00t
+    privileged: true
+    source:
+      - ros/src/leremix_teleop_xbox
+    entrypoint: ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
+    devices:
+      - /dev/input:/dev/input
+
+  - name: rosboard
+    runs_on: gr00t
+    apt_packages: []
+    pip_packages: 
+      - tornado
+      - simplejpeg
+    repositories:
+      - url: https://github.com/dheera/rosboard
+        version: main
+        folder: rosboard
+    entrypoint: ros2 run rosboard rosboard_node
+
+  - name: slam
+    runs_on: gr00t
+    source:
+      - ros/src/leremix_slam
+    entrypoint: ros2 launch leremix_slam online_mapping_launch.py 
+    
+
+
+    
+  

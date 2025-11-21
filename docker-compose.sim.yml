@@ -1,0 +1,23 @@
+services:
+  gazebo_sim:
+    build:
+      context: .
+      dockerfile: Dockerfile.sim
+    runtime: nvidia
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority:ro
+      - ./ros/src:/ros_ws/src:rw
+      - gz_fuel_cache:/root/.gz/fuel  # Persist Gazebo Fuel models
+    stdin_open: true
+    tty: true
+    command: bash
+
+volumes:
+  gz_fuel_cache:

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="rail_tunnel_elevation">
+        <static>true</static>
+        <link name="link">
+            <collision name="collision">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/rail_tunnel_elevation.dae</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/rail_tunnel_elevation.dae</uri>
+                    </mesh>
+                </geometry>
+                <material>
+                    <diffuse>0.92 1.0 1.0</diffuse>
+                    <specular>0.4 0.4 0.4</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/rail tunnel corner/tip/files/materials/textures/Rails_Albedo.png</albedo_map>
+                            <normal_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/rail tunnel corner/tip/files/materials/textures/Rails_Normal.png</normal_map>
+                            <roughness_map>https://fuel.ignitionrobotics.org/1.0/openrobotics/models/rail tunnel corner/tip/files/materials/textures/Rails_Roughness.png</roughness_map>
+                            <metalness>0.2</metalness>
+                        </metal>
+                    </pbr>
+                </material>
+            </visual>
+        </link>
+    </model>
+</sdf>

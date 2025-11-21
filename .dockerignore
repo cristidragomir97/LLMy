@@ -1,0 +1,9 @@
+.git
+.gitignore
+*.md
+pixi.lock
+pixi.toml
+.pixi
+ros/build
+ros/install
+ros/log

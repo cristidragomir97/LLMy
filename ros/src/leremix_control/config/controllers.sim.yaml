@@ -7,7 +7,7 @@ controller_manager:
       type: joint_state_broadcaster/JointStateBroadcaster
 
     omnidirectional_controller:
-      type: omnidirectional_controllers/OmnidirectionalController
+      type: omni_wheel_drive_controller/OmniWheelDriveController
 
     arm_controller:
       type: position_controllers/JointGroupPositionController
@@ -41,28 +41,34 @@ head_controller:
 
 omnidirectional_controller:
   ros__parameters:
-    wheel_names: 
-     - wheel3_rotation
+    # Required parameters
+    wheel_offset: 0.523  # 1 (30°
+    wheel_names:
+     - wheel2_rotation  # MUST match hardware interface order in LeRemix.hardware.xacro
      - wheel1_rotation
-     - wheel2_rotation
+     - wheel3_rotation
+    robot_radius: 0.10537  # Distance from robot center to wheels
+    wheel_radius: 0.05   # Wheel size
 
-
-
-    robot_radius: 0.105
-    wheel_radius: 0.05
-    gamma: 60.0 # angle between body fixed y axis and the normal of wheel3
-
-    publish_rate: 50 
+    # Optional parameters
+    tf_frame_prefix_enable: true
+    tf_frame_prefix: ""
     odom_frame_id: odom
     base_frame_id: base_link
-    pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-    odom_numeric_integration_method: runge_kutta2
+    update_rate: 50  # Match controller_manager rate
 
-    open_loop: false
+    # Covariance (note: different structure from omnidirectional_controllers)
+    diagonal_covariance:
+      pose: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+      twist: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+
+    open_loop: true  # Use open-loop velocity control for smoother motion
+    position_feedback: false  # Don't use position feedback in velocity mode
     enable_odom_tf: true
-
     cmd_vel_timeout: 0.5
-    use_stamped_vel: false
 
-
+    # Note: The following parameters from omnidirectional_controllers are not supported:
+    # - use_stamped_vel (omni_wheel_drive_controller uses stamped by default)
+    # - linear_velocity_scale / angular_velocity_scale (not available)
+    # - odom_numeric_integration_method (not available)
+    # - publish_rate (handled internally)       

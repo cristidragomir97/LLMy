@@ -1,5 +1,5 @@
 # ─── Component Builder ─────────────────────────────────────────────────────
-FROM nx128.lan:5000/robocore/leremix_base:jazzy-latest
+FROM nx128.lan:5000/robocore/leremix_sim_base:jazzy-latest
 
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -47,5 +47,5 @@ RUN echo '=== Verifying dependencies ===' \
 # DDS Discovery Server config
 COPY .robocore/workspaces/xbox/superclient.xml /superclient.xml
 ENV FASTRTPS_DEFAULT_PROFILES_FILE=/superclient.xml
-ENV ROS_DISCOVERY_SERVER=192.168.99.183:11811
+ENV ROS_DISCOVERY_SERVER=localhost:11811
 ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp

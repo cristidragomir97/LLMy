@@ -1,0 +1,14 @@
+
+material UrbanTile/Jenolan_Diffuse
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture Jenolan_Albedo.jpg
+        }
+      }
+    }
+  }

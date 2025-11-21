@@ -66,7 +66,7 @@ class XboxTeleop(Node):
         
         # Subscribe to joint states to initialize current positions
         self.joint_state_sub = self.create_subscription(
-            JointState, '/motor_manager/joint_states', self.on_joint_state, 10)
+            JointState, '/joint_states', self.on_joint_state, 10)
 
         # State - will be initialized from joint states
         self.arm_targets = [0.0] * len(self.arm_joints)

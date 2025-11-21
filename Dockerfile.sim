@@ -1,0 +1,121 @@
+# Use Ubuntu 24.04 base with NVIDIA support via runtime
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ROS_DISTRO=jazzy
+
+# Install basic utilities and NVIDIA GLX libraries
+RUN apt-get update && apt-get install -y \
+    locales \
+    curl \
+    gnupg2 \
+    lsb-release \
+    software-properties-common \
+    git \
+    wget \
+    libgl1-mesa-dri \
+    mesa-utils \
+    libglvnd0 \
+    libglx0 \
+    libxext6 \
+    libx11-6 \
+    && locale-gen en_US.UTF-8 \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+# Add ROS 2 repository
+RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+# Install ROS 2 Jazzy packages from pixi.toml
+RUN apt-get update && apt-get install -y \
+    # Core ROS
+    ros-jazzy-desktop \
+    # Gazebo integration
+    ros-jazzy-ros-gz-sim \
+    ros-jazzy-ros-gz-bridge \
+    ros-jazzy-ros-gz-image \
+    ros-jazzy-ros-gz \
+    # Control packages
+    ros-jazzy-controller-manager \
+    ros-jazzy-controller-manager-msgs \
+    ros-jazzy-ros2-control \
+    ros-jazzy-ros2-controllers \
+    ros-jazzy-joint-state-broadcaster \
+    ros-jazzy-position-controllers \
+    ros-jazzy-hardware-interface \
+    ros-jazzy-gz-ros2-control \
+    ros-jazzy-omni-wheel-drive-controller \
+    # Robot description and launch
+    ros-jazzy-robot-state-publisher \
+    ros-jazzy-xacro \
+    ros-jazzy-launch \
+    ros-jazzy-launch-ros \
+    # Core libraries
+    ros-jazzy-rclcpp \
+    ros-jazzy-rclcpp-lifecycle \
+    ros-jazzy-rclpy \
+    ros-jazzy-pluginlib \
+    # Messages
+    ros-jazzy-sensor-msgs \
+    ros-jazzy-geometry-msgs \
+    ros-jazzy-std-msgs \
+    ros-jazzy-nav-msgs \
+    # Image and sensor processing
+    ros-jazzy-image-transport \
+    ros-jazzy-compressed-image-transport \
+    ros-jazzy-depthimage-to-laserscan \
+    # TF and SLAM
+    ros-jazzy-tf2-ros \
+    ros-jazzy-slam-toolbox \
+    # Build tools
+    ros-jazzy-ament-cmake-auto \
+    python3-colcon-common-extensions \
+    # Additional build dependencies
+    build-essential \
+    cmake \
+    ninja-build \
+    pkg-config \
+    python3-pip \
+    python3-setuptools \
+    python3-rosdep \
+    && rm -rf /var/lib/apt/lists/*
+
+# Initialize rosdep
+RUN rosdep init || true && rosdep update
+
+# Set up workspace
+WORKDIR /ros_ws
+RUN mkdir -p src
+
+# Copy your ROS packages
+COPY ros/src /ros_ws/src
+
+# Install dependencies (skip unavailable hardware packages)
+RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
+    rosdep install --from-paths src --ignore-src -r -y \
+    --skip-keys "imu-tools realsense2-camera realsense2-description usb-cam omnidirectional_controllers micro_ros_agent ament_python" \
+    || true
+
+# Build workspace
+RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
+    colcon build --symlink-install
+
+# Set up entrypoint
+RUN echo '#!/bin/bash\n\
+set -e\n\
+source /opt/ros/${ROS_DISTRO}/setup.bash\n\
+source /ros_ws/install/setup.bash\n\
+exec "$@"' > /ros_entrypoint.sh && \
+    chmod +x /ros_entrypoint.sh
+
+# NVIDIA and X11 environment variables
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=all
+ENV QT_X11_NO_MITSHM=1
+
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]

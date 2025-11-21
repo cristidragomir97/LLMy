@@ -27,9 +27,12 @@ def generate_launch_description():
     ])
 
     # Set GZ_SIM_RESOURCE_PATH for model discovery
+    # Point to the share directory so model://leremix_description/meshes/... URIs work
     gz_resource_path = SetEnvironmentVariable(
         name='GZ_SIM_RESOURCE_PATH',
         value=[
+            PathJoinSubstitution([FindPackageShare('leremix_description'), '..']),
+            ':',
             PathJoinSubstitution([FindPackageShare('leremix_description'), 'meshes'])
         ]
     )
@@ -43,7 +46,8 @@ def generate_launch_description():
     )
 
     # Gazebo Sim (new Gazebo) - using default empty world
-    # Note: On macOS, use -s for server-only mode if GUI doesn't open
+    # -r: start running immediately, -v 4: verbose level 4
+    # Add -s flag to run server-only (headless) if GUI is not needed
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([
@@ -53,7 +57,7 @@ def generate_launch_description():
             ])
         ),
         launch_arguments=[
-            ("gz_args", "-s -r -v 4")
+            ("gz_args", ["-r -v 4 ", PathJoinSubstitution([FindPackageShare("leremix_gazebo"), "worlds", "sticky_floor.world"])])
         ],
     )
 
@@ -69,6 +73,15 @@ def generate_launch_description():
             "-x", "0.2",
             "-y", "0.2"
         ],
+        output="screen"
+    )
+
+    # Clock bridge - must start first for use_sim_time to work properly
+    clock_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        name="clock_bridge",
+        arguments=["/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock"],
         output="screen"
     )
 
@@ -90,7 +103,7 @@ def generate_launch_description():
         package="ros_gz_image",
         executable="image_bridge",
         name="image_bridge_head_rgb",
-        arguments=["/head_camera/rgb/image"],
+        arguments=["/head_camera/rgb"],
         parameters=[{"use_sim_time": use_sim_time}],
         output="screen"
     )
@@ -99,7 +112,7 @@ def generate_launch_description():
         package="ros_gz_image",
         executable="image_bridge",
         name="image_bridge_head_depth",
-        arguments=["/head_camera/depth/image"],
+        arguments=["/head_camera/depth"],
         parameters=[{"use_sim_time": use_sim_time}],
         output="screen"
     )
@@ -108,7 +121,7 @@ def generate_launch_description():
         package="ros_gz_image",
         executable="image_bridge",
         name="image_bridge_wrist",
-        arguments=["/wrist_camera/rgb/image"],
+        arguments=["/wrist_camera/rgb"],
         parameters=[{"use_sim_time": use_sim_time}],
         output="screen"
     )
@@ -165,6 +178,7 @@ def generate_launch_description():
         gz_resource_path,
         rsp,
         gazebo,
+        clock_bridge,
         spawn,
         bridge,
         image_bridge_head_rgb,
