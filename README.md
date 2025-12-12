@@ -1,12 +1,12 @@
-# LLMy
+# LLMy (leh·mee)
 <p>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://docs.ros.org/en/humble/"><img src="https://img.shields.io/badge/ROS2-Jazzy-blue.svg alt="ROS2 Humble"></a>
+  <a href="https://docs.ros.org/en/humble/"><img src="https://img.shields.io/badge/ROS2-Jazzy-blue.svg" alt="ROS2 Jazzy"></a>
   <a href="http://gazebosim.org/"><img src="https://img.shields.io/badge/Gazebo-Harmonic-orange.svg" alt="Gazebo"></a>
 </p>
 
 <p align="center">
-  <img src="img/LLMy.jpg" alt="LLMy Robot" width="600"/>
+  <img src="img/LLMy.jpeg" alt="LLMy Robot"/>
 </p>
 
 
