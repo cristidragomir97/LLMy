@@ -1,7 +1,7 @@
 ros_distro: jazzy
 ros_domain_id: 0
 registry: nx128.lan:5000/robocore
-image_prefix: leremix
+image_prefix: llmy
 
 hosts:
   - name: odin
@@ -13,9 +13,9 @@ hosts:
     mount_root: /home/cdr/robocore-artifacts
 
 common_packages:
-  - name: leremix_description
+  - name: llmy_description
     source: 
-      - ros/src/leremix_description
+      - ros/src/llmy_description
 
 components:
 ##### HARDWARE ABSTRACTION
@@ -23,22 +23,22 @@ components:
   ### CAMERAS (Realsense + Wrist Webcam)
   - name: camera
     source: 
-      - ros/src/leremix_camera
+      - ros/src/llmy_camera
     runs_on: odin
     privileged: true
-    entrypoint: ros2 launch leremix_camera camera.launch.py
+    entrypoint: ros2 launch llmy_camera camera.launch.py
     devices: 
       - /dev:/dev
 
   - name: motion
     source:
-    - ros/src/leremix_control
-    - ros/src/leremix_control_plugin
-    - ros/src/leremix_servo_manager
+    - ros/src/llmy_control
+    - ros/src/llmy_control_plugin
+    - ros/src/llmy_servo_manager
     runs_on: odin
     pip_packages:
       - st3215
-    entrypoint: ros2 launch leremix_control motion.launch.py servo_port:=/dev/ttyTHS1
+    entrypoint: ros2 launch llmy_control motion.launch.py servo_port:=/dev/ttyTHS1
     devices:
       - /dev/ttyTHS1:/dev/ttyTHS1
     optimisations:
@@ -72,16 +72,16 @@ components:
   - name: slam
     runs_on: odin
     source:
-      - ros/src/leremix_slam
-    entrypoint: ros2 launch leremix_slam online_mapping_launch.py 
+      - ros/src/llmy_slam
+    entrypoint: ros2 launch llmy_slam online_mapping_launch.py 
     
   
   - name: xbox
     runs_on: odin
     privileged: true
     source:
-      - ros/src/leremix_teleop_xbox
-    entrypoint: ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
+      - ros/src/llmy_teleop_xbox
+    entrypoint: ros2 launch llmy_teleop_xbox teleop_xbox.launch.py
     devices:
       - /dev/input:/dev/input
 

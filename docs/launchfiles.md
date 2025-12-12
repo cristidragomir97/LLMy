@@ -1,10 +1,10 @@
-# LeRemix Launch Files Documentation
+# LLMy Launch Files Documentation
 
-This document provides an overview of all launch files in the LeRemix ROS 2 workspace and their parameters.
+This document provides an overview of all launch files in the LLMy ROS 2 workspace and their parameters.
 
 ## Main System Launch Files
 
-### leremix_bringup/launch/bringup_robot.launch.py
+### llmy_bringup/launch/bringup_robot.launch.py
 **Description**: Main modular launch file that coordinates all three subsystems (sensors, motion, communication).
 
 **Parameters**:
@@ -14,7 +14,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Includes**: sensors.launch.py, motion.launch.py, communication.launch.py
 
-### leremix_bringup/launch/sensors.launch.py
+### llmy_bringup/launch/sensors.launch.py
 **Description**: Sensor subsystem launch file (cameras, IMU, RPLidar).
 
 **Parameters**:
@@ -24,7 +24,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Includes**: camera.launch.py, imu.launch.py, rplidar_c1_launch.py
 
-### leremix_bringup/launch/motion.launch.py
+### llmy_bringup/launch/motion.launch.py
 **Description**: Motion subsystem launch file (servos, ros2_control, teleop).
 
 **Parameters**:
@@ -36,7 +36,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Includes**: servo_manager.launch.py, control_stack.launch.py, teleop_xbox.launch.py
 
-### leremix_bringup/launch/communication.launch.py
+### llmy_bringup/launch/communication.launch.py
 **Description**: Communication subsystem launch file (rosbridge, rosboard, image compression).
 
 **Parameters**:
@@ -48,7 +48,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 ## Control System Launch Files
 
-### leremix_control/launch/base_systems.launch.py
+### llmy_control/launch/base_systems.launch.py
 **Description**: Launches base hardware systems including servo manager.
 
 **Parameters**:
@@ -58,17 +58,17 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Includes**: servo_manager.launch.py
 
-### leremix_control/launch/control_stack.launch.py
+### llmy_control/launch/control_stack.launch.py
 **Description**: Launches the ros2_control stack with robot description and controllers.
 
 **Parameters**: None
 
-**Nodes**: robot_state_publisher, controller_manager, controller spawners (joint_state_broadcaster, omnidirectional_controller, arm_controller, head_controller)
+**Nodes**: robot_state_publisher, controller_manager, controller spawners (joint_state_broadcaster, diff_drive_controller, arm_controller, head_controller)
 
 
 ## Camera System Launch Files
 
-### leremix_camera/launch/camera.launch.py
+### llmy_camera/launch/camera.launch.py
 **Description**: Comprehensive camera setup with RealSense and USB wrist camera.
 
 **Parameters**:
@@ -92,7 +92,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Note**: Image compression and depth-to-scan are now handled by communication.launch.py
 
-### leremix_camera/launch/realsense_only.launch.py
+### llmy_camera/launch/realsense_only.launch.py
 **Description**: Minimal RealSense camera setup.
 
 **Parameters**:
@@ -103,7 +103,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 ## Sensor Launch Files
 
-### leremix_imu/launch/imu.launch.py
+### llmy_imu/launch/imu.launch.py
 **Description**: IMU sensor setup with Madgwick filter.
 
 **Parameters**:
@@ -115,7 +115,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 ## Teleop Launch Files
 
-### leremix_teleop_xbox/launch/teleop_xbox.launch.py
+### llmy_teleop_xbox/launch/teleop_xbox.launch.py
 **Description**: Xbox controller teleoperation setup.
 
 **Parameters**:
@@ -126,7 +126,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 ## Simulation Launch Files
 
-### leremix_gazebo/launch/sim.launch.py
+### llmy_gazebo/launch/sim.launch.py
 **Description**: Gazebo simulation environment setup.
 
 **Parameters**:
@@ -137,11 +137,11 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Includes**: gazebo_ros/launch/gzserver.launch.py, gazebo_ros/launch/gzclient.launch.py
 
-**Nodes**: robot_state_publisher, spawn_entity, controller spawners (with event handlers for sequencing)
+**Nodes**: robot_state_publisher, spawn_entity, controller spawners (diff_drive_controller, arm_controller, head_controller - with event handlers for sequencing)
 
 ## Hardware Manager Launch Files
 
-### leremix_servo_manager/launch/servo_manager.launch.py
+### llmy_servo_manager/launch/servo_manager.launch.py
 **Description**: Servo motor manager for hardware communication.
 
 **Parameters**:
@@ -151,7 +151,7 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 **Nodes**: servo_manager_node
 
-### leremix_servo_manager/launch/test_brake_methods.launch.py
+### llmy_servo_manager/launch/test_brake_methods.launch.py
 **Description**: Servo brake testing utility.
 
 **Parameters**: 
@@ -165,25 +165,25 @@ This document provides an overview of all launch files in the LeRemix ROS 2 work
 
 ### Launch the complete robot system:
 ```bash
-ros2 launch leremix_bringup bringup_robot.launch.py
+ros2 launch llmy_bringup bringup_robot.launch.py
 ```
 
 ### Launch with custom servo port:
 ```bash
-ros2 launch leremix_bringup bringup_robot.launch.py servo_port:=/dev/ttyUSB1
+ros2 launch llmy_bringup bringup_robot.launch.py servo_port:=/dev/ttyUSB1
 ```
 
 ### Launch desktop development environment:
 ```bash
-ros2 launch leremix_bringup bringup_desktop.launch.py
+ros2 launch llmy_bringup bringup_desktop.launch.py
 ```
 
 ### Launch simulation:
 ```bash
-ros2 launch leremix_gazebo sim.launch.py
+ros2 launch llmy_gazebo sim.launch.py
 ```
 
 ### Launch only camera system:
 ```bash
-ros2 launch leremix_camera camera.launch.py
+ros2 launch llmy_camera camera.launch.py
 ```

@@ -1,6 +1,6 @@
-# LeRemix Setup Scripts
+# LLMy Setup Scripts
 
-Utility scripts for configuring and calibrating your LeRemix robot.
+Utility scripts for configuring and calibrating your LLMy robot.
 
 ## Scripts Overview
 
@@ -24,7 +24,7 @@ python3 set_servo_id.py --old-id 1 --new-id 5
 python3 set_servo_id.py --port /dev/ttyACM0 --list
 ```
 
-**LeRemix ID Assignments:**
+**LLMy ID Assignments:**
 - Base (locomotion): IDs **1, 2, 3**
 - Arm (manipulator): IDs **4, 5, 6, 7, 8, 9**
 - Head (pan & tilt): IDs **10, 11**
@@ -52,7 +52,7 @@ Calibrates arm joint zero positions and movement limits.
 python3 calibrate_arm.py
 
 # Auto-save to config file
-python3 calibrate_arm.py --config ~/leremix_ws/ros/src/leremix_servo_manager/config/servo_manager.yaml
+python3 calibrate_arm.py --config ~/llmy_ws/ros/src/llmy_servo_manager/config/servo_manager.yaml
 
 # Custom serial port
 python3 calibrate_arm.py --port /dev/ttyUSB0
@@ -156,20 +156,20 @@ dmesg | tail
 
 ```bash
 # 1. Set all servo IDs (connect one at a time)
-cd ~/leremix_ws/scripts
+cd ~/llmy_ws/scripts
 python3 set_servo_id.py
 
 # 2. Verify all servos are detected
 python3 set_servo_id.py --list
 
 # 3. Calibrate arm joints
-python3 calibrate_arm.py --config ../ros/src/leremix_servo_manager/config/servo_manager.yaml
+python3 calibrate_arm.py --config ../ros/src/llmy_servo_manager/config/servo_manager.yaml
 
 # 4. Build and launch ROS workspace
-cd ~/leremix_ws/ros
+cd ~/llmy_ws/ros
 colcon build
 source install/setup.bash
-ros2 launch leremix_bringup bringup_robot.launch.py
+ros2 launch llmy_bringup bringup_robot.launch.py
 ```
 
 ---
@@ -204,7 +204,7 @@ python3 set_servo_id.py --baud 115200
 ```bash
 # Kill all servo-related processes
 pkill -f servo_manager
-pkill -f leremix
+pkill -f llmy
 
 # Verify no nodes running
 ros2 node list
@@ -246,5 +246,5 @@ ros2 topic pub /motor_manager/arm_cmd std_msgs/msg/Float64MultiArray "data: [10.
 ## Support
 
 For issues or questions:
-- GitHub Issues: https://github.com/cristidragomir97/leremix/issues
+- GitHub Issues: https://github.com/cristidragomir97/llmy/issues
 - Documentation: [docs/getting-started.md](../docs/getting-started.md)

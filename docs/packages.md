@@ -1,20 +1,20 @@
-# LeRemix ROS Packages
+# LLMy ROS Packages
 
 
 | Package | Purpose | Language | Key Topics | Launch Command |
 |---------|---------|----------|------------|----------------|
-| **leremix_description** | Robot URDF model & transforms | XML/Python | `/robot_description`, `/tf`, `/joint_states` | `ros2 launch leremix_description view_robot.launch.py` |
-| **leremix_servo_manager** | Direct motor control (C++) | C++ | `/motor_manager/*_cmd`, `/motor_manager/joint_states` | `ros2 launch leremix_servo_manager servo_manager.launch.py` |
-| **leremix_servo_manager_py** | Motor control with advanced braking | Python | `/motor_manager/*_cmd`, `/motor_manager/joint_states` | `ros2 launch leremix_servo_manager_py servo_manager.launch.py` |
-| **leremix_control_plugin** | ros2_control hardware bridge | C++ | `/cmd_vel`, `/arm_controller/joint_trajectory` | `ros2 launch leremix_control_plugin bringup.launch.py` |
-| **leremix_teleop_xbox** | Xbox controller interface | Python | `/cmd_vel`, `/joy` | `ros2 launch leremix_teleop_xbox teleop_xbox.launch.py` |
-| **leremix_control** | Controller configurations | YAML | N/A (config files) | Loaded by control_plugin |
-| **leremix_camera** | RGB-D camera & vision | Python | `/head_camera/*`, `/scan`, `/wrist_camera/*` | `ros2 launch leremix_camera camera.launch.py` |
-| **leremix_imu** | IMU sensor & fusion | Python | `/imu/data`, `/imu/fused` | `ros2 launch leremix_imu imu.launch.py` |
+| **llmy_description** | Robot URDF model & transforms | XML/Python | `/robot_description`, `/tf`, `/joint_states` | `ros2 launch llmy_description view_robot.launch.py` |
+| **llmy_servo_manager** | Direct motor control (C++) | C++ | `/motor_manager/*_cmd`, `/motor_manager/joint_states` | `ros2 launch llmy_servo_manager servo_manager.launch.py` |
+| **llmy_servo_manager_py** | Motor control with advanced braking | Python | `/motor_manager/*_cmd`, `/motor_manager/joint_states` | `ros2 launch llmy_servo_manager_py servo_manager.launch.py` |
+| **llmy_control_plugin** | ros2_control hardware bridge | C++ | `/cmd_vel`, `/arm_controller/joint_trajectory` | `ros2 launch llmy_control_plugin bringup.launch.py` |
+| **llmy_teleop_xbox** | Xbox controller interface | Python | `/cmd_vel`, `/joy` | `ros2 launch llmy_teleop_xbox teleop_xbox.launch.py` |
+| **llmy_control** | Controller configurations | YAML | N/A (config files) | Loaded by control_plugin |
+| **llmy_camera** | RGB-D camera & vision | Python | `/head_camera/*`, `/scan`, `/wrist_camera/*` | `ros2 launch llmy_camera camera.launch.py` |
+| **llmy_imu** | IMU sensor & fusion | Python | `/imu/data`, `/imu/fused` | `ros2 launch llmy_imu imu.launch.py` |
 
 ### 📦 Detailed Package Information
 
-#### **📐 leremix_description - Robot Model**
+#### **📐 llmy_description - Robot Model**
 
 **What it does:** Provides the complete URDF/Xacro robot model with accurate physical properties, joint limits, collision meshes, and visual representations. This is the "digital twin" of your physical robot.
 
@@ -25,10 +25,10 @@
 **How to run:**
 ```bash
 # Standalone URDF visualization
-ros2 launch leremix_description view_robot.launch.py
+ros2 launch llmy_description view_robot.launch.py
 
 # Load robot model for other packages
-ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_description:="$(xacro $(ros2 pkg prefix leremix_description)/share/leremix_description/urdf/leremix.urdf.xacro)"
+ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_description:="$(xacro $(ros2 pkg prefix llmy_description)/share/llmy_description/urdf/llmy.urdf.xacro)"
 ```
 
 **Key topics:**
@@ -37,7 +37,7 @@ ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_descrip
 - `/joint_states` - Current joint positions
 
 
-#### **🔧 leremix_servo_manager - Direct Motor Control (C++)**
+#### **🔧 llmy_servo_manager - Direct Motor Control (C++)**
 
 **What it does:** Handles low-level communication with FEETECH STS servos via serial protocol. Converts ROS2 joint commands into servo-specific position/velocity commands and provides real-time telemetry feedback.
 
@@ -48,13 +48,13 @@ ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_descrip
 **How to run:**
 ```bash
 # Main servo manager (requires hardware)
-ros2 launch leremix_servo_manager servo_manager.launch.py
+ros2 launch llmy_servo_manager servo_manager.launch.py
 
 # Test motor connectivity
-ros2 launch leremix_servo_manager ping_test.launch.py
+ros2 launch llmy_servo_manager ping_test.launch.py
 
 # Custom serial port
-ros2 launch leremix_servo_manager servo_manager.launch.py port:=/dev/ttyTHS1 baud:=1000000
+ros2 launch llmy_servo_manager servo_manager.launch.py port:=/dev/ttyTHS1 baud:=1000000
 ```
 
 **Key topics:**
@@ -67,7 +67,7 @@ ros2 launch leremix_servo_manager servo_manager.launch.py port:=/dev/ttyTHS1 bau
 
 ---
 
-#### **🐍 leremix_servo_manager_py - Python Motor Control**
+#### **🐍 llmy_servo_manager_py - Python Motor Control**
 
 **What it does:** Python-based alternative to the C++ servo manager with modular architecture, advanced braking system, and improved error handling. Provides the same functionality with enhanced safety features and easier customization.
 
@@ -83,13 +83,13 @@ ros2 launch leremix_servo_manager servo_manager.launch.py port:=/dev/ttyTHS1 bau
 **How to run:**
 ```bash
 # Main Python servo manager (requires hardware)
-ros2 launch leremix_servo_manager_py servo_manager.launch.py
+ros2 launch llmy_servo_manager_py servo_manager.launch.py
 
 # Test brake methods
-ros2 launch leremix_servo_manager_py test_brake_methods.launch.py
+ros2 launch llmy_servo_manager_py test_brake_methods.launch.py
 
 # Custom configuration
-ros2 launch leremix_servo_manager_py servo_manager.launch.py config_file:=custom_config.yaml
+ros2 launch llmy_servo_manager_py servo_manager.launch.py config_file:=custom_config.yaml
 ```
 
 **Key topics:** (Same as C++ version)
@@ -104,23 +104,23 @@ ros2 launch leremix_servo_manager_py servo_manager.launch.py config_file:=custom
 
 ---
 
-#### **🔌 leremix_control_plugin - Hardware Bridge**
+#### **🔌 llmy_control_plugin - Hardware Bridge**
 
 **What it does:** Acts as the ros2_control hardware interface, bridging standard ROS2 controllers with the servo manager. Enables seamless integration with MoveIt2, navigation, and other ROS2 tools.
 
 **Nodes launched:**
 - `controller_manager` - ros2_control manager
-- `omnidirectional_controller` - Base movement controller
+- `diff_drive_controller` - Base movement controller (skid-steer)
 - `arm_controller` - Arm trajectory controller
 - `joint_state_broadcaster` - Joint state publisher
 
 **How to run:**
 ```bash
 # Launch with hardware interface
-ros2 launch leremix_control_plugin bringup.launch.py
+ros2 launch llmy_control_plugin bringup.launch.py
 
 # Simulation mode (requires Gazebo)
-ros2 launch leremix_control_plugin bringup.launch.py use_sim_time:=true
+ros2 launch llmy_control_plugin bringup.launch.py use_sim_time:=true
 ```
 
 **Key topics:**
@@ -131,7 +131,7 @@ ros2 launch leremix_control_plugin bringup.launch.py use_sim_time:=true
 
 ---
 
-#### **🎮 leremix_teleop_xbox - Manual Control**
+#### **🎮 llmy_teleop_xbox - Manual Control**
 
 **What it does:** Provides intuitive Xbox controller mapping for manual robot operation. Maps controller inputs to robot movements with safety limits and smooth control.
 
@@ -142,22 +142,22 @@ ros2 launch leremix_control_plugin bringup.launch.py use_sim_time:=true
 **How to run:**
 ```bash
 # Standard Xbox controller
-ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
+ros2 launch llmy_teleop_xbox teleop_xbox.launch.py
 
 # Custom controller device
-ros2 launch leremix_teleop_xbox teleop_xbox.launch.py device:=/dev/input/js1
+ros2 launch llmy_teleop_xbox teleop_xbox.launch.py device:=/dev/input/js1
 ```
 
 **Controller mapping:**
 - **Right stick:** Base movement (forward/back + rotation)
-- **Left stick X:** Base strafe (left/right)
 - **RB/LB:** Arm joint 1 (+/-)
 - **RT/LT:** Arm joint 2 (+/-)
 - **Y/A:** Arm joint 3 (+/-)
 - **B/X:** Arm joint 4 (+/-)
 - **Start/Back:** Arm joint 5 (+/-)
 - **Stick clicks:** Arm joint 6 (+/-)
-- **D-pad:** Camera pan/tilt (up/down for pan, left/right for tilt)
+- **D-pad up/down:** Camera pan
+- **D-pad left/right:** Camera tilt
 
 **Key topics:**
 - `/cmd_vel` - Base velocity output
@@ -166,16 +166,16 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py device:=/dev/input/js1
 
 ---
 
-#### **⚙️ leremix_control - Controller Configuration**
+#### **⚙️ llmy_control - Controller Configuration**
 
-**What it does:** Provides controller configurations and parameter files for the omnidirectional base and 6-DOF arm using standard ros2_control patterns.
+**What it does:** Provides controller configurations and parameter files for the skid-steer differential drive base and 6-DOF arm using standard ros2_control patterns.
 
 **Configuration files:**
 - `config/controllers.yaml` - Controller parameters
 - `config/ros2_control.yaml` - Hardware interface config
 - `config/joint_limits.yaml` - Safety limits
 
-**Loaded by:** leremix_control_plugin (no standalone launch)
+**Loaded by:** llmy_control_plugin (no standalone launch)
 
 **Key parameters:**
 - Velocity limits for base wheels
@@ -187,7 +187,7 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py device:=/dev/input/js1
 
 
 
-#### **📷 leremix_camera - Vision System**
+#### **📷 llmy_camera - Vision System**
 
 **What it does:** Integrates RGB-D cameras with compressed image transport and depth-to-laser conversion. Provides both manipulation-ready RGB-D data and navigation-ready 2D laser scans.
 
@@ -200,13 +200,13 @@ ros2 launch leremix_teleop_xbox teleop_xbox.launch.py device:=/dev/input/js1
 **How to run:**
 ```bash
 # Full camera system
-ros2 launch leremix_camera camera.launch.py
+ros2 launch llmy_camera camera.launch.py
 
 # RealSense only
-ros2 launch leremix_camera realsense.launch.py
+ros2 launch llmy_camera realsense.launch.py
 
 # With custom resolution
-ros2 launch leremix_camera camera.launch.py width:=1280 height:=720
+ros2 launch llmy_camera camera.launch.py width:=1280 height:=720
 ```
 
 **Key topics:**
@@ -218,7 +218,7 @@ ros2 launch leremix_camera camera.launch.py width:=1280 height:=720
 
 ---
 
-#### **📐 leremix_imu - Orientation Sensing**
+#### **📐 llmy_imu - Orientation Sensing**
 
 **What it does:** Handles ICM20948 9-DOF sensor integration with Madgwick sensor fusion, providing calibrated orientation data crucial for navigation and balance.
 
@@ -229,10 +229,10 @@ ros2 launch leremix_camera camera.launch.py width:=1280 height:=720
 **How to run:**
 ```bash
 # IMU with sensor fusion
-ros2 launch leremix_imu imu.launch.py
+ros2 launch llmy_imu imu.launch.py
 
 # Raw IMU data only
-ros2 run leremix_imu icm20948_driver
+ros2 run llmy_imu icm20948_driver
 ```
 
 **Key topics:**
@@ -242,5 +242,5 @@ ros2 run leremix_imu icm20948_driver
 
 **Calibration:** Run calibration sequence on first setup:
 ```bash
-ros2 run leremix_imu calibrate_imu
+ros2 run llmy_imu calibrate_imu
 ```

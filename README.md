@@ -1,16 +1,16 @@
-# LeRemix
+# LLMy
 <p>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://docs.ros.org/en/humble/"><img src="https://img.shields.io/badge/ROS2-Humble-blue.svg" alt="ROS2 Humble"></a>
-  <a href="http://gazebosim.org/"><img src="https://img.shields.io/badge/Gazebo-Classic-orange.svg" alt="Gazebo"></a>
+  <a href="https://docs.ros.org/en/humble/"><img src="https://img.shields.io/badge/ROS2-Jazzy-blue.svg alt="ROS2 Humble"></a>
+  <a href="http://gazebosim.org/"><img src="https://img.shields.io/badge/Gazebo-Harmonic-orange.svg" alt="Gazebo"></a>
 </p>
 
 <p align="center">
-  <img src="img/v2.jpg" alt="LeRemix Robot" width="600"/>
+  <img src="img/LLMy.jpg" alt="LLMy Robot" width="600"/>
 </p>
 
 
-**LeRemix** is a fully 3D-printed mobile manipulator designed for **AI experimentation**, **research**, and **education**. Building upon [LeRobot](https://github.com/huggingface/lerobot) and [LeKiwi](https://github.com/SIGRobotics-UIUC), it introduces hardware improvements and comprehensive ROS2 integration.
+**LLMy** is a fully 3D-printed mobile manipulator designed for **AI experimentation**, **research**, and **education**. Building upon [LeRobot](https://github.com/huggingface/lerobot) and [LeKiwi](https://github.com/SIGRobotics-UIUC), it introduces hardware improvements and comprehensive ROS2 integration.
 
 * 🔧 **Fully 3D Printable** - ORP Grid-based modular design with complete CAD files
 * 🤖 **ROS2 Native** - Complete ros2_control integration with MoveIt2 & Nav2 support
@@ -21,15 +21,15 @@
 
 ---
 
-## ⚙️ Hardware 
-The LeRemix platform combines a **3-wheel omnidirectional base** for holonomic motion with a **6-DOF SO-ARM100 robotic arm** for manipulation tasks. A **pan-tilt elevated camera mount** provides flexible perception capabilities, allowing the robot to survey its environment while performing manipulation operations.
+## ⚙️ Hardware
+The LLMy platform combines a **4-wheel skid-steer base** for robust differential drive mobility with a **6-DOF SO-ARM100 robotic arm** for manipulation tasks. A **pan-tilt elevated camera mount** provides flexible perception capabilities, allowing the robot to survey its environment while performing manipulation operations.
 
-LeRemix is designed to be easy to assamble, easy to get started with and easy to expand. 
+LLMy is designed to be easy to assamble, easy to get started with and easy to expand. 
 
 ### Actuators
 
-**11x Feetech STS3215 Servos (12V, 30KG torque):**
-- 3x Base wheels (omnidirectional drive)
+**12x Feetech STS3215 Servos (12V, 30KG torque):**
+- 4x Base wheels (skid-steer drive)
 - 6x Arm joints (SO-ARM100)
 - 2x Camera head (pan & tilt)
 
@@ -98,9 +98,9 @@ graph TB
 **📋 [Complete BOM & Sourcing Guide](docs/bom.md)**
 | Configuration | US Price | EU Price | What's Included |
 |---------------|----------|----------|-----------------|
-| **Base Platform** | **$280** | **€307** | Servos, wheels, controller, IMU, battery |
-| **+ RGB-D Camera** | **$514-779** | **€537-756** | + Orbbec Gemini 2/ZED 2i |
-| **+ LIDAR** | **$603-868** | **€626-845** | + RPLidar C1/YDLidar options |
+| **Base Platform** | **$264** | **€247** | Servos, controller, IMU, battery |
+| **+ RGB-D Camera** | **$498-763** | **€477-696** | + Orbbec Gemini 2/ZED 2i |
+| **+ LIDAR** | **$587-852** | **€556-775** | + RPLidar C1/YDLidar options |
 
 
 
@@ -108,19 +108,19 @@ graph TB
 
 ## 🚀 Quick Start
 
-### 🎮 Simulation (Fastest Way to Try LeRemix!)
+### 🎮 Simulation (Fastest Way to Try LLMy!)
 
 Get the robot running in Gazebo simulation in just a few commands:
 
 ```bash
 # Clone and build the workspace
-git clone github.com/cristidragomir97/leremix leremix_ws
-cd leremix_ws/ros
+git clone github.com/cristidragomir97/llmy llmy_ws
+cd llmy_ws/ros
 colcon build
 source install/setup.bash
 
 # Launch Gazebo simulation with controllers
-ros2 launch leremix_gazebo sim.launch.py
+ros2 launch llmy_gazebo sim.launch.py
 ```
 
 The robot will spawn in Gazebo with all controllers active. 
@@ -128,10 +128,10 @@ The robot will spawn in Gazebo with all controllers active.
 In a new terminal - start Xbox controller teleoperation
 
 ```bash
-ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
+ros2 launch llmy_teleop_xbox teleop_xbox.launch.py
 ```
 **🎮 Xbox Controller Mapping:**
-- **🏎️ Base Movement:** Right stick (forward/back + rotate), Left stick X (strafe left/right)
+- **🏎️ Base Movement:** Right stick (forward/back + rotate)
 - **🦾 Arm Control:**
   - **Joint 1:** RB button (+) / LB button (-)
   - **Joint 2:** RT trigger (+) / LT trigger (-)
@@ -151,7 +151,7 @@ For detailed setup instructions, hardware configuration, and troubleshooting, se
 
 ## 🏗️ Architecture
 
-LeRemix follows a modular ROS2 architecture that separates concerns between simulation, hardware interfaces, control, and user interaction. 
+LLMy follows a modular ROS2 architecture that separates concerns between simulation, hardware interfaces, control, and user interaction. 
 
 - **Hardware Abstraction**: The `ros2_control` framework provides a clean interface between high-level controllers (MoveIt2, Nav2) and low-level hardware, allowing the same code to run in both simulation and on real hardware.
 
@@ -165,7 +165,7 @@ LeRemix follows a modular ROS2 architecture that separates concerns between simu
 ```mermaid
 graph TB
 
-    LeRemixDescription[📦 LeRemix_Description]
+    LLMyDescription[📦 LLMy_Description]
     API[📡 ROS2]
     Apps[🤖 AI/ML Applications]
 
@@ -174,27 +174,27 @@ graph TB
         HeadCamera[📷 Head Camera<br/>RealSense RGB-D]
         IMU[📐 IMU Sensor<br/>ICM20948]
         LIDAR[📏 LIDAR ]
-         CameraNode[📦 LeRemix_Camera]
-        ImuNode[📦 LeRemix_IMU]
+         CameraNode[📦 LLMy_Camera]
+        ImuNode[📦 LLMy_IMU]
         LidarNode[📦 rplidar]
     end
 
     subgraph "Control Layer"
         Control[🎛️ ros2_control Framework]
-        LeRemixControl[📦 LeRemix_Control]
-        LeRemixControlPlugin[📦 LeRemix_ControlPlugin]
+        LLMyControl[📦 LLMy_Control]
+        LLMyControlPlugin[📦 LLMy_ControlPlugin]
     end
     
     subgraph "Actuators"
-        LeRemixServoManager[📦 LeRemix_ServoManager]
-        Base[<strong>Omnidirectional Base</strong><br/>3x ST3215 Servos]
-        Arm[6-DOF Arm<br/>7x ST3215 Servos]
+        LLMyServoManager[📦 LLMy_ServoManager]
+        Base[<strong>Skid-Steer Base</strong><br/>4x ST3215 Servos]
+        Arm[6-DOF Arm<br/>6x ST3215 Servos]
         Head[Pan & Tilt System<br/>2x ST3215 Servos]
     end
 
 
     %% Top to bottom flow
-    LeRemixDescription --> API
+    LLMyDescription --> API
 
     LIDAR --> LidarNode
     WristCamera --> CameraNode
@@ -208,13 +208,13 @@ graph TB
     API <--> Apps
     API --> Control
 
-    LeRemixControl --> Control
-    Control --> LeRemixControlPlugin
-    LeRemixControlPlugin --> LeRemixServoManager
+    LLMyControl --> Control
+    Control --> LLMyControlPlugin
+    LLMyControlPlugin --> LLMyServoManager
 
-    LeRemixServoManager --> Base
-    LeRemixServoManager --> Arm
-    LeRemixServoManager --> Head
+    LLMyServoManager --> Base
+    LLMyServoManager --> Arm
+    LLMyServoManager --> Head
     
 ```
 
@@ -223,18 +223,18 @@ graph TB
 ### 📦 ROS Packages
 
 **Core Packages:**
-- [**leremix_description**](ros/src/leremix_description/) - Robot URDF model with accurate kinematics and collision meshes
-- [**leremix_control_plugin**](ros/src/leremix_control_plugin) - ros2_control hardware bridge enabling MoveIt2/Nav2 integration
-- [**leremix_control**]() - Controller parameters and ros2_control configurations
-- [**leremix_servo_manager**]() - Low-level motor control with real-time telemetry
-- [**leremix_teleop_xbox**]() - Xbox controller interface for manual operation
+- [**llmy_description**](ros/src/llmy_description/) - Robot URDF model with accurate kinematics and collision meshes
+- [**llmy_control_plugin**](ros/src/llmy_control_plugin) - ros2_control hardware bridge enabling MoveIt2/Nav2 integration
+- [**llmy_control**]() - Controller parameters and ros2_control configurations
+- [**llmy_servo_manager**]() - Low-level motor control with real-time telemetry
+- [**llmy_teleop_xbox**]() - Xbox controller interface for manual operation
 
 **Sensor & Vision:**
-- [**leremix_camera**]() - RGB-D camera integration with depth-to-laser conversion
-- [**leremix_imu**]() - IMU sensor fusion for orientation and navigation
+- [**llmy_camera**]() - RGB-D camera integration with depth-to-laser conversion
+- [**llmy_imu**]() - IMU sensor fusion for orientation and navigation
 
 **Simulation Packages**
-- **leremix_gazebo** - Configurations and launch files for the Gazebo Classic
+- **llmy_gazebo** - Configurations and launch files for the Gazebo Classic
 
 
 **📋 [Detailed Package Documentation](docs/packages.md)**
@@ -248,10 +248,10 @@ This project stands on the shoulders of incredible open-source work:
 - **[SIGRobotics-UIUC](https://github.com/SIGRobotics-UIUC)** - For their foundational work on LeKiwi
 - **[Pavan Vishwanath](https://github.com/Pavankv92)** - ROS2 package development for [LeRobot SO-ARM101](https://github.com/Pavankv92/lerobot_ws)
 - **[Mateus Menezes](https://github.com/mateusmenezes95)** - [Omnidirectional controllers](https://github.com/mateusmenezes95/omnidirectional_controllers) and [AxeBot](https://github.com/mateusmenezes95/axebot) simulation expertise
-- **[Gaotian Wang](https://github.com/Vector-Wangel/XLeRobot)** - For his amazing work on XLeRobot. Also for being kind enough to publish the STEP files for his robot upon request, files that were used to create the camera tower for LeRemix. 
+- **[Gaotian Wang](https://github.com/Vector-Wangel/XLeRobot)** - For his amazing work on XLeRobot. Also for being kind enough to publish the STEP files for his robot upon request, files that were used to create the camera tower for LLMy. 
 
 ---
 <div align="center">
 
-<strong>⭐ Star this repo if LeRemix helped you build something awesome! ⭐</strong>
+<strong>⭐ Star this repo if LLMy helped you build something awesome! ⭐</strong>
 </div>

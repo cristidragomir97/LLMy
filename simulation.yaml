@@ -1,48 +1,54 @@
 ros_distro: jazzy
+local: true
 ros_domain_id: 0
 registry: nx128.lan:5000/robocore
-image_prefix: leremix_sim
+image_prefix: llmy_sim
 
 hosts:
-  - name: gr00t
-    ip: localhost
+  - name: localhost
+    ip: 127.0.0.1
     user: cdr 
     arch: amd64
     manager: true
     mount_root: /home/temp/robocore
 
-common_packages:
-  - name: leremix_description
-    source: 
-      - ros/src/leremix_description
-
 components:
+
+  - name: rviz
+    nvidia: true
+    gui: true
+    apt_packages:
+      - ros-jazzy-rviz2
+    runs_on: localhost
+    source: 
+      - ros/src/llmy_description
+      - ros/src/llmy_rviz
+    entrypoint: ros2 launch llmy_rviz rviz.launch.py 
+
   - name: simulation
     nvidia: true
     gui: true
     volumes:
       - gz_fuel_cache:/root/.gz/fuel
     source: 
-      - ros/src/leremix_control
-      - ros/src/leremix_gazebo
-    repositories:
-      - url: https://github.com/husarion/husarion_gz_worlds
-        version: main
-        folder: husarion_gz_worlds
-    runs_on: gr00t
-    entrypoint: ros2 launch leremix_gazebo sim.launch.py
+      - ros/src/llmy_description
+      - ros/src/llmy_control
+      - ros/src/llmy_gazebo
+    runs_on: localhost
+    entrypoint: ros2 launch llmy_gazebo gazebo.launch.py
 
   - name: xbox
-    runs_on: gr00t
+    runs_on: localhost
     privileged: true
     source:
-      - ros/src/leremix_teleop_xbox
-    entrypoint: ros2 launch leremix_teleop_xbox teleop_xbox.launch.py
+      - ros/src/llmy_description
+      - ros/src/llmy_teleop_xbox
+    entrypoint: ros2 launch llmy_teleop_xbox teleop_xbox.launch.py
     devices:
       - /dev/input:/dev/input
 
   - name: rosboard
-    runs_on: gr00t
+    runs_on: localhost
     apt_packages: []
     pip_packages: 
       - tornado
@@ -54,10 +60,11 @@ components:
     entrypoint: ros2 run rosboard rosboard_node
 
   - name: slam
-    runs_on: gr00t
+    runs_on: localhost
     source:
-      - ros/src/leremix_slam
-    entrypoint: ros2 launch leremix_slam online_mapping_launch.py 
+      - ros/src/llmy_description
+      - ros/src/llmy_slam
+    entrypoint: ros2 launch llmy_slam online_mapping_launch.py 
     
 
 
