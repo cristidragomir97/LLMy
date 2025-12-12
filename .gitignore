@@ -11,7 +11,7 @@ ros/log/
 
 # Ignore non-leremix packages in src
 ros/src/*/
-!ros/src/leremix_*/
+!ros/src/llmy_*/
 
 # macOS files
 .DS_Store
